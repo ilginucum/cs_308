@@ -39,7 +39,8 @@ namespace e_commerce.Controllers
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Email, user.Email)
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Role, user.UserType.ToString())
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -58,39 +59,50 @@ namespace e_commerce.Controllers
             return View();
         }
 
-         [HttpPost]
-public async Task<IActionResult> Registration(UserRegistration model)
-{
-    //if (ModelState.IsValid)
-    
-        try
+                [HttpPost]
+        public async Task<IActionResult> Registration(UserRegistration model)
         {
-            // Check if the user already exists
-            var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
-            if (existingUser != null)
-            {
-                ModelState.AddModelError(string.Empty, "Username or email already exists.");
-                return View(model);
-            }
+            //if (ModelState.IsValid)
+            //{
+                try
+                {
+                    // Check if the user already exists
+                    var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Username or email already exists.");
+                        return View(model);
+                    }
 
-            // Hash the password
-            model.Password = HashPassword(model.Password);
+                    // Hash the password
+                    model.Password = HashPassword(model.Password);
 
-            // Insert the user into MongoDB
-            await _userRepository.InsertOneAsync(model);
+                    // Create a new user object with all the required fields, including UserType
+                    var newUser = new UserRegistration
+                    {
+                        FullName = model.FullName,
+                        Username = model.Username,
+                        Email = model.Email,
+                        Password = model.Password,
+                        PhoneNumber = model.PhoneNumber,
+                        UserType = model.UserType  // Add this line to include UserType
+                    };
 
-            TempData["SuccessMessage"] = "Registration successful. Please log in.";
-            return RedirectToAction(nameof(Login));
+                    // Insert the user into MongoDB
+                    await _userRepository.InsertOneAsync(newUser);
+
+                    TempData["SuccessMessage"] = "Registration successful. Please log in.";
+                    return RedirectToAction(nameof(Login));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error during user registration: {ex.Message}");
+                    ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
+                }
+            //}
+
+            return View(model);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error during user registration: {ex.Message}");
-            ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
-        }
-    
-
-    return View(model);
-}
 
 
 

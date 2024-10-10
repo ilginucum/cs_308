@@ -27,6 +27,7 @@
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/e_commerce.MvcApplicationPartsAssemblyInfo.cache
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/e_commerce.RazorAssemblyInfo.cache
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/e_commerce.RazorAssemblyInfo.cs
+/Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/e_commerce.sourcelink.json
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/staticwebassets.build.json
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/staticwebassets.development.json
 /Users/macbookpro/Desktop/e_commerce/obj/Debug/net8.0/staticwebassets/msbuild.e_commerce.Microsoft.AspNetCore.StaticWebAssets.props

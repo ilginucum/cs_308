@@ -23,25 +23,25 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 var app = builder.Build();
 
 // Testing MongoDB connection
-using (var scope = app.Services.CreateScope())
-{
-    var mongoRepo = scope.ServiceProvider.GetRequiredService<IMongoDBRepository<UserRegistration>>();
-    try
-    {
-        var newUser = new UserRegistration
-        {
-            Username = "TestUser",
-            Email = "test@example.com",
-            Password = "password123"
-        };
-        await mongoRepo.InsertOneAsync(newUser);
-        Console.WriteLine("MongoDB connection successful. Test user inserted.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error connecting to MongoDB: {ex.Message}");
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+   // var mongoRepo = scope.ServiceProvider.GetRequiredService<IMongoDBRepository<UserRegistration>>();
+    //try
+    //{
+        //var newUser = new UserRegistration
+        //{
+           // Username = "TestUser",
+            //Email = "test@example.com",
+            //Password = "password123"
+        //};
+        //await mongoRepo.InsertOneAsync(newUser);
+        //Console.WriteLine("MongoDB connection successful. Test user inserted.");
+   // }
+    //catch (Exception ex)
+    //{
+       // Console.WriteLine($"Error connecting to MongoDB: {ex.Message}");
+    //}
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

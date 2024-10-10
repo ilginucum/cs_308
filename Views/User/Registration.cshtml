@@ -1,7 +1,7 @@
 @model e_commerce.Models.UserRegistration
+@using e_commerce.Models
 
 <h2>Registration</h2>
-
 <form asp-action="Registration" method="post">
     <div>
         <label asp-for="FullName"></label>
@@ -27,6 +27,13 @@
         <label asp-for="ConfirmPassword"></label>
         <input asp-for="ConfirmPassword" type="password" />
         <span asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <div>
+        <label asp-for="UserType">User Type</label>
+        <select asp-for="UserType" asp-items="Html.GetEnumSelectList<UserType>()" class="form-control">
+            <option selected="selected" value="">Please select</option>
+        </select>
+        <span asp-validation-for="UserType" class="text-danger"></span>
     </div>
     <button type="submit">Register</button>
 </form>
