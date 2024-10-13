@@ -7,10 +7,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 // Register MongoDB Repository with the correct database and collection name
 builder.Services.AddScoped(typeof(IMongoDBRepository<>), typeof(MongoDBRepository<>));
-builder.Services.AddScoped<IMongoDBRepository<UserRegistration>>(sp => 
-    new MongoDBRepository<UserRegistration>(sp.GetRequiredService<IConfiguration>(), "LoginInfo"));
+builder.Services.AddScoped<IMongoDBRepository<UserRegistration>>(sp =>
+    new MongoDBRepository<UserRegistration>(
+        sp.GetRequiredService<IConfiguration>(), 
+        "LoginInfo",
+        sp.GetRequiredService<ILogger<MongoDBRepository<UserRegistration>>>()
+    ));
+builder.Services.AddScoped<IMongoDBRepository<Product>>(sp =>
+    new MongoDBRepository<Product>(
+        sp.GetRequiredService<IConfiguration>(), 
+        "Products",
+        sp.GetRequiredService<ILogger<MongoDBRepository<Product>>>()
+    ));
 
 // Add authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -22,32 +38,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Testing MongoDB connection
-//using (var scope = app.Services.CreateScope())
-//{
-   // var mongoRepo = scope.ServiceProvider.GetRequiredService<IMongoDBRepository<UserRegistration>>();
-    //try
-    //{
-        //var newUser = new UserRegistration
-        //{
-           // Username = "TestUser",
-            //Email = "test@example.com",
-            //Password = "password123"
-        //};
-        //await mongoRepo.InsertOneAsync(newUser);
-        //Console.WriteLine("MongoDB connection successful. Test user inserted.");
-   // }
-    //catch (Exception ex)
-    //{
-       // Console.WriteLine($"Error connecting to MongoDB: {ex.Message}");
-    //}
-//}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();

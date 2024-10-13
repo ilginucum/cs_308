@@ -76,6 +76,15 @@ namespace e_commerce.Controllers
 
                     // Hash the password
                     model.Password = HashPassword(model.Password);
+                     // Assign the role based on UserType
+                    string role = model.UserType switch
+                    {
+                        UserType.ProductManager => "ProductManager",
+                        UserType.SalesManager => "SalesManager",
+                        UserType.Customer => "Customer",
+                        _ => throw new ArgumentException("Invalid UserType")
+                    };
+
 
                     // Create a new user object with all the required fields, including UserType
                     var newUser = new UserRegistration
@@ -90,6 +99,18 @@ namespace e_commerce.Controllers
 
                     // Insert the user into MongoDB
                     await _userRepository.InsertOneAsync(newUser);
+                        // Log the user in...
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, newUser.Username),
+                        new Claim(ClaimTypes.Role, role)
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("Index", "Home");
+            
 
                     TempData["SuccessMessage"] = "Registration successful. Please log in.";
                     return RedirectToAction(nameof(Login));

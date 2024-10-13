@@ -16,18 +16,32 @@ namespace e_commerce.Data
         Task InsertOneAsync(T document);
         Task UpdateOneAsync(string id, T document);
         Task DeleteOneAsync(string id);
+        Task UpdateOneAsync(Expression<Func<T, bool>> filterExpression, T document);
+        Task<T> FindByIdAsync(string id);
+        Task ReplaceOneAsync(T document);
     }
 
     public class MongoDBRepository<T> : IMongoDBRepository<T> where T : class
     {
         private readonly IMongoCollection<T> _collection;
+        private readonly ILogger<MongoDBRepository<T>> _logger;
 
-        public MongoDBRepository(IConfiguration configuration, string collectionName)
+        public MongoDBRepository(IConfiguration configuration, string collectionName, ILogger<MongoDBRepository<T>> logger)
+    {
+        _logger = logger;
+        try
         {
             var client = new MongoClient(configuration.GetConnectionString("MongoDB"));
             var database = client.GetDatabase(configuration["Database:Name"]);
             _collection = database.GetCollection<T>(collectionName);
+            _logger.LogInformation($"MongoDB repository initialized for collection: {collectionName}");
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error initializing MongoDB repository");
+            throw;
+        }
+    }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
@@ -51,9 +65,18 @@ namespace e_commerce.Data
         }
 
         public async Task InsertOneAsync(T document)
+    {
+        try
         {
             await _collection.InsertOneAsync(document);
+            _logger.LogInformation($"Document inserted: {typeof(T).Name}");
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error inserting document: {typeof(T).Name}");
+            throw;
+        }
+    }
 
         public async Task UpdateOneAsync(string id, T document)
         {
@@ -63,6 +86,26 @@ namespace e_commerce.Data
         public async Task DeleteOneAsync(string id)
         {
             await _collection.DeleteOneAsync(Builders<T>.Filter.Eq("Id", id));
+        }
+
+        public async Task UpdateOneAsync(Expression<Func<T, bool>> filterExpression, T document)
+        {
+            await _collection.ReplaceOneAsync(filterExpression, document);
+        }
+
+        public async Task<T> FindByIdAsync(string id)
+        {
+            return await GetByIdAsync(id);
+        }
+
+        public async Task ReplaceOneAsync(T document)
+        {
+            var idProperty = typeof(T).GetProperty("Id");
+            if (idProperty != null)
+            {
+                var id = idProperty.GetValue(document) as string;
+                await UpdateOneAsync(id, document);
+            }
         }
     }
 }
