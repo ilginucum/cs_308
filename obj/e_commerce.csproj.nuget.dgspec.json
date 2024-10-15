@@ -1,19 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "/Users/macbookpro/Desktop/e_commerce/e_commerce.csproj": {}
-  },
-  "projects": {
-    "/Users/macbookpro/Desktop/e_commerce/e_commerce.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/Users/macbookpro/Desktop/e_commerce/e_commerce.csproj",
-        "projectName": "e_commerce",
-        "projectPath": "/Users/macbookpro/Desktop/e_commerce/e_commerce.csproj",
-        "packagesPath": "/Users/macbookpro/.nuget/packages/",
-        "outputPath": "/Users/macbookpro/Desktop/e_commerce/obj/",
-=======
     "/Users/macbookpro/Desktop/cs_308-main/e_commerce.csproj": {}
   },
   "projects": {
@@ -25,7 +12,6 @@
         "projectPath": "/Users/macbookpro/Desktop/cs_308-main/e_commerce.csproj",
         "packagesPath": "/Users/macbookpro/.nuget/packages/",
         "outputPath": "/Users/macbookpro/Desktop/cs_308-main/obj/",
->>>>>>> c0d7b76 (reg to login)
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
