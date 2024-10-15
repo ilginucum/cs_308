@@ -65,6 +65,7 @@ namespace e_commerce.Controllers
             return View(product);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             var product = await _productRepository.FindByIdAsync(id);
@@ -76,17 +77,40 @@ namespace e_commerce.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Product product)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
-                await _productRepository.ReplaceOneAsync(product);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _productRepository.ReplaceOneAsync(product);
+                    _logger.LogInformation($"Product updated successfully: {product.Id}");
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error occurred while updating product: {product.Id}");
+                    ModelState.AddModelError("", "An error occurred while updating the product. Please try again.");
+                }
             }
+            else
+            {
+                _logger.LogWarning("Model state is invalid for product update");
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        _logger.LogWarning($"Validation error: {error.ErrorMessage}");
+                    }
+                }
+            }
+
             return View(product);
         }
 
@@ -107,4 +131,5 @@ namespace e_commerce.Controllers
             return RedirectToAction(nameof(Index));
         }
     }
+    
 }
