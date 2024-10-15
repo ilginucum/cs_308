@@ -2,23 +2,28 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using e_commerce.Models;
 using System.Security.Claims;
+using e_commerce.Data;
 
 namespace e_commerce.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IMongoDBRepository<Product> _productRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IMongoDBRepository<Product> productRepository)
         {
             _logger = logger;
+            _productRepository = productRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             ViewBag.UserRole = userRole;
-            return View();
+
+            var products = await _productRepository.GetAllAsync();
+            return View(products);
         }
 
         public IActionResult Privacy()
