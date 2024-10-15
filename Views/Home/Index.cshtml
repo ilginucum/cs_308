@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (User.IsInRole("ProductManager"))
+        {
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
+        }
+        else if (User.IsInRole("SalesManager"))
+        {
+            <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
+        }
+        else if (User.IsInRole("Customer"))
+        {
+            <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
+        }
+    }
+</div>
