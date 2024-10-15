@@ -59,71 +59,54 @@ namespace e_commerce.Controllers
             return View();
         }
 
-                [HttpPost]
-        public async Task<IActionResult> Registration(UserRegistration model)
+<<<<<<< HEAD
+
+=======
+        [HttpPost]
+public async Task<IActionResult> Registration(UserRegistration model)
+{
+    //if (ModelState.IsValid)
+    //{
+        try
         {
-            //if (ModelState.IsValid)
-            //{
-                try
-                {
-                    // Check if the user already exists
-                    var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
-                    if (existingUser != null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Username or email already exists.");
-                        return View(model);
-                    }
+            // Check if the user already exists
+            var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "Username or email already exists.");
+                return View(model);
+            }
 
-                    // Hash the password
-                    model.Password = HashPassword(model.Password);
-                     // Assign the role based on UserType
-                    string role = model.UserType switch
-                    {
-                        UserType.ProductManager => "ProductManager",
-                        UserType.SalesManager => "SalesManager",
-                        UserType.Customer => "Customer",
-                        _ => throw new ArgumentException("Invalid UserType")
-                    };
+            // Hash the password
+            model.Password = HashPassword(model.Password);
 
+            // Create a new user object with all the required fields, including UserType
+            var newUser = new UserRegistration
+            {
+                FullName = model.FullName,
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                PhoneNumber = model.PhoneNumber,
+                UserType = model.UserType
+            };
 
-                    // Create a new user object with all the required fields, including UserType
-                    var newUser = new UserRegistration
-                    {
-                        FullName = model.FullName,
-                        Username = model.Username,
-                        Email = model.Email,
-                        Password = model.Password,
-                        PhoneNumber = model.PhoneNumber,
-                        UserType = model.UserType  // Add this line to include UserType
-                    };
+            // Insert the user into MongoDB
+            await _userRepository.InsertOneAsync(newUser);
 
-                    // Insert the user into MongoDB
-                    await _userRepository.InsertOneAsync(newUser);
-                        // Log the user in...
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, newUser.Username),
-                        new Claim(ClaimTypes.Role, role)
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                    return RedirectToAction("Index", "Home");
-            
-
-                    TempData["SuccessMessage"] = "Registration successful. Please log in.";
-                    return RedirectToAction(nameof(Login));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error during user registration: {ex.Message}");
-                    ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
-                }
-            //}
-
-            return View(model);
+            TempData["SuccessMessage"] = "Registration successful. Please log in.";
+            return RedirectToAction(nameof(Login));
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error during user registration: {ex.Message}");
+            ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
+        }
+    //}
+
+    return View(model);
+}
+>>>>>>> c0d7b76 (reg to login)
 
 
 

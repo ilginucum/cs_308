@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "KAXp4XAlFOE=",
   "success": true,
   "projectFilePath": "/Users/macbookpro/Desktop/e_commerce/e_commerce.csproj",
+=======
+  "dgSpecHash": "K01ZniDy0hQ=",
+  "success": true,
+  "projectFilePath": "/Users/macbookpro/Desktop/cs_308-main/e_commerce.csproj",
+>>>>>>> c0d7b76 (reg to login)
   "expectedPackageFiles": [
     "/Users/macbookpro/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
     "/Users/macbookpro/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",
