@@ -43,6 +43,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AspNetCore.Identity.Mongo": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.30.0, )"

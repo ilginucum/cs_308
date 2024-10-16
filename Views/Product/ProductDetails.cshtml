@@ -1,9 +1,7 @@
 @model e_commerce.Models.Product
-
 @{
     ViewData["Title"] = "Product Details";
 }
-
 <div class="container mt-4">
     <h1>@Model.Name</h1>
     <div class="row">
@@ -21,6 +19,42 @@
             <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
             <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
             <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Comments</h3>
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="AddComment" asp-controller="Product" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.Id" />
+                <div class="form-group">
+                    <textarea name="CommentText" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        }
+        else
+        {
+            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> to add a comment.</p>
+        }
+
+        <div id="comments-list">
+            @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
+            {
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <h5 class="card-title">@comment.UserName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
+                        <p class="card-text">@comment.CommentText</p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

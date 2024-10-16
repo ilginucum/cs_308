@@ -22,13 +22,14 @@ namespace e_commerce.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(UserLogin model)
+        public async Task<IActionResult> Login(UserLogin model, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -39,16 +40,22 @@ namespace e_commerce.Controllers
                     {
                         new Claim(ClaimTypes.Name, user.Username),
                         new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.Role, user.UserType.ToString())
+                        new Claim(ClaimTypes.Role, user.UserType.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id)
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
+            ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
 
@@ -65,7 +72,6 @@ namespace e_commerce.Controllers
             //{
                 try
                 {
-                    // Check if the user already exists
                     var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
                     if (existingUser != null)
                     {
@@ -73,22 +79,10 @@ namespace e_commerce.Controllers
                         return View(model);
                     }
 
-                    // Hash the password
                     model.Password = HashPassword(model.Password);
+                    model.Id = Guid.NewGuid().ToString(); // Ensure the user has an Id
 
-                    // Create a new user object with all the required fields, including UserType
-                    var newUser = new UserRegistration
-                    {
-                        FullName = model.FullName,
-                        Username = model.Username,
-                        Email = model.Email,
-                        Password = model.Password,
-                        PhoneNumber = model.PhoneNumber,
-                        UserType = model.UserType
-                    };
-
-                    // Insert the user into MongoDB
-                    await _userRepository.InsertOneAsync(newUser);
+                    await _userRepository.InsertOneAsync(model);
 
                     TempData["SuccessMessage"] = "Registration successful. Please log in.";
                     return RedirectToAction(nameof(Login));
@@ -99,7 +93,6 @@ namespace e_commerce.Controllers
                     ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
                 }
             //}
-
             return View(model);
         }
 

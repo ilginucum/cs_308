@@ -27,6 +27,12 @@ builder.Services.AddScoped<IMongoDBRepository<Product>>(sp =>
         "Products",
         sp.GetRequiredService<ILogger<MongoDBRepository<Product>>>()
     ));
+builder.Services.AddScoped<IMongoDBRepository<ProductComment>>(sp =>
+    new MongoDBRepository<ProductComment>(
+        sp.GetRequiredService<IConfiguration>(),
+        "ProductComments",
+        sp.GetRequiredService<ILogger<MongoDBRepository<ProductComment>>>()
+    ));
 
 // Add authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -34,6 +40,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/User/Login";
         options.LogoutPath = "/User/Logout";
+        options.AccessDeniedPath = "/User/AccessDenied";
     });
 
 var app = builder.Build();

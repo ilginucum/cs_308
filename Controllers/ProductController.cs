@@ -4,21 +4,30 @@ using e_commerce.Models;
 using e_commerce.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+
 
 namespace e_commerce.Controllers
 {
-    [Authorize(Roles = "ProductManager")]
+    
     public class ProductController : Controller
     {
         private readonly IMongoDBRepository<Product> _productRepository;
+        private readonly IMongoDBRepository<ProductComment> _commentRepository;
+
         private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IMongoDBRepository<Product> productRepository, ILogger<ProductController> logger)
+        public ProductController(
+            IMongoDBRepository<Product> productRepository,
+            IMongoDBRepository<ProductComment> commentRepository,
+            ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
+            _commentRepository = commentRepository;
             _logger = logger;
         }
 
+        [Authorize(Roles = "ProductManager")]
         public async Task<IActionResult> Index()
         {
             var products = await _productRepository.GetAllAsync();
@@ -26,12 +35,14 @@ namespace e_commerce.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "ProductManager")]
         public IActionResult ManageProduct()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "ProductManager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageProduct(Product product)
         {
@@ -66,6 +77,7 @@ namespace e_commerce.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "ProductManager")]
         public async Task<IActionResult> Edit(string id)
         {
             var product = await _productRepository.FindByIdAsync(id);
@@ -77,6 +89,7 @@ namespace e_commerce.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ProductManager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Product product)
         {
@@ -85,8 +98,8 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
                     await _productRepository.ReplaceOneAsync(product);
@@ -98,22 +111,14 @@ namespace e_commerce.Controllers
                     _logger.LogError(ex, $"Error occurred while updating product: {product.Id}");
                     ModelState.AddModelError("", "An error occurred while updating the product. Please try again.");
                 }
-            }
-            else
-            {
-                _logger.LogWarning("Model state is invalid for product update");
-                foreach (var modelState in ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        _logger.LogWarning($"Validation error: {error.ErrorMessage}");
-                    }
-                }
-            }
+            //}
+            
+            
 
             return View(product);
         }
         [HttpGet]
+        [Authorize(Roles = "ProductManager")]
         public async Task<IActionResult> Delete(string id)
         {
             var product = await _productRepository.FindByIdAsync(id);
@@ -148,7 +153,7 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
-        [AllowAnonymous]
+       [AllowAnonymous]
         public async Task<IActionResult> ProductDetails(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -162,7 +167,51 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
+            var comments = await _commentRepository.FilterByAsync(c => c.ProductId == id);
+            ViewBag.Comments = comments;
+
             return View(product);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(string ProductId, string CommentText)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "User", new { returnUrl = Url.Action("ProductDetails", "Product", new { id = ProductId }) });
+            }
+
+            if (string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(CommentText))
+            {
+                return BadRequest();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity.Name;
+
+            var comment = new ProductComment
+            {
+                ProductId = ProductId,
+                UserId = userId,
+                UserName = userName,
+                CommentText = CommentText,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            try
+            {
+                await _commentRepository.InsertOneAsync(comment);
+                _logger.LogInformation($"Comment added successfully for product {ProductId} by user {userId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding comment for product {ProductId} by user {userId}");
+                TempData["ErrorMessage"] = "An error occurred while adding your comment. Please try again.";
+            }
+
+            return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
         }
     }
     
