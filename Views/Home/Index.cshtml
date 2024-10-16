@@ -6,39 +6,120 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-
     @if (User.Identity.IsAuthenticated)
     {
-        @if (User.IsInRole("ProductManager"))
-        {
-            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
-        }
-        else if (User.IsInRole("SalesManager"))
-        {
-            <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
-        }
-        else if (User.IsInRole("Customer"))
-        {
-            <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
-        }
+        <div class="mb-3">
+            @if (User.IsInRole("ProductManager"))
+            {
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
+            }
+            else if (User.IsInRole("SalesManager"))
+            {
+                <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
+            }
+            else if (User.IsInRole("Customer"))
+            {
+                <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
+            }
+            <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <a asp-controller="User" asp-action="Login" class="btn btn-primary">Login</a>
+        <a asp-controller="User" asp-action="Registration" class="btn btn-secondary">Register</a>
     }
 </div>
 
 <div class="mt-4">
     <h2>Our Products</h2>
-    <div class="row">
+    
+    <div class="mb-3">
+        <label for="bookSearch">Search by Book Name:</label>
+        <div class="input-group">
+            <input type="text" id="bookSearch" class="form-control" placeholder="Enter book name">
+            <div class="input-group-append">
+                <button id="searchButton" class="btn btn-outline-secondary" type="button">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="authorFilter">Filter by Author:</label>
+        <input type="text" id="authorFilter" class="form-control" placeholder="Enter author name">
+    </div>
+    
+    <div class="mb-3">
+        <label for="priceSort">Sort by Price:</label>
+        <select id="priceSort" class="form-control">
+            <option value="">Select sorting</option>
+            <option value="asc">Lowest to Highest</option>
+            <option value="desc">Highest to Lowest</option>
+        </select>
+    </div>
+
+    <button id="applyFilters" class="btn btn-primary mb-3">Apply Filters</button>
+
+    <div id="productList" class="row">
         @foreach (var product in Model)
         {
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 product-item" data-name="@product.Name" data-author="@product.Author" data-price="@product.Price">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">@product.Name</h5>
                         <p class="card-text">@product.Description</p>
                         <p class="card-text">Price: $@product.Price</p>
                         <p class="card-text">In Stock: @product.QuantityInStock</p>
+                        <p class="card-text">Author: @product.Author</p>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            function filterAndSortProducts() {
+                var bookSearch = $('#bookSearch').val().toLowerCase();
+                var authorFilter = $('#authorFilter').val().toLowerCase();
+                var priceSort = $('#priceSort').val();
+
+                $('.product-item').each(function() {
+                    var name = $(this).data('name').toLowerCase();
+                    var author = $(this).data('author').toLowerCase();
+                    var showProduct = (name.includes(bookSearch) || bookSearch === '') && 
+                                      (author.includes(authorFilter) || authorFilter === '');
+                    $(this).toggle(showProduct);
+                });
+
+                var products = $('.product-item:visible').get();
+                products.sort(function(a, b) {
+                    var priceA = parseFloat($(a).data('price'));
+                    var priceB = parseFloat($(b).data('price'));
+                    if (priceSort === 'asc') {
+                        return priceA - priceB;
+                    } else if (priceSort === 'desc') {
+                        return priceB - priceA;
+                    }
+                    return 0;
+                });
+
+                $('#productList').html(products);
+            }
+
+            $('#applyFilters').on('click', filterAndSortProducts);
+            $('#searchButton').on('click', filterAndSortProducts);
+
+            // Optional: Trigger search on Enter key press in the search input
+            $('#bookSearch').on('keypress', function(e) {
+                if (e.which === 13) {
+                    filterAndSortProducts();
+                }
+            });
+        });
+    </script>
+}

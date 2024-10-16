@@ -10,6 +10,8 @@ namespace e_commerce.Models
         public string Id { get; set; }
 
         public string Name { get; set; }
+        //model yerine
+        public string Author { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }
         public string Description { get; set; }

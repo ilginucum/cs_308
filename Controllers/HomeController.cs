@@ -21,8 +21,18 @@ namespace e_commerce.Controllers
         {
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             ViewBag.UserRole = userRole;
-
             var products = await _productRepository.GetAllAsync();
+            
+            // Assuming DistributorInformation is used for the author name
+            // If not, replace it with the appropriate field
+            foreach (var product in products)
+            {
+                if (string.IsNullOrEmpty(product.DistributorInformation))
+                {
+                    product.DistributorInformation = "Unknown Author";
+                }
+            }
+            
             return View(products);
         }
 
