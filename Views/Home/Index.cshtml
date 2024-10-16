@@ -66,15 +66,17 @@
         @foreach (var product in Model)
         {
             <div class="col-md-4 mb-3 product-item" data-name="@product.Name" data-author="@product.Author" data-price="@product.Price">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text">@product.Description</p>
-                        <p class="card-text">Price: $@product.Price</p>
-                        <p class="card-text">In Stock: @product.QuantityInStock</p>
-                        <p class="card-text">Author: @product.Author</p>
+                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">@product.Description</p>
+                            <p class="card-text">Price: $@product.Price</p>
+                            <p class="card-text">In Stock: @product.QuantityInStock</p>
+                            <p class="card-text">Author: @product.Author</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         }
     </div>

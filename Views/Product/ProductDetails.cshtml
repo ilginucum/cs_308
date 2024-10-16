@@ -1,0 +1,26 @@
+@model e_commerce.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <h1>@Model.Name</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="/api/placeholder/400/400" alt="@Model.Name" class="img-fluid" />
+        </div>
+        <div class="col-md-6">
+            <h2>Details</h2>
+            <p><strong>Author:</strong> @Model.Author</p>
+            <p><strong>Price:</strong> $@Model.Price</p>
+            <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Model:</strong> @Model.Model</p>
+            <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
+            <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
+            <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+</div>

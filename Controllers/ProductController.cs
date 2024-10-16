@@ -148,6 +148,22 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
+        [AllowAnonymous]
+        public async Task<IActionResult> ProductDetails(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
     }
     
 }
