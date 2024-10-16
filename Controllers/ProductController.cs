@@ -113,7 +113,7 @@ namespace e_commerce.Controllers
 
             return View(product);
         }
-
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
             var product = await _productRepository.FindByIdAsync(id);
@@ -124,11 +124,29 @@ namespace e_commerce.Controllers
             return View(product);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _productRepository.DeleteOneAsync(id);
-            return RedirectToAction(nameof(Index));
+            var product = await _productRepository.FindByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _productRepository.DeleteOneAsync(id);
+                _logger.LogInformation($"Product deleted successfully: {id}");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred while deleting product: {id}");
+                ModelState.AddModelError("", "An error occurred while deleting the product. Please try again.");
+                return View(product);
+            }
         }
     }
     
