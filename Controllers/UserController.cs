@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using e_commerce.Models;
 using e_commerce.Data;
@@ -115,6 +116,65 @@ namespace e_commerce.Controllers
         private bool VerifyPassword(string inputPassword, string storedHash)
         {
             return HashPassword(inputPassword) == storedHash;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userRepository.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = new UserProfileViewModel
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Username = user.Username,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Profile", model);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userRepository.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.FullName = model.FullName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            try
+            {
+                await _userRepository.ReplaceOneAsync(user);
+                TempData["SuccessMessage"] = "Profile updated successfully.";
+                _logger.LogInformation($"User profile updated successfully: {user.Id}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred while updating user profile: {user.Id}");
+                ModelState.AddModelError("", "An error occurred while updating the profile. Please try again.");
+                return View("Profile", model);
+            }
+
+            return RedirectToAction(nameof(Profile));
         }
     }
 }
