@@ -81,7 +81,6 @@ namespace e_commerce.Controllers
                     }
 
                     model.Password = HashPassword(model.Password);
-                    model.Id = Guid.NewGuid().ToString(); // Ensure the user has an Id
 
                     await _userRepository.InsertOneAsync(model);
 
@@ -160,6 +159,7 @@ namespace e_commerce.Controllers
             user.FullName = model.FullName;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
+            user.Username = model.Username;
 
             try
             {
