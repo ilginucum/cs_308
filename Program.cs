@@ -7,11 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
 // Configure logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Register MongoDB Repository with the correct database and collection name
 builder.Services.AddScoped(typeof(IMongoDBRepository<>), typeof(MongoDBRepository<>));
@@ -32,6 +34,13 @@ builder.Services.AddScoped<IMongoDBRepository<ProductComment>>(sp =>
         sp.GetRequiredService<IConfiguration>(),
         "ProductComments",
         sp.GetRequiredService<ILogger<MongoDBRepository<ProductComment>>>()
+    ));
+    // CreditCard için MongoDB Repository'sini kaydedin
+builder.Services.AddScoped<IMongoDBRepository<CreditCard>>(sp =>
+    new MongoDBRepository<CreditCard>(
+        sp.GetRequiredService<IConfiguration>(), 
+        "CreditCard", // Koleksiyon adı
+        sp.GetRequiredService<ILogger<MongoDBRepository<CreditCard>>>()
     ));
 
 // Add authentication
