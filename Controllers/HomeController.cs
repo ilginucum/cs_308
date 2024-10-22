@@ -17,24 +17,32 @@ namespace e_commerce.Controllers
             _productRepository = productRepository;
         }
 
-        public async Task<IActionResult> Index()
+         public async Task<IActionResult> Index()
+    {
+        var userRole = User.FindFirstValue(ClaimTypes.Role);
+        ViewBag.UserRole = userRole;
+        var products = await _productRepository.GetAllAsync();
+
+        // Get unique genres from all products
+        var allGenres = products
+            .Where(p => !string.IsNullOrEmpty(p.Genre))
+            .Select(p => p.Genre)
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
+        
+        ViewBag.Genres = allGenres;
+
+        foreach (var product in products)
         {
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-            ViewBag.UserRole = userRole;
-            var products = await _productRepository.GetAllAsync();
-            
-            // Assuming DistributorInformation is used for the author name
-            // If not, replace it with the appropriate field
-            foreach (var product in products)
+            if (string.IsNullOrEmpty(product.Author))
             {
-                if (string.IsNullOrEmpty(product.DistributorInformation))
-                {
-                    product.DistributorInformation = "Unknown Author";
-                }
+                product.Author = "Unknown Author";
             }
-            
-            return View(products);
         }
+
+        return View(products);
+    }
 
         public IActionResult Privacy()
         {

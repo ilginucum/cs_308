@@ -17,6 +17,7 @@
             <th>Author</th>
             <th>Serial Number</th>
             <th>Quantity in Stock</th>
+            <th>Genre</th>
             <th>Price</th>
             <th>Actions</th>
         </tr>
@@ -29,6 +30,7 @@
                 <td>@item.Author</td>
                 <td>@item.SerialNumber</td>
                 <td>@item.QuantityInStock</td>
+                <td>@item.Genre</td>
                 <td>@item.Price.ToString("C")</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>

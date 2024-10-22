@@ -19,6 +19,7 @@ namespace e_commerce.Models
         public decimal Price { get; set; }
         public bool WarrantyStatus { get; set; }
         public string DistributorInformation { get; set; }
+        public string Genre { get; set; }
         //public string CategoryId { get; set; }
     }
 }

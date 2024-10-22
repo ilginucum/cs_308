@@ -32,7 +32,6 @@
         <a asp-controller="User" asp-action="Registration" class="btn btn-secondary">Register</a>
     }
 </div>
-
 <div class="mt-4">
     <h2>Our Products</h2>
     
@@ -45,7 +44,6 @@
             </div>
         </div>
     </div>
-    
 
     <div class="mb-3">
         <label for="authorFilter">Filter by Author:</label>
@@ -61,12 +59,33 @@
         </select>
     </div>
 
+    <!-- Add genre filter -->
+    <div class="mb-3">
+        <label>Filter by Genres:</label>
+        <div class="genre-checkboxes">
+            @foreach (var genre in ViewBag.Genres)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input genre-checkbox" type="checkbox" 
+                           id="genre-@genre.Replace(" ", "-")" value="@genre">
+                    <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
+                        @genre
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+
     <button id="applyFilters" class="btn btn-primary mb-3">Apply Filters</button>
 
     <div id="productList" class="row">
         @foreach (var product in Model)
         {
-            <div class="col-md-4 mb-3 product-item" data-name="@product.Name" data-author="@product.Author" data-price="@product.Price">
+            <div class="col-md-4 mb-3 product-item" 
+                 data-name="@product.Name" 
+                 data-author="@product.Author" 
+                 data-price="@product.Price"
+                 data-genre="@product.Genre">
                 <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
                     <div class="card h-100">
                         <div class="card-body">
@@ -75,6 +94,10 @@
                             <p class="card-text">Price: $@product.Price</p>
                             <p class="card-text">In Stock: @product.QuantityInStock</p>
                             <p class="card-text">Author: @product.Author</p>
+                            @if (!string.IsNullOrEmpty(product.Genre))
+                            {
+                                <p class="card-text">Genre: @product.Genre</p>
+                            }
                         </div>
                     </div>
                 </a>
@@ -83,6 +106,22 @@
     </div>
 </div>
 
+<style>
+    .genre-checkboxes {
+        margin: 10px 0;
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    .form-check-inline {
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+</style>
+
 @section Scripts {
     <script>
         $(document).ready(function() {
@@ -90,39 +129,61 @@
                 var bookSearch = $('#bookSearch').val().toLowerCase();
                 var authorFilter = $('#authorFilter').val().toLowerCase();
                 var priceSort = $('#priceSort').val();
+                var selectedGenres = $('.genre-checkbox:checked').map(function() {
+                    return $(this).val().toLowerCase();
+                }).get();
 
                 $('.product-item').each(function() {
-                    var name = $(this).data('name').toLowerCase();
-                    var author = $(this).data('author').toLowerCase();
-                    var showProduct = (name.includes(bookSearch) || bookSearch === '') && 
-                                      (author.includes(authorFilter) || authorFilter === '');
-                    $(this).toggle(showProduct);
+                    var $item = $(this);
+                    var name = ($item.data('name') || '').toLowerCase();
+                    var author = ($item.data('author') || '').toLowerCase();
+                    var genre = ($item.data('genre') || '').toLowerCase();
+                    
+                    // Debug log to check values
+                    console.log('Product:', {
+                        name: name,
+                        author: author,
+                        genre: genre,
+                        selectedGenres: selectedGenres
+                    });
+                    
+                    var matchesGenres = selectedGenres.length === 0 || 
+                        (genre && selectedGenres.includes(genre));
+                    
+                    var matchesName = name.includes(bookSearch) || bookSearch === '';
+                    var matchesAuthor = author.includes(authorFilter) || authorFilter === '';
+                    
+                    var showProduct = matchesName && matchesAuthor && matchesGenres;
+                    
+                    $item.toggle(showProduct);
                 });
 
-                var products = $('.product-item:visible').get();
-                products.sort(function(a, b) {
-                    var priceA = parseFloat($(a).data('price'));
-                    var priceB = parseFloat($(b).data('price'));
-                    if (priceSort === 'asc') {
-                        return priceA - priceB;
-                    } else if (priceSort === 'desc') {
-                        return priceB - priceA;
-                    }
-                    return 0;
-                });
-
-                $('#productList').html(products);
+                if (priceSort) {
+                    var products = $('.product-item:visible').get();
+                    products.sort(function(a, b) {
+                        var priceA = parseFloat($(a).data('price'));
+                        var priceB = parseFloat($(b).data('price'));
+                        return priceSort === 'asc' ? priceA - priceB : priceB - priceA;
+                    });
+                    $('#productList').html(products);
+                }
             }
 
+            // Event handlers
             $('#applyFilters').on('click', filterAndSortProducts);
             $('#searchButton').on('click', filterAndSortProducts);
-
-            // Optional: Trigger search on Enter key press in the search input
+            $('.genre-checkbox').on('change', filterAndSortProducts);
+            
             $('#bookSearch').on('keypress', function(e) {
                 if (e.which === 13) {
                     filterAndSortProducts();
                 }
             });
+
+            // Add debug log for initial genres
+            console.log('Available Genres:', $('.genre-checkbox').map(function() {
+                return $(this).val();
+            }).get());
         });
     </script>
 }
