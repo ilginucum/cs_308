@@ -18,10 +18,22 @@
             <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
             <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
             <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
-            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to List</a>
+            
+            <!-- Sepete Ekle butonu ve formu -->
+            <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="mb-3">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="hidden" name="price" value="@Model.Price" />
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="@Model.QuantityInStock" class="form-control" style="width: 100px;" />
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Add to Cart</button>
+            </form>
+            
+            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
-
+    
     <div class="mt-4">
         <h3>Comments</h3>
         @if (TempData["ErrorMessage"] != null)
@@ -43,7 +55,7 @@
         {
             <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> to add a comment.</p>
         }
-
+        
         <div id="comments-list">
             @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
             {

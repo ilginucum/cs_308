@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using e_commerce.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace e_commerce.Data
 {
@@ -19,6 +21,10 @@ namespace e_commerce.Data
         Task UpdateOneAsync(Expression<Func<T, bool>> filterExpression, T document);
         Task<T> FindByIdAsync(string id);
         Task ReplaceOneAsync(T document);
+        // Yeni eklenen metodlar
+        Task<T> FindOneAndUpdateAsync(Expression<Func<T, bool>> filterExpression, T document);
+        Task<T> FindOneAndReplaceAsync(Expression<Func<T, bool>> filterExpression, T document);
+        Task<T> FindByUserIdAsync(string userId);
     }
 
     public class MongoDBRepository<T> : IMongoDBRepository<T> where T : class
@@ -27,21 +33,21 @@ namespace e_commerce.Data
         private readonly ILogger<MongoDBRepository<T>> _logger;
 
         public MongoDBRepository(IConfiguration configuration, string collectionName, ILogger<MongoDBRepository<T>> logger)
-    {
-        _logger = logger;
-        try
         {
-            var client = new MongoClient(configuration.GetConnectionString("MongoDB"));
-            var database = client.GetDatabase(configuration["Database:Name"]);
-            _collection = database.GetCollection<T>(collectionName);
-            _logger.LogInformation($"MongoDB repository initialized for collection: {collectionName}");
+            _logger = logger;
+            try
+            {
+                var client = new MongoClient(configuration.GetConnectionString("MongoDB"));
+                var database = client.GetDatabase(configuration["Database:Name"]);
+                _collection = database.GetCollection<T>(collectionName);
+                _logger.LogInformation($"MongoDB repository initialized for collection: {collectionName}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing MongoDB repository");
+                throw;
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error initializing MongoDB repository");
-            throw;
-        }
-    }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
@@ -65,18 +71,18 @@ namespace e_commerce.Data
         }
 
         public async Task InsertOneAsync(T document)
-    {
-        try
         {
-            await _collection.InsertOneAsync(document);
-            _logger.LogInformation($"Document inserted: {typeof(T).Name}");
+            try
+            {
+                await _collection.InsertOneAsync(document);
+                _logger.LogInformation($"Document inserted: {typeof(T).Name}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error inserting document: {typeof(T).Name}");
+                throw;
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error inserting document: {typeof(T).Name}");
-            throw;
-        }
-    }
 
         public async Task UpdateOneAsync(string id, T document)
         {
@@ -106,6 +112,23 @@ namespace e_commerce.Data
                 var id = idProperty.GetValue(document) as string;
                 await UpdateOneAsync(id, document);
             }
+        }
+
+        // Yeni eklenen metodların implementasyonları
+        public async Task<T> FindOneAndUpdateAsync(Expression<Func<T, bool>> filterExpression, T document)
+        {
+            return await _collection.FindOneAndReplaceAsync(filterExpression, document);
+        }
+
+        public async Task<T> FindOneAndReplaceAsync(Expression<Func<T, bool>> filterExpression, T document)
+        {
+            return await _collection.FindOneAndReplaceAsync(filterExpression, document);
+        }
+
+        public async Task<T> FindByUserIdAsync(string userId)
+        {
+            var filter = Builders<T>.Filter.Eq("UserId", userId);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
     }
 }
