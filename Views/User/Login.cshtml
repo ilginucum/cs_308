@@ -1,46 +1,79 @@
 @model e_commerce.Models.UserLogin
 
-<h2>Login</h2>
+<div class="container mt-5" style="max-width: 450px;"> <!-- Kartın genişliğini azalttık -->
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-3" style="font-size: 22px;">Login</h2> <!-- Başlık boyutu küçültüldü ve margin azaltıldı -->
 
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
 
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
+                    <form asp-action="Login" method="post">
+                        <div class="form-group mb-2"> <!-- Margin bottom değerini küçülttük -->
+                            <label asp-for="Username" class="form-label" style="margin-bottom: 5px;"></label>
+                            <input asp-for="Username" class="form-control" placeholder="Enter your username" style="padding: 8px; font-size: 13px;" /> <!-- Padding ve font küçültüldü -->
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="Password" class="form-label" style="margin-bottom: 5px;"></label>
+                            <div class="input-group">
+                                <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Enter your password" style="padding: 8px; font-size: 13px;" />
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="padding: 8px;">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" style="font-size: 14px; padding: 10px;">Login</button> <!-- Buton boyutu küçültüldü -->
+                        </div>
+                    </form>
+
+                    <div class="mt-2 text-center">
+                        <p style="font-size: 12px;">Don't have an account? <a asp-action="Registration" class="text-decoration-none">Register here</a></p> <!-- Font boyutu küçültüldü -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-}
-
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <ul>
-            @foreach (var modelState in ViewData.ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    <li>@error.ErrorMessage</li>
-                }
-            }
-        </ul>
-    </div>
-}
-
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-
-<div>
-    <p>Don't have an account? <a asp-action="Registration">Register here</a></p>
 </div>
 
+@section Scripts {
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            var passwordInput = document.getElementById('password');
+            var icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
+}

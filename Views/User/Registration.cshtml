@@ -1,39 +1,101 @@
 @model e_commerce.Models.UserRegistration
 @using e_commerce.Models
 
-<h2>Registration</h2>
-<form asp-action="Registration" method="post">
-    <div>
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" />
-        <span asp-validation-for="FullName"></span>
+<div class="container mt-3" style="max-width: 500px;"> <!-- Form genişliği aynı kalabilir -->
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-3" style="font-size: 22px; margin-bottom: 10px;">Register</h2> <!-- Başlık boyutunu küçülttük ve alt boşluğu azalttık -->
+
+                    <form asp-action="Registration" method="post">
+                        <div class="form-group mb-2"> <!-- Margin bottom değerlerini azalttık -->
+                            <label asp-for="FullName" class="form-label" style="margin-bottom: 5px;"></label> <!-- Label'in alt boşluğunu küçülttük -->
+                            <input asp-for="FullName" class="form-control" placeholder="Enter your full name" style="padding: 8px; font-size: 13px;" /> <!-- Padding ve font size küçültüldü -->
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="Username" class="form-label" style="margin-bottom: 5px;"></label>
+                            <input asp-for="Username" class="form-control" placeholder="Enter your username" style="padding: 8px; font-size: 13px;" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="Email" class="form-label" style="margin-bottom: 5px;"></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email" style="padding: 8px; font-size: 13px;" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="Password" class="form-label" style="margin-bottom: 5px;"></label>
+                            <div class="input-group">
+                                <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Enter your password" style="padding: 8px; font-size: 13px;" />
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="ConfirmPassword" class="form-label" style="margin-bottom: 5px;"></label>
+                            <div class="input-group">
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" style="padding: 8px; font-size: 13px;" />
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="UserType" class="form-label" style="margin-bottom: 5px;">User Type</label>
+                            <select asp-for="UserType" asp-items="Html.GetEnumSelectList<UserType>()" class="form-control" style="padding: 8px; font-size: 13px;">
+                                <option selected="selected" value="">Please select</option>
+                            </select>
+                            <span asp-validation-for="UserType" class="text-danger"></span>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" style="font-size: 13px; padding: 8px;">Register</button>
+                        </div>
+                    </form>
+
+                    <div class="mt-2 text-center">
+                        <p style="font-size: 12px;">Already have an account? <a asp-action="Login" class="text-decoration-none">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username"></span>
-    </div>
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" type="email" />
-        <span asp-validation-for="Email"></span>
-    </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" type="password" />
-        <span asp-validation-for="ConfirmPassword"></span>
-    </div>
-    <div>
-        <label asp-for="UserType">User Type</label>
-        <select asp-for="UserType" asp-items="Html.GetEnumSelectList<UserType>()" class="form-control">
-            <option selected="selected" value="">Please select</option>
-        </select>
-        <span asp-validation-for="UserType" class="text-danger"></span>
-    </div>
-    <button type="submit">Register</button>
-</form>
+</div>
+
+@section Scripts {
+    <script>
+        // Password ve Confirm Password için toggle işlevi
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            var passwordInput = document.getElementById('password');
+            var icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            var confirmPasswordInput = document.getElementById('confirmPassword');
+            var icon = this.querySelector('i');
+            
+            if (confirmPasswordInput.type === 'password') {
+                confirmPasswordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                confirmPasswordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
+}
