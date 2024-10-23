@@ -53,12 +53,6 @@
         <span asp-validation-for="QuantityInStock" class="text-danger"></span>
     </div>
     
-    <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-    
     <div class="form-group form-check">
         <label class="form-check-label">
             <input class="form-check-input" asp-for="WarrantyStatus" /> @Html.DisplayNameFor(model => model.WarrantyStatus)
