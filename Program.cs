@@ -38,6 +38,13 @@ builder.Services.AddScoped<IMongoDBRepository<ProductComment>>(sp =>
         sp.GetRequiredService<ILogger<MongoDBRepository<ProductComment>>>()
     ));
 
+builder.Services.AddScoped<IMongoDBRepository<Rating>>(sp =>
+    new MongoDBRepository<Rating>(
+        sp.GetRequiredService<IConfiguration>(),
+        "Ratings",
+        sp.GetRequiredService<ILogger<MongoDBRepository<Rating>>>()
+    ));
+
 builder.Services.AddScoped<IMongoDBRepository<CreditCard>>(sp =>
     new MongoDBRepository<CreditCard>(
         sp.GetRequiredService<IConfiguration>(),

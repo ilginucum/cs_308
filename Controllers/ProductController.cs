@@ -14,16 +14,19 @@ namespace e_commerce.Controllers
     {
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<ProductComment> _commentRepository;
+        private readonly IMongoDBRepository<Rating> _ratingRepository;
 
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(
             IMongoDBRepository<Product> productRepository,
             IMongoDBRepository<ProductComment> commentRepository,
+            IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
             ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
             _commentRepository = commentRepository;
+             _ratingRepository = ratingRepository;
             _logger = logger;
         }
 
@@ -153,7 +156,8 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
-       [AllowAnonymous]
+
+        [AllowAnonymous]
         public async Task<IActionResult> ProductDetails(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -168,13 +172,37 @@ namespace e_commerce.Controllers
             }
 
             var comments = await _commentRepository.FilterByAsync(c => c.ProductId == id);
+            var ratings = await _ratingRepository.FilterByAsync(r => r.ProductId == id);
+            
+            int totalRatings = ratings.Count();
+            int totalComments = comments.Count();
+            double averageScore = totalRatings > 0 ? ratings.Average(r => r.Score) : 0;
+
+            // Varsayılan rating dağılımını oluşturun
+            var ratingDistribution = new Dictionary<int, int> { {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0} };
+
+            // Mevcut rating'leri dağılıma ekleyin
+            foreach (var rating in ratings)
+            {
+                if (ratingDistribution.ContainsKey(rating.Score))
+                {
+                    ratingDistribution[rating.Score]++;
+                }
+            }
+
+            // ViewBag ile varsayılan değerleri ayarlayın
+            ViewBag.AverageScore = averageScore;
+            ViewBag.TotalRatings = totalRatings;
+            ViewBag.TotalComments = totalComments;
+            ViewBag.RatingDistribution = ratingDistribution;
             ViewBag.Comments = comments;
 
             return View(product);
         }
 
+
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(string ProductId, string CommentText)
         {
@@ -213,6 +241,55 @@ namespace e_commerce.Controllers
 
             return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
         }
+        
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRating(string ProductId, int selectedRating)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "User", new { returnUrl = Url.Action("ProductDetails", "Product", new { id = ProductId }) });
+            }
+
+            if (string.IsNullOrEmpty(ProductId) || selectedRating < 1 || selectedRating > 5)
+            {
+                return BadRequest();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity.Name;
+
+            // Mevcut rating kontrolü
+            var existingRating = await _ratingRepository.FindOneAsync(r => r.ProductId == ProductId && r.UserId == userId);
+
+            if (existingRating != null)
+            {
+                // Eğer mevcut bir rating varsa, mevcut kaydı güncelleyin
+                existingRating.Score = selectedRating;
+                existingRating.CreatedAt = DateTime.UtcNow;
+                await _ratingRepository.ReplaceOneAsync(existingRating);
+                _logger.LogInformation($"Rating updated for product {ProductId} by user {userId}");
+            }
+            else
+            {
+                // Eğer mevcut bir rating yoksa, yeni bir kayıt oluşturun
+                var rating = new Rating
+                {
+                    ProductId = ProductId,
+                    UserId = userId,
+                    UserName = userName,
+                    Score = selectedRating,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _ratingRepository.InsertOneAsync(rating);
+                _logger.LogInformation($"Rating added successfully for product {ProductId} by user {userId}");
+            }
+
+            return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
+        }
+
     }
     
 }
