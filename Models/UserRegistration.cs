@@ -43,10 +43,8 @@ namespace e_commerce.Models
         [BsonElement("PhoneNumber")]
         public string PhoneNumber { get; set; }
 
-        [Required]
-        [EnumDataType(typeof(UserType))]
-        [BsonElement("UserType")]
-        [BsonRepresentation(BsonType.String)]
-        public UserType UserType { get; set; }
+       [BsonElement("UserType")]
+       [BsonRepresentation(BsonType.String)]
+        public UserType UserType { get; set; } = UserType.Customer; // Default value set to Customer
     }
 }

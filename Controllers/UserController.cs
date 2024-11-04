@@ -72,34 +72,33 @@ namespace e_commerce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registration(UserRegistration model)
+    public async Task<IActionResult> Registration(UserRegistration model)
+    {
+        try
         {
-            //if (ModelState.IsValid)
-            //{
-                try
-                {
-                    var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
-                    if (existingUser != null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Username or email already exists.");
-                        return View(model);
-                    }
+            var existingUser = await _userRepository.FindOneAsync(u => u.Username == model.Username || u.Email == model.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "Username or email already exists.");
+                return View(model);
+            }
 
-                    model.Password = HashPassword(model.Password);
+            // Ensure UserType is Customer regardless of what was submitted
+            model.UserType = UserType.Customer;
+            model.Password = HashPassword(model.Password);
 
-                    await _userRepository.InsertOneAsync(model);
+            await _userRepository.InsertOneAsync(model);
 
-                    TempData["SuccessMessage"] = "Registration successful. Please log in.";
-                    return RedirectToAction(nameof(Login));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error during user registration: {ex.Message}");
-                    ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
-                }
-            //}
-            return View(model);
+            TempData["SuccessMessage"] = "Registration successful. Please log in.";
+            return RedirectToAction(nameof(Login));
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error during user registration: {ex.Message}");
+            ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
+        }
+        return View(model);
+    }
 
         [HttpPost]
         public async Task<IActionResult> Logout()

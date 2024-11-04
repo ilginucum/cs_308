@@ -122,13 +122,6 @@
                             </div>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <div class="form-group mb-2">
-                            <label asp-for="UserType" class="form-label" style="margin-bottom: 5px;">User Type</label>
-                            <select asp-for="UserType" asp-items="Html.GetEnumSelectList<UserType>()" class="form-control" style="padding: 8px; font-size: 13px;">
-                                <option selected="selected" value="">Please select</option>
-                            </select>
-                            <span asp-validation-for="UserType" class="text-danger"></span>
-                        </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg" style="font-size: 13px; padding: 8px;">Register</button>
                         </div>
