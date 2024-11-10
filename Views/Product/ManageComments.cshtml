@@ -1,0 +1,31 @@
+@model IEnumerable<e_commerce.Models.ProductComment>
+
+<h2>Pending Comments</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@comment.UserName</td>
+                <td>@comment.CommentText</td>
+                <td>
+                    <form asp-action="ApproveComment" asp-controller="Product" method="post">
+                        <input type="hidden" name="commentId" value="@comment.Id" />
+                        <button type="submit">Approve</button>
+                    </form>
+                    <form asp-action="RequestChange" asp-controller="Product" method="post">
+                        <input type="hidden" name="commentId" value="@comment.Id" />
+                        <button type="submit">Request Change</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

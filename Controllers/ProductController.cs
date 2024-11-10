@@ -26,7 +26,7 @@ namespace e_commerce.Controllers
         {
             _productRepository = productRepository;
             _commentRepository = commentRepository;
-             _ratingRepository = ratingRepository;
+            _ratingRepository = ratingRepository;
             _logger = logger;
         }
 
@@ -35,6 +35,41 @@ namespace e_commerce.Controllers
         {
             var products = await _productRepository.GetAllAsync();
             return View(products);
+        }
+        [HttpGet]
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> ManageComments()
+        {
+            var pendingComments = await _commentRepository.FilterByAsync(c => c.Status == "pending");
+            return View(pendingComments);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> ApproveComment(string commentId)
+        {
+            var comment = await _commentRepository.FindByIdAsync(commentId);
+            if (comment != null)
+            {
+                comment.Status = "approved";
+                await _commentRepository.ReplaceOneAsync(comment);
+                _logger.LogInformation($"Comment approved: {commentId}");
+            }
+            return RedirectToAction("ManageComments");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> RequestChange(string commentId)
+        {
+            var comment = await _commentRepository.FindByIdAsync(commentId);
+            if (comment != null)
+            {
+                comment.Status = "needs_change";
+                await _commentRepository.ReplaceOneAsync(comment);
+                _logger.LogInformation($"Change requested for comment: {commentId}");
+            }
+            return RedirectToAction("ManageComments");
         }
 
         [HttpGet]
@@ -171,7 +206,8 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
-            var comments = await _commentRepository.FilterByAsync(c => c.ProductId == id);
+            // Yalnızca onaylanmış yorumları filtrele
+            var comments = await _commentRepository.FilterByAsync(c => c.ProductId == id && c.Status == "approved");
             var ratings = await _ratingRepository.FilterByAsync(r => r.ProductId == id);
             
             int totalRatings = ratings.Count();
@@ -225,7 +261,8 @@ namespace e_commerce.Controllers
                 UserId = userId,
                 UserName = userName,
                 CommentText = CommentText,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Status = "pending" // Varsayılan olarak 'pending' durumu
             };
 
             try

@@ -19,5 +19,7 @@ namespace e_commerce.Models
         public string UserName { get; set; }
         public string CommentText { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public string Status { get; set; } = "pending"; // Varsayılan olarak "pending"
     }
 }
