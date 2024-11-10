@@ -34,22 +34,19 @@
 </div>
 <div class="mt-4">
     <h2>Our Products</h2>
-    
+
     <div class="mb-3">
-        <label for="bookSearch">Search by Book Name:</label>
+        <label for="searchQuery">Search by Book Name or Author:</label>
         <div class="input-group">
-            <input type="text" id="bookSearch" class="form-control" placeholder="Enter book name">
+            <input type="text" id="searchQuery" class="form-control" placeholder="Enter book name or author">
             <div class="input-group-append">
                 <button id="searchButton" class="btn btn-outline-secondary" type="button">Search</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label for="authorFilter">Filter by Author:</label>
-        <input type="text" id="authorFilter" class="form-control" placeholder="Enter author name">
-    </div>
-    
+
     <div class="mb-3">
         <label for="priceSort">Sort by Price:</label>
         <select id="priceSort" class="form-control">
@@ -125,36 +122,35 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Türkçe karakterleri İngilizce karakterlere çeviren normalize fonksiyonu
+            function normalizeText(text) {
+                return text.toLocaleLowerCase('tr-TR')  // Türkçe harf duyarlılığına göre küçük harfe çevirme
+                    .replace(/ı/g, 'i')
+                    .replace(/ş/g, 's')
+                    .replace(/ç/g, 'c')
+                    .replace(/ğ/g, 'g')
+                    .replace(/ü/g, 'u')
+                    .replace(/ö/g, 'o');
+            }
+
             function filterAndSortProducts() {
-                var bookSearch = $('#bookSearch').val().toLowerCase();
-                var authorFilter = $('#authorFilter').val().toLowerCase();
+                var searchQuery = normalizeText($('#searchQuery').val());  // normalize edilmiş arama sorgusu
                 var priceSort = $('#priceSort').val();
                 var selectedGenres = $('.genre-checkbox:checked').map(function() {
-                    return $(this).val().toLowerCase();
+                    return normalizeText($(this).val());
                 }).get();
 
                 $('.product-item').each(function() {
                     var $item = $(this);
-                    var name = ($item.data('name') || '').toLowerCase();
-                    var author = ($item.data('author') || '').toLowerCase();
-                    var genre = ($item.data('genre') || '').toLowerCase();
-                    
-                    // Debug log to check values
-                    console.log('Product:', {
-                        name: name,
-                        author: author,
-                        genre: genre,
-                        selectedGenres: selectedGenres
-                    });
-                    
-                    var matchesGenres = selectedGenres.length === 0 || 
-                        (genre && selectedGenres.includes(genre));
-                    
-                    var matchesName = name.includes(bookSearch) || bookSearch === '';
-                    var matchesAuthor = author.includes(authorFilter) || authorFilter === '';
-                    
-                    var showProduct = matchesName && matchesAuthor && matchesGenres;
-                    
+                    var name = normalizeText($item.data('name') || '');
+                    var author = normalizeText($item.data('author') || '');
+                    var genre = normalizeText($item.data('genre') || '');
+
+                    // Hem kitap adı hem de yazar adına göre arama yap
+                    var matchesQuery = name.includes(searchQuery) || author.includes(searchQuery);
+                    var matchesGenres = selectedGenres.length === 0 || (genre && selectedGenres.includes(genre));
+
+                    var showProduct = matchesQuery && matchesGenres;
                     $item.toggle(showProduct);
                 });
 
@@ -173,17 +169,12 @@
             $('#applyFilters').on('click', filterAndSortProducts);
             $('#searchButton').on('click', filterAndSortProducts);
             $('.genre-checkbox').on('change', filterAndSortProducts);
-            
-            $('#bookSearch').on('keypress', function(e) {
+
+            $('#searchQuery').on('keypress', function(e) {  // Düzeltilmiş alan
                 if (e.which === 13) {
                     filterAndSortProducts();
                 }
             });
-
-            // Add debug log for initial genres
-            console.log('Available Genres:', $('.genre-checkbox').map(function() {
-                return $(this).val();
-            }).get());
         });
     </script>
 }

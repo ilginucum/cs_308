@@ -9,99 +9,99 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = e_commerce
 build_property.RootNamespace = e_commerce
-build_property.ProjectDir = /Users/macbookpro/Desktop/308_proje/cs_308-3/
+build_property.ProjectDir = /Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/macbookpro/Desktop/308_proje/cs_308-3
+build_property.MSBuildProjectDirectory = /Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/CreditCard/Confirmation.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/CreditCard/Confirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3JlZGl0Q2FyZC9Db25maXJtYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/CreditCard/EnterCreditCard.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/CreditCard/EnterCreditCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3JlZGl0Q2FyZC9FbnRlckNyZWRpdENhcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Home/Index.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Home/Privacy.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Product/Delete.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Product/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Product/Edit.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Product/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Product/Index.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Product/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Product/ManageProduct.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Product/ManageProduct.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9NYW5hZ2VQcm9kdWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Product/ProductDetails.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Product/ProductDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9Qcm9kdWN0RGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Sales/Index.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Sales/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Sales/SetPrice.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Sales/SetPrice.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvU2V0UHJpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Shared/Components/ShoppingCartSummary/Default.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Shared/Components/ShoppingCartSummary/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvU2hvcHBpbmdDYXJ0U3VtbWFyeS9EZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Shared/Error.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Shared/_ValidationScriptsPartial.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/ShoppingCart/Index.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/ShoppingCart/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvcHBpbmdDYXJ0L0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/User/AccessDenied.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/User/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9BY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/User/Login.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/User/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/User/Profile.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/User/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9Qcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/User/Registration.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/User/Registration.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9SZWdpc3RyYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/_ViewImports.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/_ViewStart.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/macbookpro/Desktop/308_proje/cs_308-3/Views/Shared/_Layout.cshtml]
+[/Users/eysanmutlu/cs308_29_10_2024/cs308_10_11_2024/cs_308/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-tta7zllwk8
