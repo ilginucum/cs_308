@@ -377,3 +377,56 @@
         padding-right: 2.5rem;
     }
 </style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            function filterAndSortProducts() {
+                var bookSearch = $('#bookSearch').val().toLowerCase();
+                var authorFilter = $('#authorFilter').val().toLowerCase();
+                var priceSort = $('#priceSort').val();
+                var selectedGenres = $('.genre-checkbox:checked').map(function() {
+                    return $(this).val().toLowerCase();
+                }).get();
+
+                $('.product-item').each(function() {
+                    var $item = $(this);
+                    var name = ($item.data('name') || '').toLowerCase();
+                    var author = ($item.data('author') || '').toLowerCase();
+                    var genre = ($item.data('genre') || '').toLowerCase();
+                    
+                    var matchesGenres = selectedGenres.length === 0 || 
+                        (genre && selectedGenres.includes(genre));
+                    
+                    var matchesName = name.includes(bookSearch) || bookSearch === '';
+                    var matchesAuthor = author.includes(authorFilter) || authorFilter === '';
+                    
+                    var showProduct = matchesName && matchesAuthor && matchesGenres;
+                    
+                    $item.toggle(showProduct);
+                });
+
+                if (priceSort) {
+                    var products = $('.product-item:visible').get();
+                    products.sort(function(a, b) {
+                        var priceA = parseFloat($(a).data('price'));
+                        var priceB = parseFloat($(b).data('price'));
+                        return priceSort === 'asc' ? priceA - priceB : priceB - priceA;
+                    });
+                    $('#productList').html(products);
+                }
+            }
+
+            // Event handlers
+            $('#applyFilters').on('click', filterAndSortProducts);
+            $('#searchButton').on('click', filterAndSortProducts);
+            $('.genre-checkbox').on('change', filterAndSortProducts);
+            
+            $('#bookSearch').on('keypress', function(e) {
+                if (e.which === 13) {
+                    filterAndSortProducts();
+                }
+            });
+        });
+    </script>
+}
