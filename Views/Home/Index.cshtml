@@ -200,3 +200,81 @@
         border-color: #be3144;
     }
 </style>
+
+<div id="productList" class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-4 mb-3 product-item" 
+             data-name="@product.Name" 
+             data-author="@product.Author" 
+             data-price="@product.Price"
+             data-genre="@product.Genre">
+            <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
+                <div class="card h-100">
+                    @{
+                        string imageUrl = product.Name switch
+                        {
+                            "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
+                            "Sefiller" => "/images/les-miserables.jpg",
+                            "Anna Karenina" => "/images/anna-karenina.jpg",
+                            "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
+                            "Brave New World" => "/images/brave-new-world.jpg",
+                            _ => "/images/default-book.jpg"
+                        };
+                    }
+                    <img src="@imageUrl" class="card-img-top" alt="@product.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p class="card-text">Price: $@product.Price</p>
+                        <p class="card-text">In Stock: @product.QuantityInStock</p>
+                        <p class="card-text">Author: @product.Author</p>
+                        @if (!string.IsNullOrEmpty(product.Genre))
+                        {
+                            <p class="card-text">Genre: @product.Genre</p>
+                        }
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .card-title {
+        color: #2d3436;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 250px;  
+        object-fit: contain;  
+        transition: transform 0.3s ease;
+        padding: 1rem;  
+        background-color: #fff;  
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.03);
+    }
+</style>
