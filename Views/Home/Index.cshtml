@@ -77,3 +77,126 @@
         margin: 0.2rem 0; 
     }
 </style>
+
+<div class="mt-4 search-section">
+    <h2 class="section-title">Our Products</h2>
+    
+    <div class="search-filters">
+        <!-- Search Box -->
+        <div class="search-box mb-4">
+            <label for="bookSearch" class="form-label">Search by Book Name</label>
+            <div class="input-group">
+                <input type="text" id="bookSearch" class="form-control" placeholder="Type to search...">
+                <button id="searchButton" class="btn btn-search">Search</button>
+            </div>
+        </div>
+
+        <div class="filters-grid">
+            <!-- Author Filter -->
+            <div class="filter-item">
+                <label for="authorFilter" class="form-label">Filter by Author</label>
+                <input type="text" id="authorFilter" class="form-control" placeholder="Enter author name">
+            </div>
+            
+            <!-- Price Sort -->
+            <div class="filter-item">
+                <label for="priceSort" class="form-label">Sort by Price</label>
+                <select id="priceSort" class="form-control">
+                    <option value="">Select sorting</option>
+                    <option value="asc">Lowest to Highest</option>
+                    <option value="desc">Highest to Lowest</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Genre Filter -->
+        <div class="genre-filter">
+            <label class="form-label">Filter by Genres</label>
+            <div class="genre-checkboxes">
+                @foreach (var genre in ViewBag.Genres)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input genre-checkbox" type="checkbox" 
+                               id="genre-@genre.Replace(" ", "-")" value="@genre">
+                        <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
+                            @genre
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <button id="applyFilters" class="btn btn-primary apply-filters">
+            Apply Filters
+        </button>
+    </div>
+</div>
+
+<style>
+    .search-section {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #2d3436;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
+        border-radius: 2px;
+    }
+
+    .search-filters {
+        padding: 1rem;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .genre-checkboxes {
+        margin: 15px 0;
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .form-check-inline {
+        margin-right: 15px;
+        margin-bottom: 8px;
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid #e0e0e0;
+    }
+
+    .form-check-inline:hover {
+        background-color: #be3144;
+        color: white;
+        border-color: #be3144;
+    }
+</style>
