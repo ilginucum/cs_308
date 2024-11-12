@@ -1,180 +1,79 @@
-﻿@model IEnumerable<e_commerce.Models.Product>
+@model IEnumerable<e_commerce.Models.Product>
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Book Store</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div class="mb-3">
-            @if (User.IsInRole("ProductManager"))
-            {
-                <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
-            }
-            else if (User.IsInRole("SalesManager"))
-            {
-                <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
-            }
-            else if (User.IsInRole("Customer"))
-            {
-                <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
-            }
-            <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
+    <div class="hero-content">
+        <div class="logo-container">
+            <img src="/images/bookery-logo-black.png" alt="Bookery - Discover Worlds Within Words" class="hero-logo">
         </div>
-    }
-    else
-    {
-        <a asp-controller="User" asp-action="Login" class="btn btn-primary">Login</a>
-        <a asp-controller="User" asp-action="Registration" class="btn btn-secondary">Register</a>
-    }
-</div>
-<div class="mt-4">
-    <h2>Our Products</h2>
-
-    <div class="mb-3">
-        <label for="searchQuery">Search by Book Name or Author:</label>
-        <div class="input-group">
-            <input type="text" id="searchQuery" class="form-control" placeholder="Enter book name or author">
-            <div class="input-group-append">
-                <button id="searchButton" class="btn btn-outline-secondary" type="button">Search</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    <div class="mb-3">
-        <label for="priceSort">Sort by Price:</label>
-        <select id="priceSort" class="form-control">
-            <option value="">Select sorting</option>
-            <option value="asc">Lowest to Highest</option>
-            <option value="desc">Highest to Lowest</option>
-        </select>
-    </div>
-
-    <!-- Add genre filter -->
-    <div class="mb-3">
-        <label>Filter by Genres:</label>
-        <div class="genre-checkboxes">
-            @foreach (var genre in ViewBag.Genres)
+        <p class="hero-text">Discover your next favorite book</p>
+        <div class="auth-buttons">
+            @if (User.Identity.IsAuthenticated)
             {
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input genre-checkbox" type="checkbox" 
-                           id="genre-@genre.Replace(" ", "-")" value="@genre">
-                    <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
-                        @genre
-                    </label>
-                </div>
+                @if (User.IsInRole("ProductManager"))
+                {
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
+                }
+                else if (User.IsInRole("SalesManager"))
+                {
+                    <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
+                }
+                else if (User.IsInRole("Customer"))
+                {
+                    <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
+                }
+                <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="User" asp-action="Login" class="btn btn-primary">Login</a>
+                <a asp-controller="User" asp-action="Registration" class="btn btn-outline">Register</a>
             }
         </div>
-    </div>
-
-    <button id="applyFilters" class="btn btn-primary mb-3">Apply Filters</button>
-
-    <div id="productList" class="row">
-        @foreach (var product in Model)
-        {
-            <div class="col-md-4 mb-3 product-item" 
-                 data-name="@product.Name" 
-                 data-author="@product.Author" 
-                 data-price="@product.Price"
-                 data-genre="@product.Genre">
-                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">@product.Description</p>
-                            <p class="card-text">Price: $@product.Price</p>
-                            <p class="card-text">In Stock: @product.QuantityInStock</p>
-                            <p class="card-text">Author: @product.Author</p>
-                            @if (!string.IsNullOrEmpty(product.Genre))
-                            {
-                                <p class="card-text">Genre: @product.Genre</p>
-                            }
-                        </div>
-                    </div>
-                </a>
-            </div>
-        }
     </div>
 </div>
 
 <style>
-    .genre-checkboxes {
-        margin: 10px 0;
-        max-height: 150px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        padding: 10px;
-        border-radius: 4px;
+    .text-center {
+        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
+        padding: 0.3rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        color: white;
     }
 
-    .form-check-inline {
-        margin-right: 15px;
-        margin-bottom: 5px;
+    .logo-container {
+        margin: 0.2rem 0; 
+    }
+
+    .hero-logo {
+        max-width: 400px;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0; 
+    }
+
+    .hero-text {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-buttons {
+        display: flex;
+        gap: 0.5rem; 
+        justify-content: center;
+        margin: 0.2rem 0; 
     }
 </style>
-
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Türkçe karakterleri İngilizce karakterlere çeviren normalize fonksiyonu
-            function normalizeText(text) {
-                return text.toLocaleLowerCase('tr-TR')  // Türkçe harf duyarlılığına göre küçük harfe çevirme
-                    .replace(/ı/g, 'i')
-                    .replace(/ş/g, 's')
-                    .replace(/ç/g, 'c')
-                    .replace(/ğ/g, 'g')
-                    .replace(/ü/g, 'u')
-                    .replace(/ö/g, 'o');
-            }
-
-            function filterAndSortProducts() {
-                var searchQuery = normalizeText($('#searchQuery').val());  // normalize edilmiş arama sorgusu
-                var priceSort = $('#priceSort').val();
-                var selectedGenres = $('.genre-checkbox:checked').map(function() {
-                    return normalizeText($(this).val());
-                }).get();
-
-                $('.product-item').each(function() {
-                    var $item = $(this);
-                    var name = normalizeText($item.data('name') || '');
-                    var author = normalizeText($item.data('author') || '');
-                    var genre = normalizeText($item.data('genre') || '');
-
-                    // Hem kitap adı hem de yazar adına göre arama yap
-                    var matchesQuery = name.includes(searchQuery) || author.includes(searchQuery);
-                    var matchesGenres = selectedGenres.length === 0 || (genre && selectedGenres.includes(genre));
-
-                    var showProduct = matchesQuery && matchesGenres;
-                    $item.toggle(showProduct);
-                });
-
-                if (priceSort) {
-                    var products = $('.product-item:visible').get();
-                    products.sort(function(a, b) {
-                        var priceA = parseFloat($(a).data('price'));
-                        var priceB = parseFloat($(b).data('price'));
-                        return priceSort === 'asc' ? priceA - priceB : priceB - priceA;
-                    });
-                    $('#productList').html(products);
-                }
-            }
-
-            // Event handlers
-            $('#applyFilters').on('click', filterAndSortProducts);
-            $('#searchButton').on('click', filterAndSortProducts);
-            $('.genre-checkbox').on('change', filterAndSortProducts);
-
-            $('#searchQuery').on('keypress', function(e) {  // Düzeltilmiş alan
-                if (e.which === 13) {
-                    filterAndSortProducts();
-                }
-            });
-        });
-    </script>
-}
