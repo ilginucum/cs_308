@@ -278,3 +278,102 @@
         transform: scale(1.03);
     }
 </style>
+
+<style>
+    /* Button Styles */
+    .btn {
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
+        border: none;
+        box-shadow: 0 4px 15px rgba(190, 49, 68, 0.2);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #952735 0%, #7a1f2d 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(190, 49, 68, 0.3);
+    }
+
+    .btn-outline {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid white;
+        color: white;
+    }
+
+    .btn-outline:hover {
+        background-color: white;
+        color: #be3144;
+    }
+
+    /* Form Controls */
+    .form-control {
+        padding: 0.8rem 1.2rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        border: 2px solid transparent;
+    }
+
+    .form-control:hover {
+        background-color: white;
+        border-color: #e0e0e0;
+    }
+
+    .form-control:focus {
+        background-color: white;
+        border-color: #be3144;
+        box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
+    }
+
+    /* Custom Scrollbar */
+    .genre-checkboxes::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .genre-checkboxes::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .genre-checkboxes::-webkit-scrollbar-thumb {
+        background: #be3144;
+        border-radius: 10px;
+    }
+
+    /* Search Button */
+    #searchButton {
+        background-color: #be3144;
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+    }
+
+    #searchButton:hover {
+        background-color: #952735;
+    }
+
+    select.form-control {
+        cursor: pointer;
+        background-image: linear-gradient(45deg, transparent 50%, #be3144 50%),
+                        linear-gradient(135deg, #be3144 50%, transparent 50%);
+        background-position: calc(100% - 20px) calc(1em + 2px),
+                            calc(100% - 15px) calc(1em + 2px);
+        background-size: 5px 5px,
+                        5px 5px;
+        background-repeat: no-repeat;
+        padding-right: 2.5rem;
+    }
+</style>
