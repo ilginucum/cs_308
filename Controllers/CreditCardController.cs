@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Linq;
+using e_commerce.Services;
 
 namespace e_commerce.Controllers
 {
@@ -15,6 +16,8 @@ namespace e_commerce.Controllers
     private readonly IMongoDBRepository<Order> _orderRepository;
     private readonly IMongoDBRepository<ShoppingCart> _cartRepository;
     private readonly IMongoDBRepository<Product> _productRepository;
+    private readonly IMongoDBRepository<Address> _addressRepository;  // Add this
+    private readonly IEmailService _emailService;  // Add this
     private readonly ILogger<CreditCardController> _logger;
 
     public CreditCardController(
@@ -22,12 +25,16 @@ namespace e_commerce.Controllers
         IMongoDBRepository<Order> orderRepository,
         IMongoDBRepository<ShoppingCart> cartRepository,
         IMongoDBRepository<Product> productRepository,
+        IMongoDBRepository<Address> addressRepository,  // Add this
+        IEmailService emailService,  // Add this
         ILogger<CreditCardController> logger)
     {
         _creditCardRepository = creditCardRepository ?? throw new ArgumentNullException(nameof(creditCardRepository));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         _cartRepository = cartRepository ?? throw new ArgumentNullException(nameof(cartRepository));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+        _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));  // Add this
+        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));  // Add this
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -69,6 +76,13 @@ namespace e_commerce.Controllers
                 if (cart == null || !cart.Items.Any())
                 {
                     return RedirectToAction("Index", "ShoppingCart");
+                }
+
+                // Get shipping address
+                var shippingAddress = await _addressRepository.GetByIdAsync(addressId);
+                if (shippingAddress == null)
+                {
+                    return RedirectToAction("Address", "Checkout");
                 }
 
                 // Check stock availability for all items
@@ -121,6 +135,18 @@ namespace e_commerce.Controllers
 
                 await _orderRepository.InsertOneAsync(order);
                 _logger.LogInformation($"Order created successfully. Order ID: {order.Id}");
+
+                // Send confirmation email
+                try
+                {
+                    await _emailService.SendOrderConfirmationAsync(order, shippingAddress.Email, shippingAddress);
+                    _logger.LogInformation($"Order confirmation email sent to {shippingAddress.Email}");
+                }
+                catch (Exception emailEx)
+                {
+                    // Log the error but don't fail the order
+                    _logger.LogError(emailEx, $"Failed to send order confirmation email to {shippingAddress.Email}");
+                }
 
                 // Clear the shopping cart
                 await _cartRepository.DeleteOneAsync(cart.Id);

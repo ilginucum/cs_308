@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using e_commerce.Data;
 using e_commerce.Models;
+using e_commerce.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +92,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/User/Logout";
         options.AccessDeniedPath = "/User/AccessDenied";
     });
+    
+// Add this to your service registrations
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
