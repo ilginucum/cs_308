@@ -1,2 +1,56 @@
-<h2>Credit Card Information Saved Successfully!</h2>
-<p>Your credit card information has been recorded. Thank you for your submission.</p>
+@model e_commerce.Models.Order
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-success">Order Confirmed!</h2>
+            <p class="card-text">Thank you for your order. Your payment has been processed successfully.</p>
+            
+            <div class="mt-4">
+                <h4>Order Details</h4>
+                <p><strong>Order ID:</strong> @Model.Id</p>
+                <p><strong>Order Date:</strong> @Model.OrderDate.ToString("MMMM dd, yyyy HH:mm")</p>
+                <p><strong>Order Status:</strong> @Model.OrderStatus</p>
+            </div>
+
+            <div class="mt-4">
+                <h4>Items Ordered</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.UnitPrice.ToString("C")</td>
+                                <td>@item.TotalPrice.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Total Amount:</strong></td>
+                            <td><strong>@Model.TotalAmount.ToString("C")</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> A confirmation email will be sent to your registered email address.
+            </div>
+
+            <div class="mt-4">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -60,6 +60,29 @@ builder.Services.AddScoped<IMongoDBRepository<ShoppingCart>>(sp =>
         sp.GetRequiredService<ILogger<MongoDBRepository<ShoppingCart>>>()
     ));
 
+builder.Services.AddScoped<IMongoDBRepository<Address>>(sp =>
+    new MongoDBRepository<Address>(
+        sp.GetRequiredService<IConfiguration>(),
+        "Address",
+        sp.GetRequiredService<ILogger<MongoDBRepository<Address>>>()
+    ));
+
+// Update your Program.cs to include Order repository registration
+builder.Services.AddScoped<IMongoDBRepository<Order>>(sp =>
+    new MongoDBRepository<Order>(
+        sp.GetRequiredService<IConfiguration>(),
+        "Orders", // Make sure this matches your desired collection name
+        sp.GetRequiredService<ILogger<MongoDBRepository<Order>>>()
+    ));
+
+
+// Add session support right after AddControllersWithViews()
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 // Add authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
