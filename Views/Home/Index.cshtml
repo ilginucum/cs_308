@@ -84,7 +84,7 @@
     <div class="search-filters">
         <!-- Search Box -->
         <div class="search-box mb-4">
-            <label for="bookSearch" class="form-label">Search by Book Name</label>
+            <label for="bookSearch" class="form-label">Search by Book Name or Author</label>
             <div class="input-group">
                 <input type="text" id="bookSearch" class="form-control" placeholder="Type to search...">
                 <button id="searchButton" class="btn btn-search">Search</button>
@@ -92,13 +92,7 @@
         </div>
 
         <div class="filters-grid">
-            <!-- Author Filter -->
-            <div class="filter-item">
-                <label for="authorFilter" class="form-label">Filter by Author</label>
-                <input type="text" id="authorFilter" class="form-control" placeholder="Enter author name">
-            </div>
-            
-            <!-- Price Sort -->
+             <!-- Price Sort -->
             <div class="filter-item">
                 <label for="priceSort" class="form-label">Sort by Price</label>
                 <select id="priceSort" class="form-control">
@@ -381,27 +375,43 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Türkçe karakterleri İngilizce karakterlere çeviren normalize fonksiyonu
+            function normalizeText(text) {
+                return text.toLocaleLowerCase('tr-TR')  // Türkçe harf duyarlılığına göre küçük harfe çevirme
+                    .replace(/ı/g, 'i')
+                    .replace(/ş/g, 's')
+                    .replace(/ç/g, 'c')
+                    .replace(/ğ/g, 'g')
+                    .replace(/ü/g, 'u')
+                    .replace(/ö/g, 'o')
+                    .replace(/[^a-z0-9\s]/gi, '') // Harf, rakam ve boşluk dışındaki karakterleri temizle
+                    .trim(); // Baş ve sondaki boşlukları kaldır
+            }
             function filterAndSortProducts() {
-                var bookSearch = $('#bookSearch').val().toLowerCase();
-                var authorFilter = $('#authorFilter').val().toLowerCase();
+                var bookSearch = normalizeText($('#bookSearch').val()).toLowerCase(); // normalize edilmiş arama sorgusu
                 var priceSort = $('#priceSort').val();
                 var selectedGenres = $('.genre-checkbox:checked').map(function() {
-                    return $(this).val().toLowerCase();
+                    return normalizeText($(this).val().toLowerCase());
                 }).get();
+
+                // Girdi kelimelerini parçalayalım
+                var searchTerms = bookSearch.split(/\s+/); // Boşlukla ayrılmış kelimeler listesi
 
                 $('.product-item').each(function() {
                     var $item = $(this);
-                    var name = ($item.data('name') || '').toLowerCase();
-                    var author = ($item.data('author') || '').toLowerCase();
+                    var name = normalizeText(($item.data('name') || '').toLowerCase());
+                    var author = normalizeText(($item.data('author') || '').toLowerCase());
                     var genre = ($item.data('genre') || '').toLowerCase();
                     
                     var matchesGenres = selectedGenres.length === 0 || 
                         (genre && selectedGenres.includes(genre));
                     
-                    var matchesName = name.includes(bookSearch) || bookSearch === '';
-                    var matchesAuthor = author.includes(authorFilter) || authorFilter === '';
+                    // Eşleşme koşulları: her bir kelime kitap adı ya da yazarda geçiyor mu?
+                    var matchesName = searchTerms.every(term => 
+                    name.includes(term) || author.includes(term)
+                    );
                     
-                    var showProduct = matchesName && matchesAuthor && matchesGenres;
+                    var showProduct = matchesName && matchesGenres;
                     
                     $item.toggle(showProduct);
                 });
