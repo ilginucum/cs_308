@@ -68,6 +68,7 @@ namespace e_commerce.Controllers
             {
                 var newItem = new CartItem
                 {
+                    Id = ObjectId.GenerateNewId().ToString(), // Id ataması önemli
                     ProductId = productId,
                     QuantityInCart = quantity,
                     UnitPrice = product.Price,
