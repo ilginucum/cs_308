@@ -15,6 +15,8 @@ namespace e_commerce.Models
         [Required]
         public string UserId { get; set; }
 
+        public string? SessionId { get; set; }
+
         public List<CartItem> Items { get; set; } = new List<CartItem>();
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

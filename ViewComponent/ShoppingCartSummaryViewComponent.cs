@@ -16,15 +16,23 @@ namespace e_commerce.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            ShoppingCart cart = null;
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                return View(0);
+                cart = await _shoppingCartRepository.FindOneAsync(c => c.UserId == userId);
+            }
+            else
+            {
+                var sessionId = HttpContext.Session.GetString("CartSessionId");
+                if (!string.IsNullOrEmpty(sessionId))
+                {
+                    cart = await _shoppingCartRepository.FindOneAsync(c => c.SessionId == sessionId);
+                }
             }
 
-            var cart = await _shoppingCartRepository.FindOneAsync(c => c.UserId == userId);
             int itemCount = cart?.Items.Sum(i => i.QuantityInCart) ?? 0;
-
             return View(itemCount);
         }
     }
