@@ -19,81 +19,78 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Services.AddScoped(typeof(IMongoDBRepository<>), typeof(MongoDBRepository<>));
 
 builder.Services.AddScoped<IMongoDBRepository<UserRegistration>>(sp =>
-    new MongoDBRepository<UserRegistration>(
-        sp.GetRequiredService<IConfiguration>(),
-        "LoginInfo",
-        sp.GetRequiredService<ILogger<MongoDBRepository<UserRegistration>>>()
-    ));
+   new MongoDBRepository<UserRegistration>(
+       sp.GetRequiredService<IConfiguration>(),
+       "LoginInfo",
+       sp.GetRequiredService<ILogger<MongoDBRepository<UserRegistration>>>()
+   ));
 
 builder.Services.AddScoped<IMongoDBRepository<Product>>(sp =>
-    new MongoDBRepository<Product>(
-        sp.GetRequiredService<IConfiguration>(),
-        "Products",
-        sp.GetRequiredService<ILogger<MongoDBRepository<Product>>>()
-    ));
+   new MongoDBRepository<Product>(
+       sp.GetRequiredService<IConfiguration>(),
+       "Products",
+       sp.GetRequiredService<ILogger<MongoDBRepository<Product>>>()
+   ));
 
 builder.Services.AddScoped<IMongoDBRepository<ProductComment>>(sp =>
-    new MongoDBRepository<ProductComment>(
-        sp.GetRequiredService<IConfiguration>(),
-        "ProductComments",
-        sp.GetRequiredService<ILogger<MongoDBRepository<ProductComment>>>()
-    ));
+   new MongoDBRepository<ProductComment>(
+       sp.GetRequiredService<IConfiguration>(),
+       "ProductComments",
+       sp.GetRequiredService<ILogger<MongoDBRepository<ProductComment>>>()
+   ));
 
 builder.Services.AddScoped<IMongoDBRepository<Rating>>(sp =>
-    new MongoDBRepository<Rating>(
-        sp.GetRequiredService<IConfiguration>(),
-        "Ratings",
-        sp.GetRequiredService<ILogger<MongoDBRepository<Rating>>>()
-    ));
+   new MongoDBRepository<Rating>(
+       sp.GetRequiredService<IConfiguration>(),
+       "Ratings",
+       sp.GetRequiredService<ILogger<MongoDBRepository<Rating>>>()
+   ));
 
 builder.Services.AddScoped<IMongoDBRepository<CreditCard>>(sp =>
-    new MongoDBRepository<CreditCard>(
-        sp.GetRequiredService<IConfiguration>(),
-        "CreditCard",
-        sp.GetRequiredService<ILogger<MongoDBRepository<CreditCard>>>()
-    ));
+   new MongoDBRepository<CreditCard>(
+       sp.GetRequiredService<IConfiguration>(),
+       "CreditCard",
+       sp.GetRequiredService<ILogger<MongoDBRepository<CreditCard>>>()
+   ));
 
-// Add ShoppingCart repository
 builder.Services.AddScoped<IMongoDBRepository<ShoppingCart>>(sp =>
-    new MongoDBRepository<ShoppingCart>(
-        sp.GetRequiredService<IConfiguration>(),
-        "ShoppingCarts",
-        sp.GetRequiredService<ILogger<MongoDBRepository<ShoppingCart>>>()
-    ));
+   new MongoDBRepository<ShoppingCart>(
+       sp.GetRequiredService<IConfiguration>(),
+       "ShoppingCarts",
+       sp.GetRequiredService<ILogger<MongoDBRepository<ShoppingCart>>>()
+   ));
 
 builder.Services.AddScoped<IMongoDBRepository<Address>>(sp =>
-    new MongoDBRepository<Address>(
-        sp.GetRequiredService<IConfiguration>(),
-        "Address",
-        sp.GetRequiredService<ILogger<MongoDBRepository<Address>>>()
-    ));
+   new MongoDBRepository<Address>(
+       sp.GetRequiredService<IConfiguration>(),
+       "Address",
+       sp.GetRequiredService<ILogger<MongoDBRepository<Address>>>()
+   ));
 
-// Update your Program.cs to include Order repository registration
 builder.Services.AddScoped<IMongoDBRepository<Order>>(sp =>
-    new MongoDBRepository<Order>(
-        sp.GetRequiredService<IConfiguration>(),
-        "Orders", // Make sure this matches your desired collection name
-        sp.GetRequiredService<ILogger<MongoDBRepository<Order>>>()
-    ));
+   new MongoDBRepository<Order>(
+       sp.GetRequiredService<IConfiguration>(),
+       "Orders",
+       sp.GetRequiredService<ILogger<MongoDBRepository<Order>>>()
+   ));
 
-
-// Add session support right after AddControllersWithViews()
+// Add session support
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+   options.IdleTimeout = TimeSpan.FromMinutes(30); // Session süresini 7 güne çıkardım
+   options.Cookie.HttpOnly = true;
+   options.Cookie.IsEssential = true;
 });
+
 // Add authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/User/Login";
-        options.LogoutPath = "/User/Logout";
-        options.AccessDeniedPath = "/User/AccessDenied";
-    });
-    
-// Add this to your service registrations
+   .AddCookie(options =>
+   {
+       options.LoginPath = "/User/Login";
+       options.LogoutPath = "/User/Logout";
+       options.AccessDeniedPath = "/User/AccessDenied";
+   });
+   
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
@@ -101,24 +98,24 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+   app.UseExceptionHandler("/Home/Error");
+   app.UseHsts();
 }
 else
 {
-    app.UseDeveloperExceptionPage();
+   app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession(); // Session middleware'ini ekledik
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+   name: "default",
+   pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
