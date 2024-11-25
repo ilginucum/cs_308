@@ -27,9 +27,30 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
+                    <ul class="navbar-nav align-items-center">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item me-3">
+                                <a asp-controller="Orders" asp-action="Index" class="nav-link text-dark">
+                                    <i class="bi bi-box-seam"></i> Orders
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item me-3">
                             @await Component.InvokeAsync("ShoppingCartSummary")
+                        </li>
+                        <li class="nav-item">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger">Logout</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="User" asp-action="Login" class="btn btn-outline-primary me-2">Login</a>
+                                <a asp-controller="User" asp-action="Registration" class="btn btn-primary">Register</a>
+                            }
                         </li>
                     </ul>
                 </div>
@@ -41,7 +62,6 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - e_commerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
