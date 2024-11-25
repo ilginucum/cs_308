@@ -16,6 +16,8 @@ namespace e_commerce.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
 
+        public string ProductName { get; set; }
+
         public string UserName { get; set; }
         public string CommentText { get; set; }
         public DateTime CreatedAt { get; set; }

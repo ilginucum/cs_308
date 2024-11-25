@@ -1,31 +1,83 @@
 @model IEnumerable<e_commerce.Models.ProductComment>
 
-<h2>Pending Comments</h2>
-<table>
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Comment</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var comment in Model)
-        {
-            <tr>
-                <td>@comment.UserName</td>
-                <td>@comment.CommentText</td>
-                <td>
-                    <form asp-action="ApproveComment" asp-controller="Product" method="post">
-                        <input type="hidden" name="commentId" value="@comment.Id" />
-                        <button type="submit">Approve</button>
-                    </form>
-                    <form asp-action="RequestChange" asp-controller="Product" method="post">
-                        <input type="hidden" name="commentId" value="@comment.Id" />
-                        <button type="submit">Request Change</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-4">
+    <h2 class="mb-4">Comment Management</h2>
+    <div class="row">
+        <!-- Pending Comments -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h3 class="card-title">Pending Comments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Book</th>
+                                    <th>User</th>
+                                    <th>Comment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var comment in Model.Where(c => c.Status == "pending"))
+                                {
+                                    <tr>
+                                        <td>@comment.ProductName</td>
+                                        <td>@comment.UserName</td>
+                                        <td>@comment.CommentText</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <form asp-action="ApproveComment" method="post" class="me-2">
+                                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                </form>
+                                                <form asp-action="RequestChange" method="post">
+                                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Comments -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title">Approved Comments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Book</th>
+                                    <th>User</th>
+                                    <th>Comment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var comment in Model.Where(c => c.Status == "approved"))
+                                {
+                                    <tr>
+                                        <td>@comment.ProductName</td>
+                                        <td>@comment.UserName</td>
+                                        <td>@comment.CommentText</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -37,11 +37,18 @@ namespace e_commerce.Controllers
             return View(products);
         }
         [HttpGet]
-        [Authorize(Roles = "ProductManager")]
+        [Authorize(Roles = "ProductManager")] 
         public async Task<IActionResult> ManageComments()
         {
-            var pendingComments = await _commentRepository.FilterByAsync(c => c.Status == "pending");
-            return View(pendingComments);
+        var allComments = (await _commentRepository.GetAllAsync()).ToList();
+        
+        foreach (var comment in allComments)
+        {
+            var product = await _productRepository.FindByIdAsync(comment.ProductId);
+            comment.ProductName = product?.Name ?? "Unknown Product";
+        }
+
+        return View(allComments);
         }
 
         [HttpPost]
@@ -254,15 +261,17 @@ namespace e_commerce.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userName = User.Identity.Name;
+            var product = await _productRepository.FindByIdAsync(ProductId);
 
             var comment = new ProductComment
             {
                 ProductId = ProductId,
+                ProductName = product?.Name,
                 UserId = userId,
                 UserName = userName,
                 CommentText = CommentText,
                 CreatedAt = DateTime.UtcNow,
-                Status = "pending" // Varsayılan olarak 'pending' durumu
+                Status = "pending"
             };
 
             try

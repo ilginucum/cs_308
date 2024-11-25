@@ -1350,11 +1350,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/macbookpro/Desktop/308_ecommerce/cs_308/e_commerce.csproj",
+      "projectUniqueName": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-1/e_commerce.csproj",
       "projectName": "e_commerce",
-      "projectPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308/e_commerce.csproj",
+      "projectPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-1/e_commerce.csproj",
       "packagesPath": "/Users/macbookpro/.nuget/packages/",
-      "outputPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308/obj/",
+      "outputPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-1/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
