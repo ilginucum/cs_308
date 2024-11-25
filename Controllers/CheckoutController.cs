@@ -29,6 +29,13 @@ namespace e_commerce.Controllers
         [HttpGet]
         public IActionResult Address()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // Login'e yönlendir ve dönüş URL'ini kaydet
+                return RedirectToAction("Login", "User", 
+                    new { returnUrl = Url.Action("Address", "Checkout") });
+            }
+
             return View(new Address());
         }
 

@@ -114,6 +114,64 @@ namespace e_commerce.Controllers
            return RedirectToAction(nameof(Index));
        }
 
+
+            public async Task<bool> MergeGuestCart(string userId)
+        {
+            try
+            {
+                // Session'dan guest cart'ı bul
+                var sessionId = HttpContext.Session.GetString("CartSessionId");
+                if (string.IsNullOrEmpty(sessionId))
+                    return false;
+
+                // Guest cart'ı bul
+                var guestCart = await _shoppingCartRepository.FindOneAsync(c => c.SessionId == sessionId);
+                if (guestCart == null || !guestCart.Items.Any())
+                    return false;
+
+                // User'ın cart'ını bul veya oluştur
+                var userCart = await _shoppingCartRepository.FindOneAsync(c => c.UserId == userId);
+                if (userCart == null)
+                {
+                    // Guest cart'ı user cart'ına çevir
+                    guestCart.UserId = userId;
+                    guestCart.SessionId = null;
+                    await _shoppingCartRepository.ReplaceOneAsync(guestCart);
+                }
+                else
+                {
+                    // İki sepeti birleştir
+                    foreach (var item in guestCart.Items)
+                    {
+                        var existingItem = userCart.Items.FirstOrDefault(i => i.ProductId == item.ProductId);
+                        if (existingItem != null)
+                        {
+                            existingItem.QuantityInCart += item.QuantityInCart;
+                        }
+                        else
+                        {
+                            userCart.Items.Add(item);
+                        }
+                    }
+                    
+                    userCart.UpdatedAt = DateTime.UtcNow;
+                    await _shoppingCartRepository.ReplaceOneAsync(userCart);
+                    
+                    // Guest cart'ı sil
+                    await _shoppingCartRepository.DeleteOneAsync(guestCart.Id);
+                }
+
+                // Session'ı temizle
+                HttpContext.Session.Remove("CartSessionId");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error merging guest cart");
+                return false;
+            }
+        }
+
        private async Task<ShoppingCart> GetOrCreateCartAsync()
        {
            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -149,5 +207,12 @@ namespace e_commerce.Controllers
            await _shoppingCartRepository.InsertOneAsync(cart);
            return cart;
        }
+
+
+       
    }
+
+
+
+   
 }

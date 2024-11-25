@@ -8,6 +8,7 @@ using e_commerce.Models;
 using e_commerce.Data;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace e_commerce.Controllers
 {
@@ -46,12 +47,20 @@ namespace e_commerce.Controllers
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    /*var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = model.RememberMe, // Remember Me seçiliyse kalıcı oturum açılır
-                        ExpiresUtc = model.RememberMe ? DateTime.UtcNow.AddDays(14) : DateTime.UtcNow.AddMinutes(30) // Remember Me varsa 14 gün, yoksa 30 dakika
-                    };*/
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    // Guest cart birleştirme işlemini ekledik
+                    var cartController = new ShoppingCartController(
+                        HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<ShoppingCart>>(),
+                        HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<Product>>(),
+                        HttpContext.RequestServices.GetRequiredService<ILogger<ShoppingCartController>>());
+                    
+                    cartController.ControllerContext = new ControllerContext
+                    {
+                        HttpContext = HttpContext
+                    };
+                    
+                    await cartController.MergeGuestCart(user.Id);
 
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
