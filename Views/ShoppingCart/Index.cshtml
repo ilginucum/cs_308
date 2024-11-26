@@ -123,6 +123,7 @@
             color: #777;
         }
     </style>
+    
 </head>
 
 <body>
@@ -135,7 +136,7 @@
             <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
             <a asp-controller="Product" asp-action="NewBooks" class="nav-link">New Books</a>
             <a asp-controller="Sales" asp-action="Index" class="nav-link">Sales</a>
-            <a asp-controller="Privacy" asp-action="Index" class="nav-link">Privacy</a>
+            <a asp-controller="Log In" asp-action="Index" class="nav-link">Login </a>
         </nav>
     </header>
 
@@ -182,7 +183,7 @@
                                         <button type="submit" name="change" value="1" class="btn-rounded">+</button>
                                     </form>
                                 </td>
-                                <td>$@(item.QuantityInCart * item.UnitPrice).ToString("F2")</td>
+                                <td>$@(item.QuantityInCart * item.UnitPrice)</td>
                                 <td>
                                     <form asp-controller="ShoppingCart" asp-action="RemoveFromCart" method="post">
                                         <input type="hidden" name="cartItemId" value="@item.Id" />
@@ -203,7 +204,7 @@
         <!-- Cart Summary -->
         <div class="cart-summary">
             <h2>Cart Summary</h2>
-            <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice).ToString("F2")</p>
+            <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice)</p>
             <button class="btn-rounded" onclick="location.href='/Checkout'">Proceed to Checkout</button>
         </div>
     </div>
@@ -214,11 +215,122 @@
             <input type="checkbox"> Use Gift Card
         </label>
     </div>
+    <title>Footer Example</title>
+    <style>
+        footer {
+            background-color: #f0f0f0;
+            /* Light gray background from your palette */
+            color: #333;
+            /* Dark text for contrast */
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
 
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .signup {
+            margin-bottom: 20px;
+        }
+
+        .signup label {
+            font-size: 1.2rem;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .signup input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        .signup button {
+            background-color: #333;
+            /* Dark button color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .signup button:hover {
+            background-color: #555;
+            /* Hover effect */
+        }
+
+        .social-media {
+            margin-bottom: 20px;
+        }
+
+        .social-media span {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .icons i {
+            font-size: 1.5rem;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .icons i:hover {
+            color: #ff6347;
+            /* Example color for hover effect */
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .links a:hover {
+            color: #ff6347;
+            /* Color on hover */
+        }
+    </style>
+    </head>
+
+    <body>
     <!-- Footer -->
     <footer>
-        <p>© 2024 Bookery. All rights reserved.</p>
+        <div class="footer-container">
+            <div class="signup">
+                <label for="email">Sign up</label>
+                <input type="email" id="email" placeholder="Enter your email">
+                <button>Add</button>
+            </div>
+            <div class="social-media">
+                <span>Follow us</span>
+                <div class="icons">
+                    <i class="icon-facebook"></i>
+                    <i class="icon-twitter"></i>
+                    <i class="icon-instagram"></i>
+                </div>
+            </div>
+            <div class="links">
+                <a href="#">Sign in</a>
+                <a href="#">Forgot password</a>
+                <a href="#">Shipping</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
     </footer>
+
 </body>
+
 
 </html>
