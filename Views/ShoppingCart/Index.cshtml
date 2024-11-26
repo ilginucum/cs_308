@@ -56,28 +56,35 @@
             /* Add some padding to the navbar */
         }
 
-        /* Styling for the navigation buttons */
+
         .nav-button {
-            background-color: #be3144;
-            
-            /* Color from your image */
+            background-color: #be3144;  
             color: white;
             border: none;
             padding: 10px 20px;
             font-size: 1rem;
             cursor: pointer;
             margin: 0 10px;
-            /* Space between the buttons */
+      
             border-radius: 5px;
-            /* Rounded corners */
+   
         }
+
+        .nav-button a{
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
 
         .nav-button:hover {
             background-color: #be3144;
-            /* Darker shade on hover */
+         
         }
 
-        /* Styling for the search bar */
+      
         .search-bar {
             display: flex;
             align-items: center;
@@ -107,7 +114,7 @@
 
         .search-bar button:hover {
             background-color: #be3144;
-            /* Darker shade on hover */
+            
         }
 
 
@@ -191,8 +198,9 @@
             background-color: #f5f5f5;
             color: #777;
         }
+
     </style>
-    
+   
 </head>
 
 <body>
@@ -201,19 +209,21 @@
         <div class="logo-container">
             <img src="/images/bookery-logo-black.png" alt="Bookery Logo" />
         </div>
-        <nav class="nav">
-            <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
-            <a asp-controller="Product" asp-action="NewBooks" class="nav-link">New Books</a>
-            <a asp-controller="Sales" asp-action="Index" class="nav-link">Sales</a>
-            <a asp-controller="Log In" asp-action="Index" class="nav-link">Login </a>
-        </nav>
+
+            <div class="navbar">
+                <button class="nav-button"><a href="@Url.Action("Index", "Home")">Home</a></button>
+                <button class="nav-button"><a href="@Url.Action("NewBooks", "Home")">New Books</a></button>
+                <button class="nav-button"><a href="@Url.Action("Sales", "Home")">Sales</a></button>
+                <button class="nav-button"><a href="@Url.Action("Login", "User")">Login</a></button>
+
+            </div>
         <div class="search-bar">
             <input type="text" id="search" placeholder="Search...">
             <button type="submit">Search</button>
         </div>
 
-    </header>
-    
+        </header>
+   
 
     <!-- Main Content -->
     <div class="main-container">
