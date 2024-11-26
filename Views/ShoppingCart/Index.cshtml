@@ -45,6 +45,39 @@
             text-decoration: none;
         }
 
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            font-size: 1rem;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-left: 10px;
+            background-color: #be3144;
+            /* Dark color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #555;
+            /* Darker color on hover */
+        }
+
+
         .nav-link:hover {
             background-color: #952735;
         }
@@ -138,7 +171,13 @@
             <a asp-controller="Sales" asp-action="Index" class="nav-link">Sales</a>
             <a asp-controller="Log In" asp-action="Index" class="nav-link">Login </a>
         </nav>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search...">
+            <button type="submit">Search</button>
+        </div>
+
     </header>
+    
 
     <!-- Main Content -->
     <div class="main-container">
