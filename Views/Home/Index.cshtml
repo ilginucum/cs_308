@@ -15,34 +15,41 @@
 <style>
     .text-center {
         background: linear-gradient(135deg, #be3144 0%, #952735 100%);
-        padding: 0.3rem;
-        margin-bottom: 0.5rem;
-        border-radius: 0 0 20px 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        color: white;
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 30px rgba(190, 49, 68, 0.2);
+        position: relative;
+        overflow: hidden;
     }
 
     .logo-container {
-        margin: 0.2rem 0; 
+        margin: 0.5rem 0;
+        position: relative;
     }
 
     .hero-logo {
-        max-width: 400px;
+        max-width: 450px;
         height: auto;
         margin: 0 auto;
         display: block;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }
 
     .hero-content {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 0; 
+        padding: 0;
+        position: relative;
     }
 
     .hero-text {
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0.5rem;
+        font-size: 1.4rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        font-weight: 500;
+        letter-spacing: 0.5px;
     }
 </style>
 
@@ -56,7 +63,7 @@
                 <div class="input-group">
                     <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name or Author">
                     <button id="searchButton" class="btn btn-search">
-                        <i class="bi bi-search"></i>
+                        Search
                     </button>
                 </div>
             </div>
@@ -109,21 +116,44 @@
 <style>
     .search-section {
         background-color: white;
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.08);
         margin-bottom: 3rem;
+        position: relative;
     }
 
     .section-title {
-        font-size: 2.2rem;
-        font-weight: 600;
+        font-size: 2.4rem;
+        font-weight: 700;
         color: #2d3436;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         position: relative;
         padding-bottom: 1rem;
+        text-align: center;
     }
 
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
+        border-radius: 2px;
+    }
+
+    .search-bar-container {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 16px;
+    }
     .section-title:after {
         content: '';
         position: absolute;
@@ -276,44 +306,48 @@
 <style>
     .card {
         border: none;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        border-radius: 16px;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         overflow: hidden;
+        background: linear-gradient(145deg, #ffffff, #f5f5f5);
+        position: relative;
     }
-    
+
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(190, 49, 68, 0.15);
     }
-    
+
     .card-body {
-        padding: 1rem;
+        padding: 1.2rem;
     }
-    
+
     .card-title {
         color: #2d3436;
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
     }
-    
+
     .card-img-top {
         width: 100%;
         height: 200px;
-        object-fit: contain;  
-        transition: transform 0.3s ease;
-        padding: 0.5rem;
-        background-color: #fff;  
+        object-fit: contain;
+        transition: transform 0.5s ease;
+        padding: 0.8rem;
+        background-color: rgba(255, 255, 255, 0.9);
     }
-    
+
     .card:hover .card-img-top {
-        transform: scale(1.03);
+        transform: scale(1.08);
     }
-    
+
     .card-text {
         font-size: 0.9rem;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.4rem;
+        color: #555;
+        line-height: 1.4;
     }
 
 
