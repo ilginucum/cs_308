@@ -45,17 +45,49 @@
             text-decoration: none;
         }
 
+        /* Overall container for the navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            /* Distribute space between items */
+            align-items: center;
+            /* Vertically align the items in the center */
+            padding: 20px;
+            /* Add some padding to the navbar */
+        }
+
+        /* Styling for the navigation buttons */
+        .nav-button {
+            background-color: #be3144;
+            
+            /* Color from your image */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 10px;
+            /* Space between the buttons */
+            border-radius: 5px;
+            /* Rounded corners */
+        }
+
+        .nav-button:hover {
+            background-color: #be3144;
+            /* Darker shade on hover */
+        }
+
+        /* Styling for the search bar */
         .search-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-top: 20px;
         }
 
         .search-bar input {
             padding: 10px;
             font-size: 1rem;
-            width: 250px;
+            width: 200px;
+            /* Set width of search input */
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -63,23 +95,27 @@
         .search-bar button {
             padding: 10px 20px;
             font-size: 1rem;
-            margin-left: 10px;
             background-color: #be3144;
-            /* Dark color */
+            /* Match the button color */
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-left: 10px;
+            /* Space between input and button */
         }
 
         .search-bar button:hover {
-            background-color: #555;
-            /* Darker color on hover */
+            background-color: #be3144;
+            /* Darker shade on hover */
+        }
+
+
         }
 
 
         .nav-link:hover {
-            background-color: #952735;
+            background-color: #be3144;
         }
 
         .main-container {
