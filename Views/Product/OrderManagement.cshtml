@@ -1,0 +1,154 @@
+@using e_commerce.Models
+@model OrderManagementViewModel
+
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Processing Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h3 class="mb-0">Processing Orders</h3>
+                </div>
+                <div class="card-body">
+                    @foreach (var order in Model.ProcessingOrders)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Order #@order.Id</h5>
+                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
+                                
+                                <h6>Items:</h6>
+                                <ul class="list-unstyled">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <li>
+                                            @item.ProductName x @item.Quantity
+                                            ($@item.UnitPrice each)
+                                        </li>
+                                    }
+                                </ul>
+
+                                @if (Model.Addresses.ContainsKey(order.AddressId))
+                                {
+                                    var address = Model.Addresses[order.AddressId];
+                                    <div class="mt-3">
+                                        <h6>Shipping Details:</h6>
+                                        <p class="mb-1">@address.FullName</p>
+                                        <p class="mb-1">@address.StreetAddress</p>
+                                        <p class="mb-1">@address.City, @address.State @address.ZipCode</p>
+                                        <p class="mb-1">@address.PhoneNumber</p>
+                                        <p class="mb-1">@address.Email</p>
+                                    </div>
+                                }
+
+                                <form asp-action="UpdateOrderStatus" method="post" class="mt-3">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <input type="hidden" name="newStatus" value="InTransit" />
+                                    <button type="submit" class="btn btn-primary">Mark In Transit</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- In Transit Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">In Transit Orders</h3>
+                </div>
+                <div class="card-body">
+                    @foreach (var order in Model.InTransitOrders)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Order #@order.Id</h5>
+                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
+                                
+                                <h6>Items:</h6>
+                                <ul class="list-unstyled">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <li>
+                                            @item.ProductName x @item.Quantity
+                                            ($@item.UnitPrice each)
+                                        </li>
+                                    }
+                                </ul>
+
+                                @if (Model.Addresses.ContainsKey(order.AddressId))
+                                {
+                                    var address = Model.Addresses[order.AddressId];
+                                    <div class="mt-3">
+                                        <h6>Shipping Details:</h6>
+                                        <p class="mb-1">@address.FullName</p>
+                                        <p class="mb-1">@address.StreetAddress</p>
+                                        <p class="mb-1">@address.City, @address.State @address.ZipCode</p>
+                                        <p class="mb-1">@address.PhoneNumber</p>
+                                        <p class="mb-1">@address.Email</p>
+                                    </div>
+                                }
+
+                                <form asp-action="UpdateOrderStatus" method="post" class="mt-3">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <input type="hidden" name="newStatus" value="Delivered" />
+                                    <button type="submit" class="btn btn-success">Mark Delivered</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivered Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Delivered Orders</h3>
+                </div>
+                <div class="card-body">
+                    @foreach (var order in Model.DeliveredOrders)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Order #@order.Id</h5>
+                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
+                                
+                                <h6>Items:</h6>
+                                <ul class="list-unstyled">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <li>
+                                            @item.ProductName x @item.Quantity
+                                            ($@item.UnitPrice each)
+                                        </li>
+                                    }
+                                </ul>
+
+                                @if (Model.Addresses.ContainsKey(order.AddressId))
+                                {
+                                    var address = Model.Addresses[order.AddressId];
+                                    <div class="mt-3">
+                                        <h6>Shipping Details:</h6>
+                                        <p class="mb-1">@address.FullName</p>
+                                        <p class="mb-1">@address.StreetAddress</p>
+                                        <p class="mb-1">@address.City, @address.State @address.ZipCode</p>
+                                        <p class="mb-1">@address.PhoneNumber</p>
+                                        <p class="mb-1">@address.Email</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,17 +15,23 @@ namespace e_commerce.Controllers
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<ProductComment> _commentRepository;
         private readonly IMongoDBRepository<Rating> _ratingRepository;
+        private readonly IMongoDBRepository<Order> _orderRepository;
+        private readonly IMongoDBRepository<Address> _addressRepository;
 
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(
             IMongoDBRepository<Product> productRepository,
             IMongoDBRepository<ProductComment> commentRepository,
+            IMongoDBRepository<Order> orderRepository,
+        IMongoDBRepository<Address> addressRepository,
             IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
             ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
             _commentRepository = commentRepository;
+            _orderRepository = orderRepository;
+            _addressRepository = addressRepository;
             _ratingRepository = ratingRepository;
             _logger = logger;
         }
@@ -336,6 +342,71 @@ namespace e_commerce.Controllers
             return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
         }
 
+            [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> OrderManagement()
+        {
+            try
+            {
+                var orders = (await _orderRepository.GetAllAsync()).ToList();
+                var addresses = (await _addressRepository.GetAllAsync()).ToList();
+
+                _logger.LogInformation($"Retrieved {orders.Count} orders and {addresses.Count} addresses");
+
+                var orderViewModel = new OrderManagementViewModel
+                {
+                    // Use "Pending" instead of "Processing"
+                    ProcessingOrders = orders.Where(o => o.OrderStatus == "Pending").ToList(),
+                    InTransitOrders = orders.Where(o => o.OrderStatus == "InTransit").ToList(),
+                    DeliveredOrders = orders.Where(o => o.OrderStatus == "Delivered").ToList(),
+                    Addresses = addresses.ToDictionary(a => a.Id, a => a)
+                };
+
+                // Debug logging
+                _logger.LogInformation($"Pending Orders: {orderViewModel.ProcessingOrders.Count}");
+                _logger.LogInformation($"In Transit Orders: {orderViewModel.InTransitOrders.Count}");
+                _logger.LogInformation($"Delivered Orders: {orderViewModel.DeliveredOrders.Count}");
+
+                return View(orderViewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving orders and addresses");
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> UpdateOrderStatus(string orderId, string newStatus)
+        {
+            try
+            {
+                var order = await _orderRepository.FindByIdAsync(orderId);
+                if (order != null)
+                {
+                    _logger.LogInformation($"Updating order {orderId} status from {order.OrderStatus} to {newStatus}");
+                    
+                    // Convert "Processing" to "Pending" if that's the new status
+                    order.OrderStatus = newStatus == "Processing" ? "Pending" : newStatus;
+                    
+                    await _orderRepository.ReplaceOneAsync(order);
+                    _logger.LogInformation($"Successfully updated order {orderId} status to {order.OrderStatus}");
+                }
+                else
+                {
+                    _logger.LogWarning($"Order {orderId} not found");
+                }
+                return RedirectToAction(nameof(OrderManagement));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating order {orderId} status");
+                throw;
+            }
+        }
+    
+        }
+
+
     }
     
-}
