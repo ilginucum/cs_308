@@ -10,11 +10,13 @@ namespace e_commerce.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IMongoDBRepository<Product> _productRepository;
+        private readonly IMongoDBRepository<Order> _orderRepository; // Yeni eklendi
 
-        public HomeController(ILogger<HomeController> logger, IMongoDBRepository<Product> productRepository)
+        public HomeController(ILogger<HomeController> logger, IMongoDBRepository<Product> productRepository, IMongoDBRepository<Order> orderRepository) // Yeni ekleme
         {
             _logger = logger;
             _productRepository = productRepository;
+            _orderRepository = orderRepository; // Yeni ekleme
         }
 
          public async Task<IActionResult> Index()
@@ -22,6 +24,16 @@ namespace e_commerce.Controllers
         var userRole = User.FindFirstValue(ClaimTypes.Role);
         ViewBag.UserRole = userRole;
         var products = await _productRepository.GetAllAsync();
+
+        // Popülerlik hesaplama (Orders koleksiyonundan)
+        var orders = await _orderRepository.GetAllAsync(); // Yeni ekleme
+        var productPopularity = orders
+            .SelectMany(o => o.Items) // Sipariş içindeki tüm ürünleri al
+            .GroupBy(i => i.ProductId) // ProductId'ye göre grupla
+            .Select(g => new { ProductId = g.Key, TotalQuantity = g.Sum(i => i.Quantity) }) // Toplam miktar hesapla
+            .ToDictionary(p => p.ProductId, p => p.TotalQuantity); // Sözlüğe çevir (ProductId => Toplam)
+
+        ViewBag.ProductPopularity = productPopularity; // ViewBag ile gönder (Yeni ekleme)
 
         // Get unique genres from all products
         var allGenres = products

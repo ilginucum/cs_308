@@ -70,6 +70,13 @@
                     <option value="desc">Highest to Lowest</option>
                 </select>
 
+                <!-- Popularity Sort Dropdown -->
+                <select id="popularitySort" class="form-select">
+                    <option value="">Sort by Popularity</option>
+                    <option value="asc">Lowest to Highest</option>
+                    <option value="desc">Highest to Lowest</option>
+                </select>
+
                 <!-- Genre Filter Dropdown -->
                 <div class="dropdown">
                     <button class="btn btn-filter dropdown-toggle" type="button" id="genreFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -228,7 +235,8 @@
              data-name="@product.Name" 
              data-author="@product.Author" 
              data-price="@product.Price"
-             data-genre="@product.Genre">
+             data-genre="@product.Genre"
+             data-popularity="@(ViewBag.ProductPopularity != null && ViewBag.ProductPopularity.ContainsKey(product.Id) ? ViewBag.ProductPopularity[product.Id] : 0)">
             <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
                 <div class="card h-100">
                     @{
@@ -329,6 +337,7 @@
             function filterAndSortProducts() {
                 var bookSearch = normalizeText($('#bookSearch').val()).toLowerCase();
                 var priceSort = $('#priceSort').val();
+                var popularitySort = $('#popularitySort').val(); // Popularity sıralaması için değer al
                 var selectedGenres = $('.genre-checkbox:checked').map(function() {
                     return normalizeText($(this).val().toLowerCase());
                 }).get();
@@ -340,6 +349,8 @@
                     var name = normalizeText(($item.data('name') || '').toLowerCase());
                     var author = normalizeText(($item.data('author') || '').toLowerCase());
                     var genre = ($item.data('genre') || '').toLowerCase();
+                    var popularity = parseInt($item.data('popularity')) || 0;
+                    
                     
                     var matchesGenres = selectedGenres.length === 0 || 
                         (genre && selectedGenres.includes(genre));
@@ -361,6 +372,19 @@
                         return priceSort === 'asc' ? priceA - priceB : priceB - priceA;
                     });
                     $('#productList').html(products);
+                } 
+                else if (popularitySort) { // Popularity sıralaması
+                    var products = $('.product-item:visible').get();
+                    products.sort(function(a, b) {
+                        var popularityA = parseInt($(a).data('popularity')) || 0;
+                        var popularityB = parseInt($(b).data('popularity')) || 0;
+                        return popularitySort === 'asc' ? popularityA - popularityB : popularityB - popularityA;
+                    });
+                    $('#productList').empty();
+                    products.forEach(function(product) {
+                        $('#productList').append(product);
+                    });
+                    
                 }
             }
 
@@ -373,6 +397,7 @@
             
             $('#searchButton').on('click', filterAndSortProducts);
             $('#priceSort').on('change', filterAndSortProducts);
+            $('#popularitySort').on('change', filterAndSortProducts);
             
             $('#bookSearch').on('keypress', function(e) {
                 if (e.which === 13) {
