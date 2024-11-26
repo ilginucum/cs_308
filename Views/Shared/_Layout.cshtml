@@ -8,6 +8,35 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/e_commerce.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border: none;
+            padding: 0.5rem 0;
+        }
+        
+        .dropdown-item {
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .dropdown-divider {
+            margin: 0.3rem 0;
+        }
+        
+        .user-dropdown .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -28,23 +57,58 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav align-items-center">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item me-3">
-                                <a asp-controller="Orders" asp-action="Index" class="nav-link text-dark">
-                                    <i class="bi bi-box-seam"></i> Orders
-                                </a>
-                            </li>
-                        }
                         <li class="nav-item me-3">
                             @await Component.InvokeAsync("ShoppingCartSummary")
                         </li>
                         <li class="nav-item">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger">Logout</button>
-                                </form>
+                                <div class="dropdown user-dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle"></i>
+                                        <span>Account</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        @if (User.IsInRole("ProductManager"))
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Product" asp-action="Index">
+                                                    <i class="bi bi-box"></i> Product Manager Page
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (User.IsInRole("SalesManager"))
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Sales" asp-action="Index">
+                                                    <i class="bi bi-graph-up"></i> Sales Manager Page
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (User.IsInRole("Customer"))
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="User" asp-action="Profile">
+                                                    <i class="bi bi-person"></i> Profile
+                                                </a>
+                                            </li>
+                                        }
+                                        
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Orders" asp-action="Index">
+                                                <i class="bi bi-box-seam"></i> Orders
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-controller="User" asp-action="Logout" method="post">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             }
                             else
                             {

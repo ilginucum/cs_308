@@ -9,31 +9,6 @@
             <img src="/images/bookery-logo-black.png" alt="Bookery - Discover Worlds Within Words" class="hero-logo">
         </div>
         <p class="hero-text">Discover your next favorite book</p>
-        <div class="auth-buttons">
-            @if (User.Identity.IsAuthenticated)
-            {
-                @if (User.IsInRole("ProductManager"))
-                {
-                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Product Manager Page</a>
-                }
-                else if (User.IsInRole("SalesManager"))
-                {
-                    <a asp-controller="Sales" asp-action="Index" class="btn btn-primary">Sales Manager Page</a>
-                }
-                else if (User.IsInRole("Customer"))
-                {
-                    <a asp-controller="User" asp-action="Profile" class="btn btn-primary">Profile</a>
-                }
-                <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-outline">Logout</button>
-                </form>
-            }
-            else
-            {
-                <a asp-controller="User" asp-action="Login" class="btn btn-primary">Login</a>
-                <a asp-controller="User" asp-action="Registration" class="btn btn-outline">Register</a>
-            }
-        </div>
     </div>
 </div>
 
@@ -69,60 +44,58 @@
         color: rgba(255, 255, 255, 0.9);
         margin-bottom: 0.5rem;
     }
-
-    .auth-buttons {
-        display: flex;
-        gap: 0.5rem; 
-        justify-content: center;
-        margin: 0.2rem 0; 
-    }
 </style>
 
 <div class="mt-4 search-section">
     <h2 class="section-title">Our Products</h2>
     
     <div class="search-filters">
-        <!-- Search Box -->
-        <div class="search-box mb-4">
-            <label for="bookSearch" class="form-label">Search by Book Name or Author</label>
-            <div class="input-group">
-                <input type="text" id="bookSearch" class="form-control" placeholder="Type to search...">
-                <button id="searchButton" class="btn btn-search">Search</button>
+        <div class="search-bar-container">
+            <!-- Search Box -->
+            <div class="search-box">
+                <div class="input-group">
+                    <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name or Author">
+                    <button id="searchButton" class="btn btn-search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div class="filters-grid">
-             <!-- Price Sort -->
-            <div class="filter-item">
-                <label for="priceSort" class="form-label">Sort by Price</label>
-                <select id="priceSort" class="form-control">
-                    <option value="">Select sorting</option>
+            <!-- Filter Options -->
+            <div class="filter-options">
+                <!-- Price Sort Dropdown -->
+                <select id="priceSort" class="form-select">
+                    <option value="">Sort by Price</option>
                     <option value="asc">Lowest to Highest</option>
                     <option value="desc">Highest to Lowest</option>
                 </select>
-            </div>
-        </div>
 
-        <!-- Genre Filter -->
-        <div class="genre-filter">
-            <label class="form-label">Filter by Genres</label>
-            <div class="genre-checkboxes">
-                @foreach (var genre in ViewBag.Genres)
-                {
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input genre-checkbox" type="checkbox" 
-                               id="genre-@genre.Replace(" ", "-")" value="@genre">
-                        <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
-                            @genre
-                        </label>
+                <!-- Genre Filter Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-filter dropdown-toggle" type="button" id="genreFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Filter by Genre
+                    </button>
+                    <div class="dropdown-menu genre-dropdown" aria-labelledby="genreFilterDropdown">
+                        <div class="genre-options">
+                            @foreach (var genre in ViewBag.Genres)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input genre-checkbox" type="checkbox" 
+                                           id="genre-@genre.Replace(" ", "-")" value="@genre">
+                                    <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
+                                        @genre
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="filter-actions">
+                            <button id="applyFilters" class="btn btn-primary btn-sm">Apply Filters</button>
+                        </div>
                     </div>
-                }
+                </div>
             </div>
         </div>
-
-        <button id="applyFilters" class="btn btn-primary apply-filters">
-            Apply Filters
-        </button>
     </div>
 </div>
 
@@ -139,7 +112,7 @@
         font-size: 2.2rem;
         font-weight: 600;
         color: #2d3436;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         position: relative;
         padding-bottom: 1rem;
     }
@@ -155,43 +128,96 @@
         border-radius: 2px;
     }
 
-    .search-filters {
-        padding: 1rem;
+    .search-bar-container {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
-    .filters-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+    .search-box {
+        flex: 1;
+        min-width: 200px;
     }
 
-    .genre-checkboxes {
-        margin: 15px 0;
-        max-height: 150px;
-        overflow-y: auto;
-        border: 1px solid #e0e0e0;
-        padding: 15px;
-        border-radius: 12px;
-        background-color: white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    .filter-options {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
     }
 
-    .form-check-inline {
-        margin-right: 15px;
-        margin-bottom: 8px;
-        padding: 8px 16px;
+    .input-group {
+        height: 40px;
+    }
+
+    .form-select, .btn-filter {
+        height: 40px;
+        padding: 0 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
         background-color: #f8f9fa;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        cursor: pointer;
         border: 1px solid #e0e0e0;
     }
 
-    .form-check-inline:hover {
+    .btn-search {
+        padding: 0 1rem;
         background-color: #be3144;
         color: white;
-        border-color: #be3144;
+        border: none;
+    }
+
+    .btn-search:hover {
+        background-color: #952735;
+    }
+
+    .btn-filter {
+        white-space: nowrap;
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #e0e0e0;
+    }
+
+    .genre-dropdown {
+        padding: 1rem;
+        min-width: 200px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .genre-options {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .genre-options .form-check {
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-actions {
+        padding: 0.5rem;
+        text-align: right;
+    }
+
+    #applyFilters {
+        width: 100%;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+
+    /* Custom scrollbar for dropdowns */
+    .genre-options::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .genre-options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .genre-options::-webkit-scrollbar-thumb {
+        background: #be3144;
+        border-radius: 4px;
     }
 </style>
 
@@ -271,19 +297,6 @@
     .card:hover .card-img-top {
         transform: scale(1.03);
     }
-</style>
-
-<style>
-    /* Button Styles */
-    .btn {
-        padding: 0.8rem 2rem;
-        border-radius: 50px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.9rem;
-    }
 
     .btn-primary {
         background: linear-gradient(135deg, #be3144 0%, #952735 100%);
@@ -296,106 +309,31 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(190, 49, 68, 0.3);
     }
-
-    .btn-outline {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 2px solid white;
-        color: white;
-    }
-
-    .btn-outline:hover {
-        background-color: white;
-        color: #be3144;
-    }
-
-    /* Form Controls */
-    .form-control {
-        padding: 0.8rem 1.2rem;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-        border: 2px solid transparent;
-    }
-
-    .form-control:hover {
-        background-color: white;
-        border-color: #e0e0e0;
-    }
-
-    .form-control:focus {
-        background-color: white;
-        border-color: #be3144;
-        box-shadow: 0 0 0 3px rgba(190, 49, 68, 0.1);
-    }
-
-    /* Custom Scrollbar */
-    .genre-checkboxes::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .genre-checkboxes::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-
-    .genre-checkboxes::-webkit-scrollbar-thumb {
-        background: #be3144;
-        border-radius: 10px;
-    }
-
-    /* Search Button */
-    #searchButton {
-        background-color: #be3144;
-        color: white;
-        border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 8px;
-    }
-
-    #searchButton:hover {
-        background-color: #952735;
-    }
-
-    select.form-control {
-        cursor: pointer;
-        background-image: linear-gradient(45deg, transparent 50%, #be3144 50%),
-                        linear-gradient(135deg, #be3144 50%, transparent 50%);
-        background-position: calc(100% - 20px) calc(1em + 2px),
-                            calc(100% - 15px) calc(1em + 2px);
-        background-size: 5px 5px,
-                        5px 5px;
-        background-repeat: no-repeat;
-        padding-right: 2.5rem;
-    }
 </style>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Türkçe karakterleri İngilizce karakterlere çeviren normalize fonksiyonu
             function normalizeText(text) {
-                return text.toLocaleLowerCase('tr-TR')  // Türkçe harf duyarlılığına göre küçük harfe çevirme
+                return text.toLocaleLowerCase('tr-TR')
                     .replace(/ı/g, 'i')
                     .replace(/ş/g, 's')
                     .replace(/ç/g, 'c')
                     .replace(/ğ/g, 'g')
                     .replace(/ü/g, 'u')
                     .replace(/ö/g, 'o')
-                    .replace(/[^a-z0-9\s]/gi, '') // Harf, rakam ve boşluk dışındaki karakterleri temizle
-                    .trim(); // Baş ve sondaki boşlukları kaldır
+                    .replace(/[^a-z0-9\s]/gi, '')
+                    .trim();
             }
+            
             function filterAndSortProducts() {
-                var bookSearch = normalizeText($('#bookSearch').val()).toLowerCase(); // normalize edilmiş arama sorgusu
+                var bookSearch = normalizeText($('#bookSearch').val()).toLowerCase();
                 var priceSort = $('#priceSort').val();
                 var selectedGenres = $('.genre-checkbox:checked').map(function() {
                     return normalizeText($(this).val().toLowerCase());
                 }).get();
 
-                // Girdi kelimelerini parçalayalım
-                var searchTerms = bookSearch.split(/\s+/); // Boşlukla ayrılmış kelimeler listesi
+                var searchTerms = bookSearch.split(/\s+/);
 
                 $('.product-item').each(function() {
                     var $item = $(this);
@@ -406,9 +344,8 @@
                     var matchesGenres = selectedGenres.length === 0 || 
                         (genre && selectedGenres.includes(genre));
                     
-                    // Eşleşme koşulları: her bir kelime kitap adı ya da yazarda geçiyor mu?
                     var matchesName = searchTerms.every(term => 
-                    name.includes(term) || author.includes(term)
+                        name.includes(term) || author.includes(term)
                     );
                     
                     var showProduct = matchesName && matchesGenres;
@@ -428,9 +365,14 @@
             }
 
             // Event handlers
-            $('#applyFilters').on('click', filterAndSortProducts);
+            $('#applyFilters').on('click', function() {
+                filterAndSortProducts();
+                // Close the dropdown after applying filters
+                $('.dropdown-menu').removeClass('show');
+            });
+            
             $('#searchButton').on('click', filterAndSortProducts);
-            $('.genre-checkbox').on('change', filterAndSortProducts);
+            $('#priceSort').on('change', filterAndSortProducts);
             
             $('#bookSearch').on('keypress', function(e) {
                 if (e.which === 13) {
