@@ -5,7 +5,7 @@
 <div class="container mt-4">
    <h1>@Model.Name</h1>
    <div class="row">
-        <div class="col-md-6 text-center">
+        <div class="col-md-6 text-center" style="margin-top: 20px; max-height: 600px;">
             @{
                 string imageUrl = Model.Name switch
                 {
@@ -24,7 +24,7 @@
             }
             <img src="@imageUrl" alt="@Model.Name" class="img-fluid" style="max-height: 500px; object-fit: contain;" />
         </div>
-       <div class="col-md-6">
+       <div class="col-md-6" style="margin-top: 20px; max-height: 600px;">
            <h2>Details</h2>
            <p><strong>Author:</strong> @Model.Author</p>
            <p><strong>Price:</strong> $@Model.Price</p>
