@@ -61,7 +61,7 @@
             <!-- Search Box -->
             <div class="search-box">
                 <div class="input-group">
-                    <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name or Author">
+                    <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name, Author or Description">
                     <button id="searchButton" class="btn btn-search">
                         Search
                     </button>
@@ -266,6 +266,7 @@
              data-author="@product.Author" 
              data-price="@product.Price"
              data-genre="@product.Genre"
+             data-description="@product.Description" 
              data-popularity="@(ViewBag.ProductPopularity != null && ViewBag.ProductPopularity.ContainsKey(product.Id) ? ViewBag.ProductPopularity[product.Id] : 0)">
             <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
                 <div class="card h-100">
@@ -394,6 +395,7 @@
                     var name = normalizeText(($item.data('name') || '').toLowerCase());
                     var author = normalizeText(($item.data('author') || '').toLowerCase());
                     var genre = ($item.data('genre') || '').toLowerCase();
+                    var description = normalizeText(($item.data('description') || '').toLowerCase());
                     var popularity = parseInt($item.data('popularity')) || 0;
                     
                     
@@ -401,7 +403,7 @@
                         (genre && selectedGenres.includes(genre));
                     
                     var matchesName = searchTerms.every(term => 
-                        name.includes(term) || author.includes(term)
+                        name.includes(term) || author.includes(term) || description.includes(term)
                     );
                     
                     var showProduct = matchesName && matchesGenres;

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj": {}
+    "/Users/macbookpro/Desktop/308_ecommerce/cs_308-2/e_commerce.csproj": {}
   },
   "projects": {
-    "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj": {
+    "/Users/macbookpro/Desktop/308_ecommerce/cs_308-2/e_commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
+        "projectUniqueName": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-2/e_commerce.csproj",
         "projectName": "e_commerce",
-        "projectPath": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
-        "packagesPath": "/Users/cerenverim/.nuget/packages/",
-        "outputPath": "/Users/cerenverim/Desktop/cs_308/obj/",
+        "projectPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-2/e_commerce.csproj",
+        "packagesPath": "/Users/macbookpro/.nuget/packages/",
+        "outputPath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-2/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/cerenverim/.nuget/NuGet/NuGet.Config"
+          "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
