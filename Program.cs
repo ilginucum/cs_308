@@ -91,6 +91,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
        options.AccessDeniedPath = "/User/AccessDenied";
    });
    
+// Add this line with your other service registrations
+builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
