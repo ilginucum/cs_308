@@ -1,11 +1,12 @@
 @model e_commerce.Models.Product
 @{
-   ViewData["Title"] = "Product Details";
+    ViewData["Title"] = "Product Details";
 }
+
 <div class="container mt-4">
-   <h1>@Model.Name</h1>
-   <div class="row">
-        <div class="col-md-6 text-center" style="margin-top: 20px; max-height: 600px;">
+    <h1 class="text-center" style="color: #be3144;">@Model.Name</h1>
+    <div class="row">
+        <div class="col-md-6 text-center" style="margin-top: 20px;">
             @{
                 string imageUrl = Model.Name switch
                 {
@@ -22,217 +23,146 @@
                     _ => "/images/default-book.jpg"
                 };
             }
-            <img src="@imageUrl" alt="@Model.Name" class="img-fluid" style="max-height: 500px; object-fit: contain;" />
+            <img src="@imageUrl" alt="@Model.Name" class="img-fluid rounded shadow"
+                style="max-height: 500px; object-fit: contain;" />
         </div>
-       <div class="col-md-6" style="margin-top: 20px; max-height: 600px;">
-           <h2>Details</h2>
-           <p><strong>Author:</strong> @Model.Author</p>
-           <p><strong>Price:</strong> $@Model.Price</p>
-           <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
-           <p><strong>Description:</strong> @Model.Description</p>
-           <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
-           <p><strong>Genre:</strong> @Model.Genre</p>
-           <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
-           <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
-           
-           <!-- Yeni Sepete Ekle formu -->
-           <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="mb-3">
-               <input type="hidden" name="productId" value="@Model.Id" />
-               <input type="hidden" name="price" value="@Model.Price" />
-               <div class="form-group">
-                   <label for="quantity">Quantity:</label>
-                   <div class="d-flex align-items-center gap-2">
-                       <button type="button" onclick="decrementQuantity()" class="btn btn-outline-secondary">-</button>
-                       <input type="number" 
-                              name="quantity" 
-                              id="quantity" 
-                              value="1" 
-                              min="1" 
-                              max="@Model.QuantityInStock" 
-                              class="form-control text-center" 
-                              style="width: 80px;"
-                              readonly />
-                       <button type="button" onclick="incrementQuantity()" class="btn btn-outline-secondary">+</button>
-                   </div>
-                   <small class="text-muted">Available stock: @Model.QuantityInStock</small>
-                   <div id="stockWarning" class="alert alert-warning mt-2" style="display: none;"></div>
-               </div>
+        <div class="col-md-6" style="margin-top: 20px;">
+            <div class="p-4 rounded shadow" style="background-color: #ffffff;">
+                <h2 style="color: #be3144;">Details</h2>
+                <p><strong>Author:</strong> @Model.Author</p>
+                <p><strong>Price:</strong> $@Model.Price</span></p>
+                <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
+                <p><strong>Description:</strong> @Model.Description</p>
+                <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
+                <p><strong>Genre:</strong> @Model.Genre</p>
+                <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
+                <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
 
-               @if (Model.QuantityInStock <= 0)
-               {
-                   <button type="submit" class="btn btn-primary mt-2" disabled>Add to Cart</button>
-                   <div class="alert alert-warning mt-2">
-                       This product is currently out of stock.
-                   </div>
-               }
-               else
-               {
-                   <button type="submit" class="btn btn-primary mt-2">Add to Cart</button>
-               }
-           </form>
-           
-           <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Back to List</a>
-       </div>
-   </div>
-   
-   <!-- Yıldızlı Puanlama Bölümü -->
-   <div class="mt-4">
-       <h3>Rate the Product</h3>
-       @if (User?.Identity != null && User.Identity.IsAuthenticated)
-       {
-           <form asp-action="AddRating" asp-controller="Product" method="post">
-               @Html.AntiForgeryToken()
-               <input type="hidden" name="ProductId" value="@Model.Id" />
-               <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
-               
-               <div id="rating" class="d-flex">
-                   @for (int i = 1; i <= 5; i++)
-                   {
-                       <span class="star" data-value="@i">&#9733;</span>
-                   }
-               </div>
-               
-               <button type="submit" class="btn btn-primary mt-2">Submit Rating</button>
-           </form>
-       }
-       else
-       {
-           <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> to rate the product.</p>
-       }
-   </div>
+                <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="price" value="@Model.Price" />
+                    <div class="form-group">
+                        <label for="quantity" style="color: #333;">Quantity:</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" onclick="decrementQuantity()"
+                                class="btn btn-outline-secondary rounded-circle">-</button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1"
+                                max="@Model.QuantityInStock" class="form-control text-center"
+                                style="width: 80px; border-radius: 10px;" readonly />
+                            <button type="button" onclick="incrementQuantity()"
+                                class="btn btn-outline-secondary rounded-circle">+</button>
+                        </div>
+                        <small class="text-muted d-block mt-2">Available stock: @Model.QuantityInStock</small>
+                        <div id="stockWarning" class="alert alert-warning mt-2" style="display: none;"></div>
+                    </div>
 
-   <!-- Comments Section -->
-   <div class="mt-4">
-       <h3>Comments</h3>
-       @if (TempData["ErrorMessage"] != null)
-       {
-           <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-       }
-       @if (User.Identity.IsAuthenticated)
-       {
-           <form asp-action="AddComment" asp-controller="Product" method="post">
-               @Html.AntiForgeryToken()
-               <input type="hidden" name="ProductId" value="@Model.Id" />
-               <div class="form-group">
-                   <textarea name="CommentText" class="form-control" rows="3" required></textarea>
-               </div>
-               <button type="submit" class="btn btn-primary">Add Comment</button>
-           </form>
-       }
-       else
-       {
-           <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> to add a comment.</p>
-       }
-   </div>
+                    @if (Model.QuantityInStock <= 0)
+                    {
+                        <button type="submit" class="btn btn-primary rounded mt-3" disabled>Add to Cart</button>
+                        <div class="alert alert-warning mt-2">
+                            This product is currently out of stock.
+                        </div>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary rounded mt-3"
+                            style="background-color: #be3144; border: none;">Add to Cart</button>
+                    }
+                </form>
 
-   <!-- Product Reviews Section -->
-   <div class="mt-4">
-       <h3>Product Reviews</h3>
-       <div class="p-3 rounded" style="background-color: #FFF9E6;">
-           <span style="color: gold;">
-               @for (int i = 1; i <= (ViewBag.TotalRatings > 0 ? Math.Round((double?)ViewBag.AverageScore ?? 0) : 0); i++)
-               {
-                   <span>&#9733;</span>
-               }
-               @for (int i = 1; i <= 5 - (ViewBag.TotalRatings > 0 ? Math.Round((double?)ViewBag.AverageScore ?? 0) : 0); i++)
-               {
-                   <span style="color: #ccc;">&#9733;</span>
-               }
-           </span>
-           <span> @(ViewBag.TotalRatings > 0 ? ViewBag.AverageScore.ToString("0.0") : "0") / 5.0</span>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-secondary rounded mt-3">Back to List</a>
+            </div>
+        </div>
+    </div>
 
-           <div class="dropdown d-inline">
-               <button class="btn btn-outline-secondary" type="button" id="ratingDistributionDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px 8px;">
-                   &#9662;
-               </button>
+    <div class="mt-4 p-4 rounded shadow" style="background-color: #ffffff;">
+        <h3 style="color: #be3144;">Rate the Product</h3>
+        @if (User?.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <form asp-action="AddRating" asp-controller="Product" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.Id" />
+                <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
 
-               <div class="dropdown-menu p-3 dropdown-menu-end" aria-labelledby="ratingDistributionDropdown">
-                   <h6>Rating Distribution</h6>
-                   @for (int i = 5; i >= 1; i--)
-                   {
-                       <div class="d-flex align-items-center">
-                           <span style="color: gold;">
-                               @for (int j = 0; j < i; j++) { <span>&#9733;</span> }
-                               @for (int k = i; k < 5; k++) { <span style="color: #ccc;">&#9733;</span> }
-                           </span>
-                           <div class="progress flex-grow-1 mx-2" style="height: 8px;">
-                               <div class="progress-bar" role="progressbar" style="width: @(ViewBag.RatingDistribution.ContainsKey(i) ? (ViewBag.RatingDistribution[i] * 100 / (ViewBag.TotalRatings > 0 ? ViewBag.TotalRatings : 1)) : 0)%; background-color: gold;" aria-valuenow="@(ViewBag.RatingDistribution.ContainsKey(i) ? ViewBag.RatingDistribution[i] : 0)" aria-valuemin="0" aria-valuemax="100"></div>
-                           </div>
-                           <span>@(ViewBag.RatingDistribution.ContainsKey(i) ? ViewBag.RatingDistribution[i] : 0)</span>
-                       </div>
-                   }
-               </div>
-           </div>
-           
-           <p>Total Ratings: @ViewBag.TotalRatings | Total Comments: @ViewBag.TotalComments</p>
-       </div>
-   </div>
+                <div id="rating" class="d-flex">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
+                    }
+                </div>
 
-   <!-- Yapılan Yorumlar -->
-   <div id="comments-list" class="mt-4">
-       @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
-       {
-           <div class="card mt-2">
-               <div class="card-body">
-                   <h5 class="card-title">@comment.UserName</h5>
-                   <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
-                   <p class="card-text">@comment.CommentText</p>
-               </div>
-           </div>
-       }
-   </div>
+                <button type="submit" class="btn btn-primary rounded mt-3" style="background-color: #be3144;">Submit
+                    Rating</button>
+            </form>
+        }
+        else
+        {
+            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
+                    style="color: #be3144;">login</a> to rate the product.</p>
+        }
+    </div>
+
+    <div class="mt-4 p-4 rounded shadow" style="background-color: #ffffff;">
+        <h3 style="color: #be3144;">Comments</h3>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="AddComment" asp-controller="Product" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.Id" />
+                <div class="form-group">
+                    <textarea name="CommentText" class="form-control rounded" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary rounded mt-3" style="background-color: #be3144;">Add
+                    Comment</button>
+            </form>
+        }
+        else
+        {
+            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
+                    style="color: #be3144;">login</a> to add a comment.</p>
+        }
+    </div>
 </div>
 
 @section Scripts {
-   <script>
-       // Rating stars için eski kod
-       document.querySelectorAll('.star').forEach(star => {
-           star.style.color = '#ccc';
-           star.addEventListener('click', () => {
-               const ratingValue = star.getAttribute('data-value');
-               document.getElementById('selectedRating').value = ratingValue;
+    <script>
+        const quantityInput = document.getElementById('quantity');
+        const warningDiv = document.getElementById('stockWarning');
+        const maxStock = @Model.QuantityInStock;
 
-               document.querySelectorAll('.star').forEach(s => s.style.color = '#ccc');
-               for (let i = 1; i <= ratingValue; i++) {
-                   document.querySelector(`.star[data-value="${i}"]`).style.color = 'gold';
-               }
-           });
-       });
+        function showWarning(message) {
+            warningDiv.textContent = message;
+            warningDiv.style.display = 'block';
+            setTimeout(() => warningDiv.style.display = 'none', 3000);
+        }
 
-       // Quantity control için yeni kod
-       const quantityInput = document.getElementById('quantity');
-       const warningDiv = document.getElementById('stockWarning');
-       const maxStock = @Model.QuantityInStock;
+        function incrementQuantity() {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue < maxStock) {
+                quantityInput.value = currentValue + 1;
+            } else {
+                showWarning(`Maximum available stock is ${maxStock}`);
+            }
+        }
 
-       function showWarning(message) {
-           warningDiv.textContent = message;
-           warningDiv.style.display = 'block';
-           setTimeout(() => {
-               warningDiv.style.display = 'none';
-           }, 3000); // 3 saniye sonra uyarı kaybolacak
-       }
+        function decrementQuantity() {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            } else {
+                showWarning('Minimum quantity is 1');
+            }
+        }
 
-       function incrementQuantity() {
-           const currentValue = parseInt(quantityInput.value);
-           if (currentValue < maxStock) {
-               quantityInput.value = currentValue + 1;
-           } else {
-               showWarning(`Maximum available stock is ${maxStock}`);
-           }
-       }
-
-       function decrementQuantity() {
-           const currentValue = parseInt(quantityInput.value);
-           if (currentValue > 1) {
-               quantityInput.value = currentValue - 1;
-           } else {
-               showWarning('Minimum quantity is 1');
-           }
-       }
-
-       // Input'u readonly yaptık ama manuel girişi engellemek için:
-       quantityInput.addEventListener('keydown', function(e) {
-           e.preventDefault();
-       });
-   </script>
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                const value = star.getAttribute('data-value');
+                document.getElementById('selectedRating').value = value;
+                document.querySelectorAll('.star').forEach(s => s.style.color = '#ccc');
+                for (let i = 1; i <= value; i++) {
+                    document.querySelector(`.star[data-value="${i}"]`).style.color = 'gold';
+                }
+            });
+        });
+    </script>
 }
