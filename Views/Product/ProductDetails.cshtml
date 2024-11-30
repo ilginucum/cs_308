@@ -30,7 +30,7 @@
             <div class="p-4 rounded shadow" style="background-color: #ffffff;">
                 <h2 style="color: #be3144;">Details</h2>
                 <p><strong>Author:</strong> @Model.Author</p>
-                <p><strong>Price:</strong> $@Model.Price</span></p>
+                <p><strong>Price:</strong> <span style="color: #be3144;">$@Model.Price</span></p>
                 <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
                 <p><strong>Description:</strong> @Model.Description</p>
                 <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
@@ -44,22 +44,26 @@
                     <div class="form-group">
                         <label for="quantity" style="color: #333;">Quantity:</label>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" onclick="decrementQuantity()"
+                            <button type="button" id="decrementButton"
                                 class="btn btn-outline-secondary rounded-circle">-</button>
                             <input type="number" name="quantity" id="quantity" value="1" min="1"
                                 max="@Model.QuantityInStock" class="form-control text-center"
                                 style="width: 80px; border-radius: 10px;" readonly />
-                            <button type="button" onclick="incrementQuantity()"
+                            <button type="button" id="incrementButton"
                                 class="btn btn-outline-secondary rounded-circle">+</button>
                         </div>
                         <small class="text-muted d-block mt-2">Available stock: @Model.QuantityInStock</small>
-                        <div id="stockWarning" class="alert alert-warning mt-2" style="display: none;"></div>
+                        <div id="stockWarning" class="alert rounded mt-2 p-2"
+                            style="display: none; background-color: #fbeae9; color: #be3144; border: 1px solid #be3144;">
+                        </div>
                     </div>
 
                     @if (Model.QuantityInStock <= 0)
                     {
-                        <button type="submit" class="btn btn-primary rounded mt-3" disabled>Add to Cart</button>
-                        <div class="alert alert-warning mt-2">
+                        <button type="submit" class="btn rounded mt-3"
+                            style="background-color: #be3144; color: white; border: none;" disabled>Add to Cart</button>
+                        <div class="alert rounded mt-3 p-3"
+                            style="background-color: #fbeae9; color: #be3144; border: 1px solid #be3144;">
                             This product is currently out of stock.
                         </div>
                     }
@@ -74,95 +78,53 @@
             </div>
         </div>
     </div>
-
-    <div class="mt-4 p-4 rounded shadow" style="background-color: #ffffff;">
-        <h3 style="color: #be3144;">Rate the Product</h3>
-        @if (User?.Identity != null && User.Identity.IsAuthenticated)
-        {
-            <form asp-action="AddRating" asp-controller="Product" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="ProductId" value="@Model.Id" />
-                <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
-
-                <div id="rating" class="d-flex">
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
-                    }
-                </div>
-
-                <button type="submit" class="btn btn-primary rounded mt-3" style="background-color: #be3144;">Submit
-                    Rating</button>
-            </form>
-        }
-        else
-        {
-            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
-                    style="color: #be3144;">login</a> to rate the product.</p>
-        }
-    </div>
-
-    <div class="mt-4 p-4 rounded shadow" style="background-color: #ffffff;">
-        <h3 style="color: #be3144;">Comments</h3>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <form asp-action="AddComment" asp-controller="Product" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="ProductId" value="@Model.Id" />
-                <div class="form-group">
-                    <textarea name="CommentText" class="form-control rounded" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary rounded mt-3" style="background-color: #be3144;">Add
-                    Comment</button>
-            </form>
-        }
-        else
-        {
-            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
-                    style="color: #be3144;">login</a> to add a comment.</p>
-        }
-    </div>
 </div>
 
 @section Scripts {
     <script>
         const quantityInput = document.getElementById('quantity');
+        const decrementButton = document.getElementById('decrementButton');
+        const incrementButton = document.getElementById('incrementButton');
         const warningDiv = document.getElementById('stockWarning');
         const maxStock = @Model.QuantityInStock;
 
         function showWarning(message) {
             warningDiv.textContent = message;
             warningDiv.style.display = 'block';
-            setTimeout(() => warningDiv.style.display = 'none', 3000);
+            setTimeout(() => {
+                warningDiv.style.display = 'none';
+            }, 3000);
         }
 
-        function incrementQuantity() {
+        decrementButton.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+                incrementButton.disabled = false; // Enable increment button when decrementing
+            } else {
+                showWarning('Minimum quantity is 1');
+            }
+        });
+
+        incrementButton.addEventListener('click', () => {
             const currentValue = parseInt(quantityInput.value);
             if (currentValue < maxStock) {
                 quantityInput.value = currentValue + 1;
             } else {
                 showWarning(`Maximum available stock is ${maxStock}`);
+                incrementButton.disabled = true; // Disable increment button when max stock is reached
             }
-        }
-
-        function decrementQuantity() {
-            const currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-            } else {
-                showWarning('Minimum quantity is 1');
-            }
-        }
-
-        document.querySelectorAll('.star').forEach(star => {
-            star.addEventListener('click', () => {
-                const value = star.getAttribute('data-value');
-                document.getElementById('selectedRating').value = value;
-                document.querySelectorAll('.star').forEach(s => s.style.color = '#ccc');
-                for (let i = 1; i <= value; i++) {
-                    document.querySelector(`.star[data-value="${i}"]`).style.color = 'gold';
-                }
-            });
         });
+
+        // Reset increment button state if quantity is manually adjusted
+        quantityInput.addEventListener('input', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue >= maxStock) {
+                incrementButton.disabled = true;
+            } else {
+                incrementButton.disabled = false;
+            }
+        }
+        );
     </script>
 }
