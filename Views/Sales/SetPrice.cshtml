@@ -1,0 +1,46 @@
+@* Views/Sales/SetPrice.cshtml *@
+@model e_commerce.Models.Product
+@{
+    ViewData["Title"] = "Set Price";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2>Set Price for @Model.Name</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="SetPrice" method="post">
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="mb-3">
+                    <label class="form-label">Book Name:</label>
+                    <input class="form-control" value="@Model.Name" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Author:</label>
+                    <input class="form-control" value="@Model.Author" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Current Price:</label>
+                    <input class="form-control" value="@Model.Price.ToString("C")" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">New Price:</label>
+                    <input type="number" name="price" class="form-control" value="@Model.Price" step="0.01" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                
+                @Html.AntiForgeryToken()
+                
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Update Price</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

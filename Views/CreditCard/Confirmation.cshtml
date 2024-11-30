@@ -1,0 +1,56 @@
+@model Order
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-success">Order Confirmed!</h2>
+            <p class="card-text">Thank you for your order. A confirmation email has been sent to your email address.</p>
+            
+            <div class="mt-4">
+                <h4>Order Information</h4>
+                <p>Order ID: @Model.Id</p>
+                <p>Order Date: @Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</p>
+                <p>Status: @Model.OrderStatus</p>
+            </div>
+
+            <div class="mt-4">
+                <h4>Order Items</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.UnitPrice.ToString("C")</td>
+                                <td>@item.TotalPrice.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                            <td><strong>@Model.TotalAmount.ToString("C")</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> Please check your email for the order confirmation and invoice details.
+            </div>
+
+            <div class="mt-4">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
