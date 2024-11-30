@@ -1,0 +1,36 @@
+@model e_commerce.Models.CreditCard
+
+<h2>Enter Credit Card Information</h2>
+
+<form asp-action="SaveCreditCard" method="post">
+    <div>
+        <label>Card Number:</label>
+        <input type="text" asp-for="CardNumber" required />
+        <span asp-validation-for="CardNumber" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Card Holder Name:</label>
+        <input type="text" asp-for="CardHolderName" required />
+        <span asp-validation-for="CardHolderName" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Expiration Month:</label>
+        <input type="number" asp-for="ExpirationMonth" required min="1" max="12" />
+        <span asp-validation-for="ExpirationMonth" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Expiration Year:</label>
+        <input type="number" asp-for="ExpirationYear" required min="2024" />
+        <span asp-validation-for="ExpirationYear" class="text-danger"></span>
+    </div>
+    <div>
+    <label>CVV:</label>
+    <input type="text" asp-for="CVV" required />
+    <span asp-validation-for="CVV" class="text-danger"></span>
+</div>
+    <button type="submit">Submit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

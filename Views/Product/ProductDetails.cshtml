@@ -1,0 +1,262 @@
+@model e_commerce.Models.Product
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center" style="color: #be3144;">@Model.Name</h1>
+    <div class="row">
+        <div class="col-md-6 text-center" style="margin-top: 20px;">
+            @{
+                string imageUrl = Model.Name switch
+                {
+                    "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
+                    "Anna Karenina" => "/images/anna-karenina.jpg",
+                    "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
+                    "Brave New World" => "/images/brave-new-world.jpg",
+                    "Notre Dame'ın Kamburu" => "/images/Notre-Dame.jpg",
+                    "Dune" => "/images/Dune.jpg",
+                    "Frankenstein" => "/images/frankenstein.jpg",
+                    "babam beni şahdamarımdan öptü" => "/images/Babam-beni-sah.jpg",
+                    "Pride and Prejudice" => "/images/Pride-prejiduce.jpg",
+                    "Little Women" => "/images/Little-women.jpg",
+                    _ => "/images/default-book.jpg"
+                };
+            }
+            <img src="@imageUrl" alt="@Model.Name" class="img-fluid shadow"
+                style="max-height: 500px; object-fit: contain; border-radius: 20px;" />
+        </div>
+        <div class="col-md-6" style="margin-top: 20px;">
+            <div class="p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+                <h2 style="color: #be3144;">Details</h2>
+                <p><strong>Author:</strong> @Model.Author</p>
+                <p><strong>Price:</strong> <span style="color: #be3144;">$@Model.Price</span></p>
+                <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
+                <p><strong>Description:</strong> @Model.Description</p>
+                <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
+                <p><strong>Genre:</strong> @Model.Genre</p>
+                <p><strong>Warranty Status:</strong> @(Model.WarrantyStatus ? "Yes" : "No")</p>
+                <p><strong>Distributor Information:</strong> @Model.DistributorInformation</p>
+
+                <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="price" value="@Model.Price" />
+                    <div class="form-group">
+                        <label for="quantity" style="color: #333;">Quantity:</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" id="decrementButton" class="btn btn-outline-secondary rounded-circle">-</button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1" max="@Model.QuantityInStock"
+                                class="form-control text-center" style="width: 80px; border-radius: 15px;" readonly />
+                            <button type="button" id="incrementButton" class="btn btn-outline-secondary rounded-circle">+</button>
+                        </div>
+                        <small class="text-muted d-block mt-2">Available stock: @Model.QuantityInStock</small>
+                        <div id="stockWarning" class="alert mt-2 p-2"
+                            style="display: none; background-color: #fbeae9; color: #be3144; border: 1px solid #be3144; border-radius: 15px;">
+                        </div>
+                    </div>
+
+                    @if (Model.QuantityInStock <= 0)
+                    {
+                        <button type="submit" class="btn rounded mt-3"
+                            style="background-color: #be3144; color: white; border: none;" disabled>Add to Cart</button>
+                        <div class="alert mt-3 p-3"
+                            style="background-color: #fbeae9; color: #be3144; border: 1px solid #be3144; border-radius: 15px;">
+                            This product is currently out of stock.
+                        </div>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary rounded mt-3"
+                            style="background-color: #be3144; border: none; border-radius: 15px;">Add to Cart</button>
+                    }
+                </form>
+
+                <a href="@Url.Action("Index", "Home")" class="btn btn-secondary rounded mt-3"
+                    style="border-radius: 15px;">Back to List</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Summary Section -->
+    <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+        <h3 style="color: #be3144;">Rating Summary</h3>
+        @if (ViewBag.TotalRatings > 0)
+        {
+            <div class="rating-summary">
+                <h4>Average Rating: @ViewBag.AverageScore.ToString("F1") / 5</h4>
+                <p>Based on @ViewBag.TotalRatings ratings</p>
+
+                @foreach (var rating in ViewBag.RatingDistribution)
+                {
+                    var percentage = ViewBag.TotalRatings > 0 ? (rating.Value * 100.0 / ViewBag.TotalRatings) : 0;
+                    <div class="rating-bar d-flex align-items-center gap-2 mb-2">
+                        <span style="min-width: 70px;">@rating.Key stars</span>
+                        <div class="progress flex-grow-1" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: @percentage%; background-color: #be3144;"
+                                 aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                @rating.Value
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No ratings yet</p>
+        }
+    </div>
+
+    <!-- Rate the Product Section -->
+    <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+        <h3 style="color: #be3144;">Rate this Product</h3>
+        @if (User?.Identity != null && User.Identity.IsAuthenticated)
+        {
+            @if (ViewBag.HasPurchased)
+            {
+                <form asp-action="AddRating" asp-controller="Product" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ProductId" value="@Model.Id" />
+                    <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
+
+                    <div id="rating" class="d-flex">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-primary rounded mt-3"
+                        style="background-color: #be3144; border-radius: 15px;">Submit Rating</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info" style="border-radius: 15px;">
+                    You can rate this product after purchasing it.
+                </div>
+            }
+        }
+        else
+        {
+            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
+                    style="color: #be3144;">login</a> to rate the product.</p>
+        }
+    </div>
+
+    <!-- Comments Section -->
+    <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+        <h3 style="color: #be3144;">Comments</h3>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="AddComment" asp-controller="Product" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.Id" />
+                <div class="form-group">
+                    <textarea name="CommentText" class="form-control rounded" rows="3" required
+                        style="border-radius: 15px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary rounded mt-3"
+                    style="background-color: #be3144; border-radius: 15px;">Add Comment</button>
+            </form>
+        }
+        else
+        {
+            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
+                    style="color: #be3144;">login</a> to add a comment.</p>
+        }
+
+        <!-- Display Comments -->
+        <div class="mt-4">
+            <h4 style="color: #be3144;">User Reviews (@ViewBag.TotalComments)</h4>
+            @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
+            {
+                <div class="card mt-2 shadow" style="border-radius: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">@comment.UserName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
+                        <p class="card-text">@comment.CommentText</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Quantity control script
+        const quantityInput = document.getElementById('quantity');
+        const decrementButton = document.getElementById('decrementButton');
+        const incrementButton = document.getElementById('incrementButton');
+        const warningDiv = document.getElementById('stockWarning');
+        const maxStock = @Model.QuantityInStock;
+
+        function showWarning(message) {
+            warningDiv.textContent = message;
+            warningDiv.style.display = 'block';
+            setTimeout(() => warningDiv.style.display = 'none', 3000);
+        }
+
+        decrementButton.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+                incrementButton.disabled = false;
+            } else {
+                showWarning('Minimum quantity is 1');
+            }
+        });
+
+        incrementButton.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue < maxStock) {
+                quantityInput.value = currentValue + 1;
+            } else {
+                showWarning(`Maximum available stock is ${maxStock}`);
+                incrementButton.disabled = true;
+            }
+        });
+
+        // Star rating script
+        const stars = document.querySelectorAll('.star');
+        const selectedRatingInput = document.getElementById('selectedRating');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const value = this.getAttribute('data-value');
+                highlightStars(value);
+            });
+
+            star.addEventListener('mouseout', function() {
+                const selectedValue = selectedRatingInput.value;
+                highlightStars(selectedValue);
+            });
+
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                selectedRatingInput.value = value;
+                highlightStars(value);
+            });
+        });
+
+        function highlightStars(value) {
+            stars.forEach(star => {
+                const starValue = star.getAttribute('data-value');
+                if (starValue <= value) {
+                    star.style.color = '#be3144';
+                } else {
+                    star.style.color = '#ccc';
+                }
+            });
+        }
+    </script>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            alert('@TempData["ErrorMessage"]');
+        </script>
+    }
+}
