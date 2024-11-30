@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Linq;
 using e_commerce.Services;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace e_commerce.Controllers
 {
@@ -95,6 +97,20 @@ namespace e_commerce.Controllers
                         return View("EnterCreditCard", creditCard);
                     }
                 }
+
+                // Hash kredi kartı bilgilerini
+                string HashCreditCardInfo(CreditCard creditCard)
+                {
+                    using (var sha256 = SHA256.Create())
+                    {
+                        var input = $"{creditCard.CardNumber}{creditCard.CardHolderName}{creditCard.ExpirationMonth}{creditCard.ExpirationYear}";
+                        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                        return Convert.ToBase64String(hashBytes);
+                    }
+                }
+
+                // Kredi kartı bilgilerini hashle
+                creditCard.CardNumber = HashCreditCardInfo(creditCard);
 
                 // Save credit card
                 await _creditCardRepository.InsertOneAsync(creditCard);
