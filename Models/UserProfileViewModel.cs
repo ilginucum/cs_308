@@ -18,5 +18,6 @@ namespace e_commerce.Models
         [Phone]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+        public List<ProfileAddress> Addresses { get; set; } = new List<ProfileAddress>();
     }
 }

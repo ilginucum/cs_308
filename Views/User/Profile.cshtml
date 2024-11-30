@@ -1,42 +1,351 @@
 @model e_commerce.Models.UserProfileViewModel
+@Html.AntiForgeryToken()
 
-<h2>User Profile</h2>
+<style>
+    .custom-card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    
+    .custom-card .card-header {
+        background-color: #fff;
+        border-bottom: 2px solid #be3144;
+        border-radius: 10px 10px 0 0;
+    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
+    .custom-card .card-header h5 {
+        color: #952735;
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        background-color: #be3144;
+        border-color: #be3144;
+    }
+
+    .btn-primary:hover {
+        background-color: #952735;
+        border-color: #952735;
+    }
+
+    .btn-outline-primary {
+        color: #be3144;
+        border-color: #be3144;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #be3144;
+        border-color: #be3144;
+        color: #fff;
+    }
+
+    .alert-success {
+        background-color: #e6e6e6;
+        border-color: #dc7986;
+        color: #952735;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Profile Information Card -->
+            <div class="card custom-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label">Full Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="FullName" class="form-control" />
+                                </div>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                    <input asp-for="Username" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input asp-for="Email" class="form-control" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                </div>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary float-end">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Addresses Card -->
+            <div class="card custom-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>My Addresses</h5>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                        <i class="fas fa-plus me-2"></i>Add New Address
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (Model.Addresses != null && Model.Addresses.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var address in Model.Addresses)
+                            {
+                                <div class="col-12">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2">
+                                                <i class="fas fa-map-marker-alt me-2"></i>@address.StreetAddress
+                                            </h6>
+                                            <p class="card-text text-muted">
+                                                @address.City, @address.State @address.ZipCode
+                                            </p>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-outline-primary btn-sm" 
+                                                        onclick="editAddress('@address.Id')">
+                                                    <i class="fas fa-edit me-1"></i>Edit
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                        onclick="deleteAddress('@address.Id')">
+                                                    <i class="fas fa-trash me-1"></i>Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No addresses added yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-}
+</div>
 
-<form asp-action="UpdateProfile" method="post">
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
+<!-- Add/Edit Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalTitle">Add New Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm" onsubmit="return false;">
+                    <input type="hidden" id="addressId" />
+                    <div class="mb-3">
+                        <label for="streetAddress" class="form-label">Street Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-home"></i></span>
+                            <input type="text" class="form-control" id="streetAddress" required />
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                <input type="text" class="form-control" id="city" required />
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="state" class="form-label">State</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-map"></i></span>
+                                <input type="text" class="form-control" id="state" required />
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="zipCode" class="form-label">ZIP Code</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-pin"></i></span>
+                            <input type="text" class="form-control" id="zipCode" required 
+                                   pattern="\d{5}(-\d{4})?" 
+                                   title="Please enter a valid ZIP code (e.g., 12345 or 12345-6789)" />
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveAddress()">
+                    <i class="fas fa-save me-2"></i>Save Address
+                </button>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Profile</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function clearValidationErrors() {
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').empty();
+        }
+
+        function showValidationErrors(errors) {
+            Object.keys(errors).forEach(key => {
+                const fieldId = key.charAt(0).toLowerCase() + key.slice(1);
+                const input = $(`#${fieldId}`);
+                input.addClass('is-invalid');
+                input.siblings('.invalid-feedback').text(errors[key][0]);
+            });
+        }
+
+       function editAddress(id) {
+            clearValidationErrors();
+            fetch(`/User/GetAddress/${id}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Address data:', data); // Debug log
+                    $('#addressId').val(data.id);
+                    $('#streetAddress').val(data.streetAddress);
+                    $('#city').val(data.city);
+                    $('#state').val(data.state);
+                    $('#zipCode').val(data.zipCode);
+                    $('#addressModalTitle').html('<i class="fas fa-edit me-2"></i>Edit Address');
+                    $('#addAddressModal').modal('show');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading address details');
+                });
+        }
+
+        function deleteAddress(id) {
+            if (confirm('Are you sure you want to delete this address?')) {
+                fetch(`/User/DeleteAddress?id=${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting address');
+                });
+            }
+        }
+
+            function saveAddress() {
+            clearValidationErrors();
+            
+            const addressData = {
+                streetAddress: $('#streetAddress').val().trim(),
+                city: $('#city').val().trim(),
+                state: $('#state').val().trim(),
+                zipCode: $('#zipCode').val().trim()
+            };
+
+            const id = $('#addressId').val();
+            const url = id ? '/User/UpdateAddress' : '/User/AddAddress';
+            
+            if (id) {
+                addressData.id = id; // Add ID for updates
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify(addressData)
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error saving address');
+                }
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.errors) {
+                    showValidationErrors(error.errors);
+                } else {
+                    alert(error.message || 'Error saving address');
+                }
+            });
+        }
+
+        // Add this helper function if not already present
+        function clearValidationErrors() {
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').empty();
+        }
+
+        $('#addAddressModal').on('show.bs.modal', function() {
+            clearValidationErrors();
+        });
+
+        $('#addAddressModal').on('hidden.bs.modal', function() {
+            $('#addressForm')[0].reset();
+            $('#addressId').val('');
+            $('#addressModalTitle').html('<i class="fas fa-plus-circle me-2"></i>Add New Address');
+            clearValidationErrors();
+        });
+    </script>
 }

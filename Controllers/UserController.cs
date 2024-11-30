@@ -9,17 +9,20 @@ using e_commerce.Data;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using e_commerce.DTO;
 
 namespace e_commerce.Controllers
 {
     public class UserController : Controller
     {
         private readonly IMongoDBRepository<UserRegistration> _userRepository;
+        private readonly IMongoDBRepository<ProfileAddress> _addressRepository;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IMongoDBRepository<UserRegistration> userRepository, ILogger<UserController> logger)
+        public UserController(IMongoDBRepository<UserRegistration> userRepository, IMongoDBRepository<ProfileAddress> addressRepository, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
+            _addressRepository = addressRepository;
             _logger = logger;
         }
 
@@ -130,64 +133,205 @@ namespace e_commerce.Controllers
             return HashPassword(inputPassword) == storedHash;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Profile()
+       [HttpGet]
+    [Authorize(Roles = "Customer")]
+    public async Task<IActionResult> Profile()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userRepository.FindByIdAsync(userId);
+        if (user == null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userRepository.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var model = new UserProfileViewModel
-            {
-                FullName = user.FullName,
-                Email = user.Email,
-                Username = user.Username,
-                PhoneNumber = user.PhoneNumber
-            };
-
-            return View(model);
+            return NotFound();
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Customer")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        // Get user's addresses using FilterByAsync instead of FilterAsync
+        var addresses = await _addressRepository.FilterByAsync(a => a.UserId == userId);
+
+        var model = new UserProfileViewModel
         {
-            if (!ModelState.IsValid)
-            {
-                return View("Profile", model);
-            }
+            FullName = user.FullName,
+            Email = user.Email,
+            Username = user.Username,
+            PhoneNumber = user.PhoneNumber,
+            Addresses = addresses.ToList()
+        };
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userRepository.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
+        return View(model);
+    }
+    [HttpPost]
+[Authorize(Roles = "Customer")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        return View("Profile", model);
+    }
 
-            user.FullName = model.FullName;
-            user.Email = model.Email;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Username = model.Username;
-
-            try
-            {
-                await _userRepository.ReplaceOneAsync(user);
-                TempData["SuccessMessage"] = "Profile updated successfully.";
-                _logger.LogInformation($"User profile updated successfully: {user.Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while updating user profile: {user.Id}");
-                ModelState.AddModelError("", "An error occurred while updating the profile. Please try again.");
-                return View("Profile", model);
-            }
-
-            return RedirectToAction(nameof(Profile));
+    try
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userRepository.FindByIdAsync(userId);
+        
+        if (user == null)
+        {
+            return NotFound();
         }
+
+        user.FullName = model.FullName;
+        user.Email = model.Email;
+        user.PhoneNumber = model.PhoneNumber;
+        // Don't update Username as it should remain unchanged
+        
+        await _userRepository.ReplaceOneAsync(user);
+        
+        TempData["SuccessMessage"] = "Profile updated successfully.";
+        _logger.LogInformation($"User profile updated successfully: {userId}");
+        
+        return RedirectToAction(nameof(Profile));
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error occurred while updating user profile");
+        ModelState.AddModelError("", "An error occurred while updating the profile. Please try again.");
+        return View("Profile", model);
+    }
+}
+
+[HttpPost]
+[Authorize(Roles = "Customer")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> AddAddress([FromBody] AddressDto dto)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(new { errors = ModelState });
+    }
+
+    try
+    {
+        // Log the received data for debugging
+        _logger.LogInformation($"Received AddressDto: {System.Text.Json.JsonSerializer.Serialize(dto)}");
+
+        var address = new ProfileAddress
+        {
+            StreetAddress = dto.StreetAddress,
+            City = dto.City,
+            State = dto.State,
+            ZipCode = dto.ZipCode,
+            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+        };
+
+        // Log the created address object
+        _logger.LogInformation($"Created ProfileAddress: {System.Text.Json.JsonSerializer.Serialize(address)}");
+
+        await _addressRepository.InsertOneAsync(address);
+        
+        TempData["SuccessMessage"] = "Address added successfully.";
+        return Ok();
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error occurred while adding address");
+        return StatusCode(500, new { message = "An error occurred while adding the address." });
+    }
+}
+
+[HttpPost]
+[Authorize(Roles = "Customer")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateAddress([FromBody] UpdateAddressDto dto)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(new { errors = ModelState });
+    }
+
+    try
+    {
+        // Log the received data for debugging
+        _logger.LogInformation($"Received UpdateAddressDto: {System.Text.Json.JsonSerializer.Serialize(dto)}");
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var existingAddress = await _addressRepository.FindOneAsync(a => 
+            a.Id == dto.Id && a.UserId == userId);
+
+        if (existingAddress == null)
+        {
+            return NotFound(new { message = "Address not found" });
+        }
+
+        existingAddress.StreetAddress = dto.StreetAddress;
+        existingAddress.City = dto.City;
+        existingAddress.State = dto.State;
+        existingAddress.ZipCode = dto.ZipCode;
+        // UserId remains unchanged
+
+        // Log the updated address object
+        _logger.LogInformation($"Updating address to: {System.Text.Json.JsonSerializer.Serialize(existingAddress)}");
+
+        await _addressRepository.ReplaceOneAsync(existingAddress);
+        
+        TempData["SuccessMessage"] = "Address updated successfully.";
+        return Ok();
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error occurred while updating address: {dto.Id}");
+        return StatusCode(500, new { message = "An error occurred while updating the address." });
+    }
+}
+
+[HttpPost]
+[Authorize(Roles = "Customer")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteAddress(string id)
+{
+    try
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var address = await _addressRepository.FindOneAsync(a => 
+            a.Id == id && a.UserId == userId);
+
+        if (address == null)
+        {
+            return NotFound(new { message = "Address not found" });
+        }
+
+        await _addressRepository.DeleteOneAsync(id);
+        
+        TempData["SuccessMessage"] = "Address deleted successfully.";
+        return Ok();
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error occurred while deleting address: {id}");
+        return StatusCode(500, new { message = "An error occurred while deleting the address." });
+    }
+}
+
+[HttpGet]
+[Authorize(Roles = "Customer")]
+public async Task<IActionResult> GetAddress(string id)
+{
+    try
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var address = await _addressRepository.FindOneAsync(a => 
+            a.Id == id && a.UserId == userId);
+
+        if (address == null)
+        {
+            return NotFound(new { message = "Address not found" });
+        }
+
+        return Json(address);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error occurred while getting address: {id}");
+        return StatusCode(500, new { message = "An error occurred while getting the address." });
+    }
+}
     }
 }

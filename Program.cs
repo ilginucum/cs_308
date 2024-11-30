@@ -74,6 +74,13 @@ builder.Services.AddScoped<IMongoDBRepository<Order>>(sp =>
        sp.GetRequiredService<ILogger<MongoDBRepository<Order>>>()
    ));
 
+builder.Services.AddScoped<IMongoDBRepository<ProfileAddress>>(sp =>
+   new MongoDBRepository<ProfileAddress>(
+       sp.GetRequiredService<IConfiguration>(),
+       "ProfileAddress",
+       sp.GetRequiredService<ILogger<MongoDBRepository<ProfileAddress>>>()
+   ));
+
 // Add session support
 builder.Services.AddSession(options =>
 {
