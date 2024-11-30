@@ -1,406 +1,145 @@
 @model e_commerce.Models.ShoppingCart
-@{
-    Layout = null;
-}
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        .cart-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #ffffff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo-container img {
-            max-height: 50px;
-        }
-
-        .nav {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-link {
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 5px;
-            background-color: #be3144;
-            text-decoration: none;
-        }
-
-        /* Overall container for the navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            /* Distribute space between items */
-            align-items: center;
-            /* Vertically align the items in the center */
-            padding: 20px;
-            /* Add some padding to the navbar */
-        }
-
-
-        .nav-button {
-            background-color: #be3144;  
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 0 10px;
-      
-            border-radius: 5px;
-   
-        }
-
-        .nav-button a{
-            text-decoration: none;
-            color: white;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-
-        .nav-button:hover {
-            background-color: #be3144;
-         
-        }
-
-      
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-
-        .search-bar input {
-            padding: 10px;
-            font-size: 1rem;
-            width: 200px;
-            /* Set width of search input */
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .search-bar button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #be3144;
-            /* Match the button color */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-            /* Space between input and button */
-        }
-
-        .search-bar button:hover {
-            background-color: #be3144;
-            
-        }
-        .nav-link:hover {
-            background-color: #be3144;
-        }
-
-        .main-container {
-            padding: 2rem;
-        }
-
-        .cart-detail {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .cart-table th,
-        .cart-table td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .cart-table th {
-            background-color: #be3144;
-            color: #ffffff;
-        }
-
-        .cart-item-img {
-            max-width: 80px;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .btn-rounded {
-            background-color: #be3144;
-            color: #ffffff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .btn-rounded:hover {
-            background-color: #952735;
-        }
-
-        .cart-summary {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .gift-card {
-            margin-top: 2rem;
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #f5f5f5;
-            color: #777;
-        }
-        footerx {
-            color: #333;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-        }
-
-        .footer-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            text-align: center;
-        }
-
-        .signup {
-            margin-bottom: 20px;
-        }
-
-        .signup label {
-            font-size: 1.2rem;
-            color: #333;
-            margin-right: 10px;
-        }
-
-        .signup input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        .signup button {
-            background-color: #333;
-            /* Dark button color */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        .signup button:hover {
-            background-color: #555;
-            /* Hover effect */
-        }
-
-        .social-media {
-            margin-bottom: 20px;
-        }
-
-        .social-media span {
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .icons i {
-            font-size: 1.5rem;
-            margin: 0 10px;
-            cursor: pointer;
-        }
-
-        .icons i:hover {
-            color: #ff6347;
-            /* Example color for hover effect */
-        }
-
-        .links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .links a {
-            text-decoration: none;
-            color: #333;
-            font-size: 1rem;
-        }
-
-        .links a:hover {
-            color: #ff6347;
-            /* Color on hover */
-        }
-    </style>
-   
-</head>
-
-<body>
-    <!-- Main Header -->
-    <header class="cart-header">
-        <div class="logo-container">
-            <img src="/images/bookery-logo-black.png" alt="Bookery Logo" />
-        </div>
-
-            <div class="navbar">
-                <button class="nav-button"><a href="@Url.Action("Index", "Home")">Home</a></button>
-                <button class="nav-button"><a href="@Url.Action("NewBooks", "Home")">New Books</a></button>
-                <button class="nav-button"><a href="@Url.Action("Sales", "Home")">Sales</a></button>
-                <button class="nav-button"><a href="@Url.Action("Login", "User")">Login</a></button>
-
-            </div>
-        <div class="search-bar">
-            <input type="text" id="search" placeholder="Search...">
-            <button type="submit">Search</button>
-        </div>
-
-        </header>
-   
-
-    <!-- Main Content -->
-    <div class="main-container">
-        <!-- Cart Details -->
-        <div class="cart-detail">
-            <h2>Cart Details</h2>
-            @if (Model.Items.Any())
-            {
-                <table class="cart-table">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Book Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Items)
+<!-- Content kısmı -->
+<div class="main-container">
+    <!-- Cart Details -->
+    <div class="cart-detail">
+        <h2>Cart Details</h2>
+        @if (Model.Items.Any())
+        {
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Book Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        string imageUrl = item.ProductName switch
                         {
-                            string imageUrl = item.ProductName switch
-                            {
-                                "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
-                                "Sefiller" => "/images/les-miserables.jpg",
-                                "Anna Karenina" => "/images/anna-karenina.jpg",
-                                "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
-                                "Brave New World" => "/images/brave-new-world.jpg",
-                                _ => "/images/default-book.jpg"
-                            };
+                            "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
+                            "Sefiller" => "/images/les-miserables.jpg",
+                            "Anna Karenina" => "/images/anna-karenina.jpg",
+                            "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
+                            "Brave New World" => "/images/brave-new-world.jpg",
+                            _ => "/images/default-book.jpg"
+                        };
 
-                            <tr>
-                                <td><img src="@imageUrl" class="cart-item-img" alt="@item.ProductName"></td>
-                                <td>@item.ProductName</td>
-                                <td>$@item.UnitPrice</td>
-                                <td>
-                                    <form asp-controller="ShoppingCart" asp-action="UpdateQuantity" method="post">
-                                        <input type="hidden" name="cartItemId" value="@item.Id" />
-                                        <button type="submit" name="change" value="-1" class="btn-rounded">-</button>
-                                        @item.QuantityInCart
-                                        <button type="submit" name="change" value="1" class="btn-rounded">+</button>
-                                    </form>
-                                </td>
-                                <td>$@(item.QuantityInCart * item.UnitPrice)</td>
-                                <td>
-                                    <form asp-controller="ShoppingCart" asp-action="RemoveFromCart" method="post">
-                                        <input type="hidden" name="cartItemId" value="@item.Id" />
-                                        <button type="submit" class="btn-rounded">Remove</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>Your cart is empty.</p>
-            }
-        </div>
-
-        <!-- Cart Summary -->
-        <div class="cart-summary">
-            <h2>Cart Summary</h2>
-            <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice)</p>
-            <button class="btn-rounded" onclick="location.href='/Checkout/Address'">Proceed to Checkout</button>
-        </div>
+                        <tr>
+                            <td><img src="@imageUrl" class="cart-item-img" alt="@item.ProductName"></td>
+                            <td>@item.ProductName</td>
+                            <td>$@item.UnitPrice</td>
+                            <td>
+                                <form asp-controller="ShoppingCart" asp-action="UpdateQuantity" method="post">
+                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                    <button type="submit" name="change" value="-1" class="btn-rounded">-</button>
+                                    @item.QuantityInCart
+                                    <button type="submit" name="change" value="1" class="btn-rounded">+</button>
+                                </form>
+                            </td>
+                            <td>$@(item.QuantityInCart * item.UnitPrice)</td>
+                            <td>
+                                <form asp-controller="ShoppingCart" asp-action="RemoveFromCart" method="post">
+                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                    <button type="submit" class="btn-rounded">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Your cart is empty.</p>
+        }
     </div>
 
-    <!-- Gift Card Section -->
-    <div class="gift-card">
-        <label>
-            <input type="checkbox"> Use Gift Card
-        </label>
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+        <h2>Cart Summary</h2>
+        <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice)</p>
+        <button class="btn-rounded" onclick="location.href='/Checkout/Address'">Proceed to Checkout</button>
     </div>
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="signup">
-                <label for="email">Sign up</label>
-                <input type="email" id="email" placeholder="Enter your email">
-                <button>Add</button>
-            </div>
-            <div class="social-media">
-                <span>Follow us</span>
-                <div class="icons">
-                    <i class="icon-facebook"></i>
-                    <i class="icon-twitter"></i>
-                    <i class="icon-instagram"></i>
-                </div>
-            </div>
-            <div class="links">
-                <a href="#">Sign in</a>
-                <a href="#">Forgot password</a>
-                <a href="#">Shipping</a>
-                <a href="#">Contact</a>
-            </div>
-        </div>
-    </footer>
+</div>
 
-</body>
+<!-- Gift Card Section -->
+<div class="gift-card">
+    <label>
+        <input type="checkbox"> Use Gift Card
+    </label>
+</div>
 
+<style>
+    .main-container {
+        padding: 2rem;
+    }
 
-</html>
+    .cart-detail {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .cart-table th,
+    .cart-table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .cart-table th {
+        background-color: #be3144;
+        color: #ffffff;
+    }
+
+    .cart-item-img {
+        max-width: 80px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .btn-rounded {
+        background-color: #be3144;
+        color: #ffffff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .btn-rounded:hover {
+        background-color: #952735;
+    }
+
+    .cart-summary {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .gift-card {
+        margin-top: 2rem;
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>

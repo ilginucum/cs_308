@@ -3,222 +3,220 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <div class="hero-content">
-        <div class="logo-container">
-            <img src="/images/bookery-logo-black.png" alt="Bookery - Discover Worlds Within Words" class="hero-logo">
+<!-- Hero Section -->
+<div class="hero-section">
+    <img src="~/images/hero-image.jpeg" alt="Bookery Hero Image" class="hero-image">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="display-4 fw-bold text-white">Welcome to Bookery</h1>
+            <p class="lead text-white mb-4">Find your next unforgettable read</p>
+            <a href="#productList" class="btn btn-light btn-lg px-4 smooth-scroll">Explore Books</a>
         </div>
-        <p class="hero-text">Discover your next favorite book</p>
     </div>
 </div>
 
-<style>
-    .text-center {
-        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
-        padding: 2rem 1rem;
-        margin-bottom: 2rem;
-        border-radius: 0 0 30px 30px;
-        box-shadow: 0 10px 30px rgba(190, 49, 68, 0.2);
-        position: relative;
-        overflow: hidden;
-    }
+<!-- Search Section -->
+<div class="container">
+    <div class="mt-4 mb-5">
+        <div class="search-section">
+            <div class="search-filters">
+                <!-- Search Bar Container -->
+                <div class="search-bar-container">
+                    <!-- Search Box -->
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="search-box">
+                            <div class="input-group">
+                                <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name, Author or Description">
+                                <button id="searchButton" class="btn btn-search">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
 
-    .logo-container {
-        margin: 0.5rem 0;
-        position: relative;
-    }
+                        <!-- Price Sort -->
+                        <select id="priceSort" class="form-select">
+                            <option value="">Sort by Price</option>
+                            <option value="asc">Lowest to Highest</option>
+                            <option value="desc">Highest to Lowest</option>
+                        </select>
 
-    .hero-logo {
-        max-width: 450px;
-        height: auto;
-        margin: 0 auto;
-        display: block;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-    }
+                        <!-- Popularity Sort -->
+                        <select id="popularitySort" class="form-select">
+                            <option value="">Sort by Popularity</option>
+                            <option value="asc">Lowest to Highest</option>
+                            <option value="desc">Highest to Lowest</option>
+                        </select>
 
-    .hero-content {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0;
-        position: relative;
-    }
-
-    .hero-text {
-        font-size: 1.4rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 1rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        font-weight: 500;
-        letter-spacing: 0.5px;
-    }
-</style>
-
-<div class="mt-4 search-section">
-    <h2 class="section-title">Our Products</h2>
-    
-    <div class="search-filters">
-        <div class="search-bar-container">
-            <!-- Search Box -->
-            <div class="search-box">
-                <div class="input-group">
-                    <input type="text" id="bookSearch" class="form-control" placeholder="Search by Book Name, Author or Description">
-                    <button id="searchButton" class="btn btn-search">
-                        Search
-                    </button>
-                </div>
-            </div>
-
-            <!-- Filter Options -->
-            <div class="filter-options">
-                <!-- Price Sort Dropdown -->
-                <select id="priceSort" class="form-select">
-                    <option value="">Sort by Price</option>
-                    <option value="asc">Lowest to Highest</option>
-                    <option value="desc">Highest to Lowest</option>
-                </select>
-
-                <!-- Popularity Sort Dropdown -->
-                <select id="popularitySort" class="form-select">
-                    <option value="">Sort by Popularity</option>
-                    <option value="asc">Lowest to Highest</option>
-                    <option value="desc">Highest to Lowest</option>
-                </select>
-
-                <!-- Genre Filter Dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-filter dropdown-toggle" type="button" id="genreFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Filter by Genre
-                    </button>
-                    <div class="dropdown-menu genre-dropdown" aria-labelledby="genreFilterDropdown">
-                        <div class="genre-options">
-                            @foreach (var genre in ViewBag.Genres)
-                            {
-                                <div class="form-check">
-                                    <input class="form-check-input genre-checkbox" type="checkbox" 
-                                           id="genre-@genre.Replace(" ", "-")" value="@genre">
-                                    <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
-                                        @genre
-                                    </label>
+                        <!-- Genre Filter -->
+                        <div class="dropdown">
+                            <button class="btn btn-filter dropdown-toggle" type="button" id="genreFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filter by Genre
+                            </button>
+                            <div class="dropdown-menu genre-dropdown" aria-labelledby="genreFilterDropdown">
+                                <div class="genre-options">
+                                    @foreach (var genre in ViewBag.Genres)
+                                    {
+                                        <div class="form-check">
+                                            <input class="form-check-input genre-checkbox" type="checkbox" 
+                                                id="genre-@genre.Replace(" ", "-")" value="@genre">
+                                            <label class="form-check-label" for="genre-@genre.Replace(" ", "-")">
+                                                @genre
+                                            </label>
+                                        </div>
+                                    }
                                 </div>
-                            }
+                                <div class="dropdown-divider"></div>
+                                <div class="filter-actions">
+                                    <button id="applyFilters" class="btn btn-primary btn-sm">Apply Filters</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="filter-actions">
-                            <button id="applyFilters" class="btn btn-primary btn-sm">Apply Filters</button>
-                        </div>
+
+                        <!-- Reset Filters -->
+                        <button id="resetAllFilters" class="btn btn-outline-secondary">
+                            Reset All Filters
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Product List -->
+    <div id="productList" class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4 product-item" 
+                 data-name="@product.Name" 
+                 data-author="@product.Author" 
+                 data-price="@product.Price"
+                 data-genre="@product.Genre"
+                 data-description="@product.Description"
+                 data-popularity="@(ViewBag.ProductPopularity != null && 
+                              ViewBag.ProductPopularity.ContainsKey(product.Id) ? 
+                              ViewBag.ProductPopularity[product.Id] : 0)">
+                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" 
+                   class="text-decoration-none text-dark">
+                    <div class="card h-100">
+                        @{
+                            string imageUrl = product.Name switch
+                            {
+                                "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
+                                "Anna Karenina" => "/images/anna-karenina.jpg",
+                                "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
+                                "Brave New World" => "/images/brave-new-world.jpg",
+                                "Notre Dame'ın Kamburu" => "/images/Notre-Dame.jpg",
+                                "Dune" => "/images/Dune.jpg",
+                                "Frankenstein" => "/images/frankenstein.jpg",
+                                "babam beni şahdamarımdan öptü" => "/images/Babam-beni-sah.jpg",
+                                "Pride and Prejudice" => "/images/Pride-prejiduce.jpg",
+                                "Little Women" => "/images/Little-women.jpg",
+                                _ => "/images/default-book.jpg"
+                            };
+                        }
+                        <img src="@imageUrl" class="card-img-top" alt="@product.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">@product.Description</p>
+                            <p class="card-text">Price: $@product.Price</p>
+                            <p class="card-text">In Stock: @product.QuantityInStock</p>
+                            <p class="card-text">Author: @product.Author</p>
+                            @if (!string.IsNullOrEmpty(product.Genre))
+                            {
+                                <p class="card-text">Genre: @product.Genre</p>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
 </div>
 
 <style>
+    /* Hero Section */
+    .hero-section {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7);
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+    }
+
+    .hero-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        z-index: 2;
+    }
+
+    /* Search Section */
     .search-section {
         background-color: white;
-        padding: 2.5rem;
-        border-radius: 24px;
-        box-shadow: 0 4px 30px rgba(0,0,0,0.08);
-        margin-bottom: 3rem;
-        position: relative;
-    }
-
-    .section-title {
-        font-size: 2.4rem;
-        font-weight: 700;
-        color: #2d3436;
-        margin-bottom: 2rem;
-        position: relative;
-        padding-bottom: 1rem;
-        text-align: center;
-    }
-
-    .section-title:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
-        border-radius: 2px;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
     .search-bar-container {
         display: flex;
-        gap: 1.2rem;
-        align-items: center;
-        flex-wrap: wrap;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 16px;
-    }
-    .section-title:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
-        border-radius: 2px;
-    }
-
-    .search-bar-container {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 2rem;
     }
 
     .search-box {
-        flex: 1;
-        min-width: 200px;
+        width: 250%;
     }
 
-    .filter-options {
+    .filter-row {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.8rem;
         align-items: center;
-    }
-
-    .input-group {
-        height: 40px;
+        flex-wrap: wrap;
     }
 
     .form-select, .btn-filter {
+        min-width: 150px;
         height: 40px;
-        padding: 0 1rem;
-        font-size: 0.9rem;
-        border-radius: 8px;
-        background-color: #f8f9fa;
-        border: 1px solid #e0e0e0;
     }
 
     .btn-search {
-        padding: 0 1rem;
         background-color: #be3144;
         color: white;
         border: none;
+        padding: 0.5rem 1.5rem;
     }
 
     .btn-search:hover {
         background-color: #952735;
-    }
-
-    .btn-filter {
-        white-space: nowrap;
-        background-color: #f8f9fa;
-        color: #333;
-        border: 1px solid #e0e0e0;
+        color: white;
     }
 
     .genre-dropdown {
         padding: 1rem;
         min-width: 200px;
-        max-height: 300px;
-        overflow-y: auto;
     }
 
     .genre-options {
@@ -226,147 +224,70 @@
         overflow-y: auto;
     }
 
-    .genre-options .form-check {
-        margin-bottom: 0.5rem;
-    }
-
     .filter-actions {
-        padding: 0.5rem;
-        text-align: right;
+        padding-top: 0.5rem;
     }
 
     #applyFilters {
         width: 100%;
+        background-color: #be3144;
+        border: none;
     }
 
-    .form-check-label {
-        cursor: pointer;
+    #applyFilters:hover {
+        background-color: #952735;
     }
 
-    /* Custom scrollbar for dropdowns */
-    .genre-options::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .genre-options::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    .genre-options::-webkit-scrollbar-thumb {
-        background: #be3144;
-        border-radius: 4px;
-    }
-</style>
-
-<div id="productList" class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4 mb-3 product-item" 
-             data-name="@product.Name" 
-             data-author="@product.Author" 
-             data-price="@product.Price"
-             data-genre="@product.Genre"
-             data-description="@product.Description" 
-             data-popularity="@(ViewBag.ProductPopularity != null && ViewBag.ProductPopularity.ContainsKey(product.Id) ? ViewBag.ProductPopularity[product.Id] : 0)">
-            <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="text-decoration-none text-dark">
-                <div class="card h-100">
-                    @{
-                        string imageUrl = product.Name switch
-                        {
-                            "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
-                            "Anna Karenina" => "/images/anna-karenina.jpg",
-                            "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
-                            "Brave New World" => "/images/brave-new-world.jpg",
-                            "Notre Dame'ın Kamburu" => "/images/Notre-Dame.jpg",
-                            "Dune" => "/images/Dune.jpg",
-                            "Frankenstein" => "/images/frankenstein.jpg",
-                            "babam beni şahdamarımdan öptü" => "/images/Babam-beni-sah.jpg",
-                            "Pride and Prejudice" => "/images/Pride-prejiduce.jpg",
-                            "Little Women" => "/images/Little-women.jpg",
-                            _ => "/images/default-book.jpg"
-                        };
-                    }
-                    <img src="@imageUrl" class="card-img-top" alt="@product.Name">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text">@product.Description</p>
-                        <p class="card-text">Price: $@product.Price</p>
-                        <p class="card-text">In Stock: @product.QuantityInStock</p>
-                        <p class="card-text">Author: @product.Author</p>
-                        @if (!string.IsNullOrEmpty(product.Genre))
-                        {
-                            <p class="card-text">Genre: @product.Genre</p>
-                        }
-                    </div>
-                </div>
-            </a>
-        </div>
-    }
-</div>
-
-<style>
+    /* Product Cards */
     .card {
         border: none;
-        border-radius: 16px;
-        transition: all 0.4s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        overflow: hidden;
-        background: linear-gradient(145deg, #ffffff, #f5f5f5);
-        position: relative;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 30px rgba(190, 49, 68, 0.15);
-    }
-
-    .card-body {
-        padding: 1.2rem;
-    }
-
-    .card-title {
-        color: #2d3436;
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 0.7rem;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
 
     .card-img-top {
-        width: 100%;
-        height: 200px;
+        height: 300px;
         object-fit: contain;
-        transition: transform 0.5s ease;
-        padding: 0.8rem;
-        background-color: rgba(255, 255, 255, 0.9);
+        padding: 1rem;
     }
 
-    .card:hover .card-img-top {
-        transform: scale(1.08);
-    }
+    @* @media (max-width: 768px) {
+        .filter-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
 
-    .card-text {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-        color: #555;
-        line-height: 1.4;
-    }
-
-
-    .btn-primary {
-        background: linear-gradient(135deg, #be3144 0%, #952735 100%);
-        border: none;
-        box-shadow: 0 4px 15px rgba(190, 49, 68, 0.2);
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #952735 0%, #7a1f2d 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(190, 49, 68, 0.3);
-    }
+        .form-select, .btn-filter, #resetAllFilters {
+            width: 100%;
+        }
+    } *@
 </style>
 
 @section Scripts {
     <script>
+        // Smooth scroll
+        document.querySelectorAll('.smooth-scroll').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Search and filter functionality
         $(document).ready(function() {
             function normalizeText(text) {
                 return text.toLocaleLowerCase('tr-TR')
@@ -383,7 +304,7 @@
             function filterAndSortProducts() {
                 var bookSearch = normalizeText($('#bookSearch').val()).toLowerCase();
                 var priceSort = $('#priceSort').val();
-                var popularitySort = $('#popularitySort').val(); // Popularity sıralaması için değer al
+                var popularitySort = $('#popularitySort').val();
                 var selectedGenres = $('.genre-checkbox:checked').map(function() {
                     return normalizeText($(this).val().toLowerCase());
                 }).get();
@@ -398,7 +319,6 @@
                     var description = normalizeText(($item.data('description') || '').toLowerCase());
                     var popularity = parseInt($item.data('popularity')) || 0;
                     
-                    
                     var matchesGenres = selectedGenres.length === 0 || 
                         (genre && selectedGenres.includes(genre));
                     
@@ -406,9 +326,7 @@
                         name.includes(term) || author.includes(term) || description.includes(term)
                     );
                     
-                    var showProduct = matchesName && matchesGenres;
-                    
-                    $item.toggle(showProduct);
+                    $item.toggle(matchesName && matchesGenres);
                 });
 
                 if (priceSort) {
@@ -420,25 +338,54 @@
                     });
                     $('#productList').html(products);
                 } 
-                else if (popularitySort) { // Popularity sıralaması
+                else if (popularitySort) {
                     var products = $('.product-item:visible').get();
                     products.sort(function(a, b) {
                         var popularityA = parseInt($(a).data('popularity')) || 0;
                         var popularityB = parseInt($(b).data('popularity')) || 0;
                         return popularitySort === 'asc' ? popularityA - popularityB : popularityB - popularityA;
                     });
-                    $('#productList').empty();
-                    products.forEach(function(product) {
-                        $('#productList').append(product);
-                    });
-                    
+                    $('#productList').empty().append(products);
                 }
             }
 
-            // Event handlers
+            // Reset all filters functionality
+            // Reset all filters functionality
+// Sayfanın ilk yüklenişindeki orijinal sıralamayı saklayalım
+        let originalOrder = [];
+
+        $(document).ready(function() {
+            // Sayfa yüklendiğinde orijinal sıralamayı kaydet
+            originalOrder = $('#productList .product-item').toArray();
+
+            // Reset all filters functionality
+            $('#resetAllFilters').on('click', function() {
+                // Reset search input
+                $('#bookSearch').val('');
+                
+                // Reset all dropdowns
+                $('#priceSort').val('');
+                $('#popularitySort').val('');
+                
+                // Close and reset genre dropdown
+                $('.dropdown-menu').removeClass('show');
+                $('.genre-checkbox').prop('checked', false);
+                
+                // Tüm ürünleri göster
+                $('.product-item').show();
+                
+                // Orijinal sıralamaya geri dön
+                $('#productList').empty();
+                originalOrder.forEach(function(item) {
+                    $('#productList').append(item);
+                });
+            });
+
+            // Diğer event handler'lar...
+        });
+
             $('#applyFilters').on('click', function() {
                 filterAndSortProducts();
-                // Close the dropdown after applying filters
                 $('.dropdown-menu').removeClass('show');
             });
             
