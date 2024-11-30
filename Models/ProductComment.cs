@@ -23,5 +23,6 @@ namespace e_commerce.Models
         public DateTime CreatedAt { get; set; }
 
         public string Status { get; set; } = "pending"; // Varsayılan olarak "pending"
+        public bool HasPurchased { get; set; }
     }
 }

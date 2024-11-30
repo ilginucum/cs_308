@@ -77,26 +77,66 @@
         </div>
     </div>
 
+    <!-- Rating Summary Section -->
+    <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+        <h3 style="color: #be3144;">Rating Summary</h3>
+        @if (ViewBag.TotalRatings > 0)
+        {
+            <div class="rating-summary">
+                <h4>Average Rating: @ViewBag.AverageScore.ToString("F1") / 5</h4>
+                <p>Based on @ViewBag.TotalRatings ratings</p>
+
+                @foreach (var rating in ViewBag.RatingDistribution)
+                {
+                    var percentage = ViewBag.TotalRatings > 0 ? (rating.Value * 100.0 / ViewBag.TotalRatings) : 0;
+                    <div class="rating-bar d-flex align-items-center gap-2 mb-2">
+                        <span style="min-width: 70px;">@rating.Key stars</span>
+                        <div class="progress flex-grow-1" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: @percentage%; background-color: #be3144;"
+                                 aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                @rating.Value
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No ratings yet</p>
+        }
+    </div>
+
     <!-- Rate the Product Section -->
     <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
-        <h3 style="color: #be3144;">Rate the Product</h3>
+        <h3 style="color: #be3144;">Rate this Product</h3>
         @if (User?.Identity != null && User.Identity.IsAuthenticated)
         {
-            <form asp-action="AddRating" asp-controller="Product" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="ProductId" value="@Model.Id" />
-                <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
+            @if (ViewBag.HasPurchased)
+            {
+                <form asp-action="AddRating" asp-controller="Product" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ProductId" value="@Model.Id" />
+                    <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
 
-                <div id="rating" class="d-flex">
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
-                    }
+                    <div id="rating" class="d-flex">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-primary rounded mt-3"
+                        style="background-color: #be3144; border-radius: 15px;">Submit Rating</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info" style="border-radius: 15px;">
+                    You can rate this product after purchasing it.
                 </div>
-
-                <button type="submit" class="btn btn-primary rounded mt-3"
-                    style="background-color: #be3144; border-radius: 15px;">Submit Rating</button>
-            </form>
+            }
         }
         else
         {
@@ -126,26 +166,27 @@
             <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
                     style="color: #be3144;">login</a> to add a comment.</p>
         }
-    </div>
 
-    <!-- Display Comments -->
-    <div class="mt-4">
-        <h3 style="color: #be3144;">User Reviews</h3>
-        @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
-        {
-            <div class="card mt-2 shadow" style="border-radius: 20px;">
-                <div class="card-body">
-                    <h5 class="card-title">@comment.UserName</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
-                    <p class="card-text">@comment.CommentText</p>
+        <!-- Display Comments -->
+        <div class="mt-4">
+            <h4 style="color: #be3144;">User Reviews (@ViewBag.TotalComments)</h4>
+            @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
+            {
+                <div class="card mt-2 shadow" style="border-radius: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">@comment.UserName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
+                        <p class="card-text">@comment.CommentText</p>
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // Quantity control script
         const quantityInput = document.getElementById('quantity');
         const decrementButton = document.getElementById('decrementButton');
         const incrementButton = document.getElementById('incrementButton');
@@ -177,5 +218,45 @@
                 incrementButton.disabled = true;
             }
         });
+
+        // Star rating script
+        const stars = document.querySelectorAll('.star');
+        const selectedRatingInput = document.getElementById('selectedRating');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const value = this.getAttribute('data-value');
+                highlightStars(value);
+            });
+
+            star.addEventListener('mouseout', function() {
+                const selectedValue = selectedRatingInput.value;
+                highlightStars(selectedValue);
+            });
+
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                selectedRatingInput.value = value;
+                highlightStars(value);
+            });
+        });
+
+        function highlightStars(value) {
+            stars.forEach(star => {
+                const starValue = star.getAttribute('data-value');
+                if (starValue <= value) {
+                    star.style.color = '#be3144';
+                } else {
+                    star.style.color = '#ccc';
+                }
+            });
+        }
     </script>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            alert('@TempData["ErrorMessage"]');
+        </script>
+    }
 }

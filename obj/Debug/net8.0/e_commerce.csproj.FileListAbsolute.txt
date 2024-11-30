@@ -1221,6 +1221,7 @@ C:/Users/aaa/Desktop/CS308/cs_308/bin/Debug/net8.0/package.json
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/AspNetCore.Identity.Mongo.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/AWSSDK.Core.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/AWSSDK.SecurityToken.dll
+/Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/BouncyCastle.Cryptography.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/DnsClient.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.barcodes.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.bouncy-castle-connector.dll
@@ -1233,6 +1234,7 @@ C:/Users/aaa/Desktop/CS308/cs_308/bin/Debug/net8.0/package.json
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.sign.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.styledxmlparser.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.svg.dll
+/Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.bouncy-castle-adapter.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.commons.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.html2pdf.dll
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -1278,5 +1280,3 @@ C:/Users/aaa/Desktop/CS308/cs_308/bin/Debug/net8.0/package.json
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/obj/Debug/net8.0/e_commerce.pdb
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/obj/Debug/net8.0/e_commerce.genruntimeconfig.cache
 /Users/macbookpro/Desktop/308_ecommerce/cs_308-3/obj/Debug/net8.0/ref/e_commerce.dll
-/Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/BouncyCastle.Cryptography.dll
-/Users/macbookpro/Desktop/308_ecommerce/cs_308-3/bin/Debug/net8.0/itext.bouncy-castle-adapter.dll

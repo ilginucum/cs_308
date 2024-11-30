@@ -1,5 +1,5 @@
-@model IEnumerable<e_commerce.Models.ProductComment>
 
+@model IEnumerable<e_commerce.Models.CommentManagementViewModel>
 <div class="container mt-4">
     <h2 class="mb-4">Comment Management</h2>
     <div class="row">
@@ -17,16 +17,29 @@
                                     <th>Book</th>
                                     <th>User</th>
                                     <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Purchased</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var comment in Model.Where(c => c.Status == "pending"))
+                                @foreach (var comment in Model.Where(c => c.Status == "pending").OrderByDescending(c => c.CreatedAt))
                                 {
                                     <tr>
                                         <td>@comment.ProductName</td>
                                         <td>@comment.UserName</td>
                                         <td>@comment.CommentText</td>
+                                        <td>@comment.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (comment.HasPurchased)
+                                            {
+                                                <span class="badge bg-success">Verified Purchase</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not Purchased</span>
+                                            }
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <form asp-action="ApproveComment" method="post" class="me-2">
@@ -62,15 +75,28 @@
                                     <th>Book</th>
                                     <th>User</th>
                                     <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Purchased</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var comment in Model.Where(c => c.Status == "approved"))
+                                @foreach (var comment in Model.Where(c => c.Status == "approved").OrderByDescending(c => c.CreatedAt))
                                 {
                                     <tr>
                                         <td>@comment.ProductName</td>
                                         <td>@comment.UserName</td>
                                         <td>@comment.CommentText</td>
+                                        <td>@comment.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (comment.HasPurchased)
+                                            {
+                                                <span class="badge bg-success">Verified Purchase</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not Purchased</span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

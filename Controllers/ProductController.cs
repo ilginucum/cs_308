@@ -46,15 +46,45 @@ namespace e_commerce.Controllers
         [Authorize(Roles = "ProductManager")] 
         public async Task<IActionResult> ManageComments()
         {
-        var allComments = (await _commentRepository.GetAllAsync()).ToList();
-        
-        foreach (var comment in allComments)
-        {
-            var product = await _productRepository.FindByIdAsync(comment.ProductId);
-            comment.ProductName = product?.Name ?? "Unknown Product";
-        }
+            try
+            {
+                var allComments = (await _commentRepository.GetAllAsync()).ToList();
+                var viewModels = new List<CommentManagementViewModel>();
+                
+                foreach (var comment in allComments)
+                {
+                    var product = await _productRepository.FindByIdAsync(comment.ProductId);
+                    
+                    // Check if user has purchased the product
+                    var orders = await _orderRepository.FilterByAsync(o => 
+                        o.UserId == comment.UserId && 
+                        o.OrderStatus == "Delivered" &&
+                        o.Items.Any(item => item.ProductId == comment.ProductId));
+                    
+                    var hasPurchased = orders.Any();
+                    
+                    viewModels.Add(new CommentManagementViewModel
+                    {
+                        Id = comment.Id,
+                        ProductId = comment.ProductId,
+                        UserId = comment.UserId,
+                        ProductName = product?.Name ?? "Unknown Product",
+                        UserName = comment.UserName,
+                        CommentText = comment.CommentText,
+                        CreatedAt = comment.CreatedAt,
+                        Status = comment.Status,
+                        HasPurchased = hasPurchased
+                    });
+                }
 
-        return View(allComments);
+                _logger.LogInformation($"Retrieved {viewModels.Count} comments for management");
+                return View(viewModels);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving comments for management");
+                return View(new List<CommentManagementViewModel>());
+            }
         }
 
         [HttpPost]
@@ -219,7 +249,20 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
-            // Yalnızca onaylanmış yorumları filtrele
+            // Get purchase status if user is logged in
+            bool hasPurchased = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var orders = await _orderRepository.FilterByAsync(o => 
+                    o.UserId == userId && 
+                    o.OrderStatus == "Delivered" &&
+                    o.Items.Any(item => item.ProductId == id));
+                
+                hasPurchased = orders.Any();
+            }
+
+            // Get comments and ratings
             var comments = await _commentRepository.FilterByAsync(c => c.ProductId == id && c.Status == "approved");
             var ratings = await _ratingRepository.FilterByAsync(r => r.ProductId == id);
             
@@ -227,10 +270,8 @@ namespace e_commerce.Controllers
             int totalComments = comments.Count();
             double averageScore = totalRatings > 0 ? ratings.Average(r => r.Score) : 0;
 
-            // Varsayılan rating dağılımını oluşturun
             var ratingDistribution = new Dictionary<int, int> { {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0} };
 
-            // Mevcut rating'leri dağılıma ekleyin
             foreach (var rating in ratings)
             {
                 if (ratingDistribution.ContainsKey(rating.Score))
@@ -239,7 +280,7 @@ namespace e_commerce.Controllers
                 }
             }
 
-            // ViewBag ile varsayılan değerleri ayarlayın
+            ViewBag.HasPurchased = hasPurchased;
             ViewBag.AverageScore = averageScore;
             ViewBag.TotalRatings = totalRatings;
             ViewBag.TotalComments = totalComments;
@@ -310,14 +351,26 @@ namespace e_commerce.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            // Check if user has purchased the product
+            var orders = await _orderRepository.FilterByAsync(o => 
+                o.UserId == userId && 
+                o.OrderStatus == "Delivered" &&
+                o.Items.Any(item => item.ProductId == ProductId));
+            
+            if (!orders.Any())
+            {
+                TempData["ErrorMessage"] = "You can only rate products you have purchased.";
+                return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
+            }
+
             var userName = User.Identity.Name;
 
-            // Mevcut rating kontrolü
+            // Check for existing rating
             var existingRating = await _ratingRepository.FindOneAsync(r => r.ProductId == ProductId && r.UserId == userId);
 
             if (existingRating != null)
             {
-                // Eğer mevcut bir rating varsa, mevcut kaydı güncelleyin
                 existingRating.Score = selectedRating;
                 existingRating.CreatedAt = DateTime.UtcNow;
                 await _ratingRepository.ReplaceOneAsync(existingRating);
@@ -325,7 +378,6 @@ namespace e_commerce.Controllers
             }
             else
             {
-                // Eğer mevcut bir rating yoksa, yeni bir kayıt oluşturun
                 var rating = new Rating
                 {
                     ProductId = ProductId,
