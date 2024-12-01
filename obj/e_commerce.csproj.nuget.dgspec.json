@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/eysanmutlu/cs308_29_10_2024/2cs308_1_12_2024/cs_308/e_commerce.csproj": {}
+    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj": {}
   },
   "projects": {
-    "/Users/eysanmutlu/cs308_29_10_2024/2cs308_1_12_2024/cs_308/e_commerce.csproj": {
+    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eysanmutlu/cs308_29_10_2024/2cs308_1_12_2024/cs_308/e_commerce.csproj",
+        "projectUniqueName": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj",
         "projectName": "e_commerce",
-        "projectPath": "/Users/eysanmutlu/cs308_29_10_2024/2cs308_1_12_2024/cs_308/e_commerce.csproj",
-        "packagesPath": "/Users/eysanmutlu/.nuget/packages/",
-        "outputPath": "/Users/eysanmutlu/cs308_29_10_2024/2cs308_1_12_2024/cs_308/obj/",
+        "projectPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj",
+        "packagesPath": "/Users/betuliltir/.nuget/packages/",
+        "outputPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/eysanmutlu/.nuget/NuGet/NuGet.Config"
+          "/Users/betuliltir/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -87,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
