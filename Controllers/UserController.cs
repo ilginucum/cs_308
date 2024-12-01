@@ -32,6 +32,7 @@ namespace e_commerce.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
+        
 
         [HttpPost]
         public async Task<IActionResult> Login(UserLogin model, string returnUrl = null)
@@ -311,7 +312,7 @@ public async Task<IActionResult> DeleteAddress(string id)
 }
 
 [HttpGet]
-[Authorize(Roles = "Customer")]
+[Authorize]
 public async Task<IActionResult> GetAddress(string id)
 {
     try
@@ -322,15 +323,53 @@ public async Task<IActionResult> GetAddress(string id)
 
         if (address == null)
         {
+            _logger.LogWarning($"Address not found for ID: {id} and UserID: {userId}");
             return NotFound(new { message = "Address not found" });
         }
 
-        return Json(address);
+        _logger.LogInformation($"Successfully retrieved address for ID: {id}");
+        return Json(new
+        {
+            streetAddress = address.StreetAddress,
+            city = address.City,
+            state = address.State,
+            zipCode = address.ZipCode
+        });
     }
     catch (Exception ex)
     {
         _logger.LogError(ex, $"Error occurred while getting address: {id}");
         return StatusCode(500, new { message = "An error occurred while getting the address." });
+    }
+}
+
+[HttpGet]
+[Authorize]
+public async Task<IActionResult> GetProfileInfo()
+{
+    try
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userRepository.FindByIdAsync(userId);
+        
+        if (user == null)
+        {
+            _logger.LogWarning($"User not found for ID: {userId}");
+            return NotFound(new { message = "User not found" });
+        }
+
+        _logger.LogInformation($"Successfully retrieved profile info for user: {userId}");
+        return Json(new
+        {
+            fullName = user.FullName,
+            email = user.Email,
+            phoneNumber = user.PhoneNumber
+        });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error fetching profile information");
+        return StatusCode(500, new { message = "Error fetching profile information" });
     }
 }
     }

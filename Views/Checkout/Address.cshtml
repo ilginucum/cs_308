@@ -74,8 +74,68 @@
             font-size: 12px;
             margin-top: 2px;
         }
+
+        #savedAddressesSection {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        #savedAddresses {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            color: #495057;
+        }
+
+        .saved-address-title {
+            color: #495057;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
     </style>
 
+    <!-- Error Alert -->
+    <div id="errorAlert" class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span id="errorMessage"></span>
+    </div>
+
+    <!-- Saved Addresses Section -->
+    @if (ViewBag.SavedAddresses != null && ((IEnumerable<dynamic>)ViewBag.SavedAddresses).Any())
+    {
+        <div class="card mb-3" id="savedAddressesSection">
+            <div class="card-body">
+                <h5 class="saved-address-title">
+                    <i class="bi bi-bookmark-star"></i> Choose from Saved Addresses
+                </h5>
+                <select id="savedAddresses" class="form-select mb-2">
+                    <option value="">Select a saved address...</option>
+                    @foreach (var address in ViewBag.SavedAddresses)
+                    {
+                        <option value="@address.Id">
+                            @address.StreetAddress, @address.City, @address.State @address.ZipCode
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+
+    <!-- Address Form -->
     <div class="card">
         <form asp-controller="Checkout" asp-action="SaveAddress" method="post">
             @Html.AntiForgeryToken()
@@ -97,12 +157,21 @@
             </div>
             
             <div class="row g-2">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="City" class="form-label">City</label>
                         <i class="bi bi-building form-icon"></i>
-                        <input asp-for="City" class="form-control" placeholder="Istanbul" autocomplete="address-level1" />
+                        <input asp-for="City" class="form-control" placeholder="Istanbul" />
                         <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="State" class="form-label">State</label>
+                        <i class="bi bi-geo form-icon"></i>
+                        <input asp-for="State" class="form-control" placeholder="State" />
+                        <span asp-validation-for="State" class="text-danger"></span>
                     </div>
                 </div>
                 
@@ -140,5 +209,78 @@
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            console.log('Page loaded, binding events...');
+            
+            $('#savedAddresses').change(function() {
+                const selectedAddressId = $(this).val();
+                console.log('Selected address ID:', selectedAddressId);
+                
+                if (selectedAddressId) {
+                    autofillAddress(selectedAddressId);
+                } else {
+                    clearForm();
+                }
+            });
+        });
+
+        function showError(message) {
+            $('#errorMessage').text(message);
+            $('#errorAlert').fadeIn();
+            setTimeout(() => {
+                $('#errorAlert').fadeOut();
+            }, 5000);
+        }
+
+        function clearForm() {
+            console.log('Clearing form...');
+            $('#StreetAddress').val('');
+            $('#City').val('');
+            $('#State').val('');
+            $('#ZipCode').val('');
+            $('#FullName').val('');
+            $('#Email').val('');
+            $('#PhoneNumber').val('');
+        }
+
+        function autofillAddress(addressId) {
+            console.log('Fetching address details for ID:', addressId);
+            
+            $.get(`/User/GetAddress/${addressId}`)
+                .done(function(address) {
+                    console.log('Retrieved address:', address);
+                    
+                    if (address) {
+                        $('#StreetAddress').val(address.streetAddress);
+                        $('#City').val(address.city);
+                        $('#State').val(address.state);
+                        $('#ZipCode').val(address.zipCode);
+                        
+                        // Get user profile info for additional fields
+                        $.get('/User/GetProfileInfo')
+                            .done(function(profile) {
+                                console.log('Retrieved profile:', profile);
+                                
+                                if (profile) {
+                                    $('#FullName').val(profile.fullName);
+                                    $('#Email').val(profile.email);
+                                    $('#PhoneNumber').val(profile.phoneNumber);
+                                }
+                            })
+                            .fail(function(error) {
+                                console.error('Error fetching profile details:', error);
+                                showError('Failed to load profile information. Please try again.');
+                            });
+                    }
+                })
+                .fail(function(error) {
+                    console.error('Error fetching address details:', error);
+                    showError('Failed to load address details. Please try again.');
+                });
+        }
+    </script>
 }
