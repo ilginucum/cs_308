@@ -15,7 +15,7 @@ namespace e_commerce.Models
         public string CardNumber { get; set; } = string.Empty; // Default değer verildi
 
        [Required(ErrorMessage = "Card holder name is required.")]
-       [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Card holder name can only contain letters and spaces.")]
+       [RegularExpression(@"^[a-zA-ZçÇğĞıİöÖşŞüÜ]+(?:\s[a-zA-ZçÇğĞıİöÖşŞüÜ]+)*$", ErrorMessage = "Card holder name can only contain letters and spaces.")]
        public string CardHolderName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Expiration month is required.")]
