@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj": {}
+    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-3/e_commerce.csproj": {}
   },
   "projects": {
-    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj": {
+    "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-3/e_commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj",
+        "projectUniqueName": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-3/e_commerce.csproj",
         "projectName": "e_commerce",
-        "projectPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/e_commerce.csproj",
+        "projectPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-3/e_commerce.csproj",
         "packagesPath": "/Users/betuliltir/.nuget/packages/",
-        "outputPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-2/obj/",
+        "outputPath": "/Users/betuliltir/Desktop/cs 308/e-commerce/cs_308-3/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/betuliltir/.nuget/NuGet/NuGet.Config"

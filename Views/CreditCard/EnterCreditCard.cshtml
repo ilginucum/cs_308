@@ -1,36 +1,339 @@
 @model e_commerce.Models.CreditCard
 
-<h2>Enter Credit Card Information</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-<form asp-action="SaveCreditCard" method="post">
-    <div>
-        <label>Card Number:</label>
-        <input type="text" asp-for="CardNumber" required />
-        <span asp-validation-for="CardNumber" class="text-danger"></span>
+<h2 class="text-center mb-3">
+    <i class="bi bi-credit-card-2-front"></i> Enter Credit Card Information
+</h2>
+
+<div class="credit-card-container">
+    <div class="credit-card" id="creditCard" onclick="flipCard()">
+        <div class="card-front" id="cardFront">
+            <div class="card-logo">CREDIT CARD</div>
+            <div class="card-chip">
+                <div class="chip"></div>
+            </div>
+            <div class="card-number">
+                <span class="number">0000 0000 0000 0000</span>
+            </div>
+            <div class="card-info">
+                <div class="expiration">
+                    <div class="exp-label">VALID THRU</div>
+                    <span class="month">00</span>/<span class="year">00</span>
+                </div>
+                <div class="cardholder">
+                    <div class="card-holder-label">CARD HOLDER</div>
+                    <span class="name">Card Holder Name</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-back" id="cardBack">
+            <div class="magnetic-strip"></div>
+            <div class="signature-container">
+                <div class="signature-strip"></div>
+                <div class="cvv-container">
+                    <label>CVV</label>
+                    <div class="cvv-box">
+                        <span class="cvv-value">000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label>Card Holder Name:</label>
-        <input type="text" asp-for="CardHolderName" required />
-        <span asp-validation-for="CardHolderName" class="text-danger"></span>
-    </div>
-    <div>
-        <label>Expiration Month:</label>
-        <input type="number" asp-for="ExpirationMonth" required min="1" max="12" />
-        <span asp-validation-for="ExpirationMonth" class="text-danger"></span>
-    </div>
-    <div>
-        <label>Expiration Year:</label>
-        <input type="number" asp-for="ExpirationYear" required min="2024" />
-        <span asp-validation-for="ExpirationYear" class="text-danger"></span>
-    </div>
-    <div>
-    <label>CVV:</label>
-    <input type="text" asp-for="CVV" required />
-    <span asp-validation-for="CVV" class="text-danger"></span>
 </div>
-    <button type="submit">Submit</button>
-</form>
+
+<div class="form-container">
+    <form asp-action="SaveCreditCard" method="post">
+        <div class="form-group">
+            <label>Card Number:</label>
+            <input type="text" asp-for="CardNumber" required maxlength="16" 
+                   onkeyup="updateCardNumber(this.value);" class="form-control" />
+            <span asp-validation-for="CardNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Card Holder Name:</label>
+            <input type="text" asp-for="CardHolderName" required 
+                   onkeyup="updateCardHolderName(this.value);" class="form-control" />
+            <span asp-validation-for="CardHolderName" class="text-danger"></span>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
+                <label>Expiration Month:</label>
+                <input type="number" asp-for="ExpirationMonth" required min="1" max="12" 
+                       onchange="updateExpirationMonth(this.value);" class="form-control" id="expirationMonth" />
+                <span asp-validation-for="ExpirationMonth" class="text-danger"></span>
+            </div>
+            <div class="form-group col">
+                <label>Expiration Year:</label>
+                <input type="number" asp-for="ExpirationYear" required min="2024" 
+                       onchange="handleYearChange(this.value);" class="form-control" id="expirationYear" />
+                <span asp-validation-for="ExpirationYear" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>CVV:</label>
+            <input type="text" asp-for="CVV" required maxlength="3" 
+                   onkeyup="updateCVV(this.value);" class="form-control" />
+            <span asp-validation-for="CVV" class="text-danger"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .credit-card-container {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+        perspective: 1000px;
+    }
+
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .credit-card {
+        width: 400px;
+        height: 250px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+        cursor: pointer;
+    }
+
+    .card-front, .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        padding: 25px;
+        background: linear-gradient(45deg, #0a4da6, #007bff);
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .card-logo {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .card-chip {
+        position: absolute;
+        top: 80px;
+        left: 30px;
+    }
+
+    .chip {
+        width: 50px;
+        height: 40px;
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        border-radius: 5px;
+    }
+
+    .card-number {
+        position: absolute;
+        top: 120px;
+        left: 30px;
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+
+    .card-info {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .exp-label, .card-holder-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .card-back {
+        transform: rotateY(180deg);
+    }
+
+    .credit-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    .magnetic-strip {
+        background-color: #000;
+        height: 40px;
+        margin-top: 20px;
+    }
+
+    .signature-container {
+        margin-top: 30px;
+        padding: 10px 20px;
+    }
+
+    .signature-strip {
+        background-color: rgba(255, 255, 255, 0.2);
+        height: 40px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+
+    .cvv-container {
+        text-align: right;
+        padding-right: 10px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+
+    .cvv-container label {
+        font-size: 10px;
+        text-transform: uppercase;
+        margin: 0;
+    }
+
+    .cvv-box {
+        color: white;
+        background: none;
+    }
+
+    .cvv-value {
+        font-size: 18px;
+        letter-spacing: 2px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .form-control:focus {
+    border-color: #d25062;
+    box-shadow: 0 0 0 0.2rem rgba(210, 80, 98, 0.25);
+    outline: 0;
+}
+
+    .btn-primary {
+        background-color: #d25062;
+        border-color: #d25062;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #b8424f;
+        border-color: #b8424f;
+    }
+
+    .btn-primary:focus {
+        background-color: #d25062;
+        border-color: #d25062;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(210, 80, 98, 0.5);
+    }
+</style>
+
+<script>
+    function updateCardNumber(value) {
+        const cardNumberElement = document.querySelector('.credit-card .number');
+        let formattedValue = value.replace(/\D/g, '').slice(0, 16);
+        formattedValue = formattedValue.replace(/(.{4})/g, '$1 ').trim();
+        cardNumberElement.textContent = formattedValue || '0000 0000 0000 0000';
+    }
+
+    function updateCardHolderName(value) {
+        const cardHolderElement = document.querySelector('.credit-card .name');
+        cardHolderElement.textContent = value || 'Card Holder Name';
+    }
+
+    function updateExpirationMonth(value) {
+        const expirationMonthElement = document.querySelector('.credit-card .month');
+        const formattedValue = value.toString().padStart(2, '0');
+        expirationMonthElement.textContent = formattedValue;
+    }
+
+    function updateExpirationYear(value) {
+        const expirationYearElement = document.querySelector('.credit-card .year');
+        expirationYearElement.textContent = value.toString().slice(-2);
+    }
+
+    function handleYearChange(year) {
+        const monthInput = document.getElementById('expirationMonth');
+        
+        if (parseInt(year) === 2024) {
+            monthInput.min = "12";
+            // Eğer seçili ay 12'den küçükse, otomatik olarak 12 yap
+            if (parseInt(monthInput.value) < 12) {
+                monthInput.value = "12";
+                updateExpirationMonth("12");
+            }
+        } else {
+            monthInput.min = "1";
+        }
+        
+        updateExpirationYear(year);
+    }
+
+    function flipCard() {
+        const creditCard = document.getElementById('creditCard');
+        creditCard.classList.toggle('flipped');
+    }
+
+    function updateCVV(value) {
+        const cvvElement = document.querySelector('.credit-card .cvv-value');
+        cvvElement.textContent = value || '000';
+    }
+
+    // CVV input focus events
+    const cvvInput = document.querySelector('input[asp-for="CVV"]');
+    cvvInput.addEventListener('focus', () => {
+        const creditCard = document.getElementById('creditCard');
+        if (!creditCard.classList.contains('flipped')) {
+            flipCard();
+        }
+    });
+
+    cvvInput.addEventListener('blur', () => {
+        const creditCard = document.getElementById('creditCard');
+        if (creditCard.classList.contains('flipped')) {
+            flipCard();
+        }
+    });
+
+    // Sayfa yüklendiğinde kontrol et
+    window.onload = function() {
+        const yearInput = document.getElementById('expirationYear');
+        if (yearInput.value === "2024") {
+            handleYearChange("2024");
+        }
+    };
+</script>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
