@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OeWW+vTnItc=",
+  "dgSpecHash": "uUg/BxUnBR0=",
   "success": true,
-  "projectFilePath": "/Users/macbookpro/Desktop/308_ecommerce/cs_308-5/e_commerce.csproj",
+  "projectFilePath": "/Users/macbookpro/Desktop/308_ecommerce/CS_308-5/e_commerce.csproj",
   "expectedPackageFiles": [
     "/Users/macbookpro/.nuget/packages/aspnetcore.identity.mongo/9.0.0/aspnetcore.identity.mongo.9.0.0.nupkg.sha512",
     "/Users/macbookpro/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
