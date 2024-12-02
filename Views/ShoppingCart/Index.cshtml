@@ -70,7 +70,11 @@
     <div class="cart-summary">
         <h2>Cart Summary</h2>
         <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice)</p>
-        <button class="btn-rounded" onclick="location.href='/Checkout/Address'">Proceed to Checkout</button>
+        <button class="btn-rounded" 
+                onclick="location.href='/Checkout/Address'"
+                @(Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice) == 0 ? "disabled" : "")>
+            Proceed to Checkout
+        </button>
     </div>
 </div>
 
@@ -129,6 +133,11 @@
 
     .btn-rounded:hover {
         background-color: #952735;
+    }
+
+    .btn-rounded[disabled] {
+        background-color: #dc7896;
+        cursor: not-allowed;
     }
 
     .cart-summary {
