@@ -145,10 +145,12 @@
         }
     </div>
 
-    <!-- Comments Section -->
-    <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
-        <h3 style="color: #be3144;">Comments</h3>
-        @if (User.Identity.IsAuthenticated)
+<!-- Comments Section -->
+<div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
+    <h3 style="color: #be3144;">Comments</h3>
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (ViewBag.HasPurchased)
         {
             <form asp-action="AddComment" asp-controller="Product" method="post">
                 @Html.AntiForgeryToken()
@@ -163,25 +165,32 @@
         }
         else
         {
-            <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
-                    style="color: #be3144;">login</a> to add a comment.</p>
+            <div class="alert alert-info" style="border-radius: 15px;">
+                Bu ürünü satın aldıktan sonra yorum yapabilirsiniz.
+            </div>
         }
+    }
+    else
+    {
+        <p>Please <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path"
+                style="color: #be3144;">login</a> to add a comment.</p>
+    }
 
-        <!-- Display Comments -->
-        <div class="mt-4">
-            <h4 style="color: #be3144;">User Reviews (@ViewBag.TotalComments)</h4>
-            @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
-            {
-                <div class="card mt-2 shadow" style="border-radius: 20px;">
-                    <div class="card-body">
-                        <h5 class="card-title">@comment.UserName</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
-                        <p class="card-text">@comment.CommentText</p>
-                    </div>
+    <!-- Display Comments -->
+    <div class="mt-4">
+        <h4 style="color: #be3144;">User Reviews (@ViewBag.TotalComments)</h4>
+        @foreach (var comment in ViewBag.Comments ?? Enumerable.Empty<ProductComment>())
+        {
+            <div class="card mt-2 shadow" style="border-radius: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">@comment.UserName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@comment.CreatedAt.ToString("g")</h6>
+                    <p class="card-text">@comment.CommentText</p>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
+</div>
 </div>
 
 @section Scripts {

@@ -307,6 +307,19 @@ namespace e_commerce.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            // Check if user has purchased the product and if it's delivered
+            var orders = await _orderRepository.FilterByAsync(o => 
+                o.UserId == userId && 
+                o.OrderStatus == "Delivered" &&
+                o.Items.Any(item => item.ProductId == ProductId));
+
+            if (!orders.Any())
+            {
+                TempData["ErrorMessage"] = "You can only comment on products you have purchased and received.";
+                return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
+            }
+
             var userName = User.Identity.Name;
             var product = await _productRepository.FindByIdAsync(ProductId);
 
@@ -318,13 +331,13 @@ namespace e_commerce.Controllers
                 UserName = userName,
                 CommentText = CommentText,
                 CreatedAt = DateTime.UtcNow,
-                Status = "pending"
+                Status = "approved" // Automatically approve since user has received the product
             };
 
             try
             {
                 await _commentRepository.InsertOneAsync(comment);
-                _logger.LogInformation($"Comment added successfully for product {ProductId} by user {userId}");
+                _logger.LogInformation($"Comment automatically approved and added for product {ProductId} by user {userId}");
             }
             catch (Exception ex)
             {
