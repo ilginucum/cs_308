@@ -1,335 +1,335 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\e_commerce.bundle.scp.css",
-      "PackagePath": "staticwebassets\\e_commerce.bundle.scp.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/obj/Debug/net8.0/scopedcss/projectbundle/e_commerce.bundle.scp.css",
+      "PackagePath": "staticwebassets/e_commerce.bundle.scp.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\css\\site.css",
-      "PackagePath": "staticwebassets\\css\\site.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/css/site.css",
+      "PackagePath": "staticwebassets/css/site.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\favicon.ico",
-      "PackagePath": "staticwebassets\\favicon.ico"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/favicon.ico",
+      "PackagePath": "staticwebassets/favicon.ico"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\1.png",
-      "PackagePath": "staticwebassets\\images\\1.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/1.png",
+      "PackagePath": "staticwebassets/images/1.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\4.png",
-      "PackagePath": "staticwebassets\\images\\4.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/4.png",
+      "PackagePath": "staticwebassets/images/4.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\Babam-beni-sah.jpg",
-      "PackagePath": "staticwebassets\\images\\Babam-beni-sah.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/Babam-beni-sah.jpg",
+      "PackagePath": "staticwebassets/images/Babam-beni-sah.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\Dune.jpg",
-      "PackagePath": "staticwebassets\\images\\Dune.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/Dune.jpg",
+      "PackagePath": "staticwebassets/images/Dune.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\Little-women.jpg",
-      "PackagePath": "staticwebassets\\images\\Little-women.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/Little-women.jpg",
+      "PackagePath": "staticwebassets/images/Little-women.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\Notre-Dame.jpg",
-      "PackagePath": "staticwebassets\\images\\Notre-Dame.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/Notre-Dame.jpg",
+      "PackagePath": "staticwebassets/images/Notre-Dame.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\Pride-prejiduce.jpg",
-      "PackagePath": "staticwebassets\\images\\Pride-prejiduce.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/Pride-prejiduce.jpg",
+      "PackagePath": "staticwebassets/images/Pride-prejiduce.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\anna-karenina.jpg",
-      "PackagePath": "staticwebassets\\images\\anna-karenina.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/anna-karenina.jpg",
+      "PackagePath": "staticwebassets/images/anna-karenina.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\bookery-icon-black.png",
-      "PackagePath": "staticwebassets\\images\\bookery-icon-black.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/bookery-icon-black.png",
+      "PackagePath": "staticwebassets/images/bookery-icon-black.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\bookery-icon.png",
-      "PackagePath": "staticwebassets\\images\\bookery-icon.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/bookery-icon.png",
+      "PackagePath": "staticwebassets/images/bookery-icon.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\bookery-logo-black.png",
-      "PackagePath": "staticwebassets\\images\\bookery-logo-black.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/bookery-logo-black.png",
+      "PackagePath": "staticwebassets/images/bookery-logo-black.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\bookery-logo-red.png",
-      "PackagePath": "staticwebassets\\images\\bookery-logo-red.png"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/bookery-logo-red.png",
+      "PackagePath": "staticwebassets/images/bookery-logo-red.png"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\brave-new-world.jpg",
-      "PackagePath": "staticwebassets\\images\\brave-new-world.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/brave-new-world.jpg",
+      "PackagePath": "staticwebassets/images/brave-new-world.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\crime-and-punishment.jpg",
-      "PackagePath": "staticwebassets\\images\\crime-and-punishment.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/crime-and-punishment.jpg",
+      "PackagePath": "staticwebassets/images/crime-and-punishment.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\frankenstein.jpg",
-      "PackagePath": "staticwebassets\\images\\frankenstein.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/frankenstein.jpg",
+      "PackagePath": "staticwebassets/images/frankenstein.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\hero-image.jpeg",
-      "PackagePath": "staticwebassets\\images\\hero-image.jpeg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/hero-image.jpeg",
+      "PackagePath": "staticwebassets/images/hero-image.jpeg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\les-miserables.jpg",
-      "PackagePath": "staticwebassets\\images\\les-miserables.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/les-miserables.jpg",
+      "PackagePath": "staticwebassets/images/les-miserables.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\images\\romeo-and-juliet.jpg",
-      "PackagePath": "staticwebassets\\images\\romeo-and-juliet.jpg"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/images/romeo-and-juliet.jpg",
+      "PackagePath": "staticwebassets/images/romeo-and-juliet.jpg"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\js\\site.js",
-      "PackagePath": "staticwebassets\\js\\site.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/js/site.js",
+      "PackagePath": "staticwebassets/js/site.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\LICENSE",
-      "PackagePath": "staticwebassets\\lib\\bootstrap"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/LICENSE",
+      "PackagePath": "staticwebassets/lib/bootstrap"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js.map"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation/LICENSE.md",
+      "PackagePath": "staticwebassets/lib/jquery-validation/LICENSE.md"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation/dist/additional-methods.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation/dist/additional-methods.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
-      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery\\LICENSE.txt",
-      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery/LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery\\dist\\jquery.js",
-      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery/dist/jquery.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
-      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery/dist/jquery.min.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.js"
     },
     {
-      "Id": "C:\\Users\\aaa\\Desktop\\CS308\\cs_308\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
-      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+      "Id": "/Users/betuliltir/Desktop/finfinfin/cs_308/wwwroot/lib/jquery/dist/jquery.min.map",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.e_commerce.props",
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.e_commerce.props",
       "PackagePath": "build\\e_commerce.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.e_commerce.props",
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.e_commerce.props",
       "PackagePath": "buildMultiTargeting\\e_commerce.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.e_commerce.props",
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.e_commerce.props",
       "PackagePath": "buildTransitive\\e_commerce.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.e_commerce.Microsoft.AspNetCore.StaticWebAssets.props",
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.e_commerce.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     }
   ],

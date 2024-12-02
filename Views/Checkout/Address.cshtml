@@ -188,7 +188,7 @@
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
                 <i class="bi bi-telephone form-icon"></i>
-                <input asp-for="PhoneNumber" class="form-control" placeholder="0(555) 123 4567" />
+                <input asp-for="PhoneNumber" class="form-control" placeholder="0(555) 123 4567" maxlength="11"/>
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             
