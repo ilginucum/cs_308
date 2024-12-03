@@ -1,0 +1,149 @@
+@model IEnumerable<e_commerce.Models.WishlistItem>
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+
+<div class="wishlist-container">
+    <h2 class="wishlist-title">My Wishlist</h2>
+
+    @if (!Model.Any())
+    {
+                <div class="wishlist-empty">
+                    <p>Your wishlist is empty. Add products to your wishlist!</p>
+                    <a asp-controller="Home" asp-action="Index" class="btn browse-btn">Browse Products</a>
+                </div>
+    }
+    else
+    {
+                <div class="wishlist-items">
+            @foreach (var item in Model)
+            {
+                                <div class="wishlist-item">
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="wishlist-item-image" />
+                                    <div class="wishlist-item-details">
+                                        <h3 class="wishlist-item-name">@item.ProductName</h3>
+                                        <p class="wishlist-item-author">@item.Author</p>
+                                        <p class="wishlist-item-price">@item.Price.ToString("C")</p>
+                                        <div class="wishlist-item-actions">
+                                            <form asp-action="MoveToCart" method="post" class="d-inline">
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <button type="submit" class="btn move-cart-btn">Move to Cart</button>
+                                            </form>
+                                            <form asp-action="RemoveFromWishlist" method="post" class="d-inline">
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <button type="submit" class="btn remove-btn">Remove</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+            }
+                </div>
+    }
+</div>
+
+@section Styles {
+            <style>
+                /* Wishlist Styles */
+                .wishlist-container {
+                    max-width: 900px;
+                    margin: 30px auto;
+                    padding: 20px;
+                    background: #fff;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .wishlist-title {
+                    text-align: center;
+                    color: #be3144;
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                }
+
+                .wishlist-empty {
+                    text-align: center;
+                    color: #666;
+                }
+
+                .browse-btn {
+                    background-color: #952735;
+                    color: white;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    font-weight: bold;
+                    border-radius: 25px;
+                    display: inline-block;
+                    margin-top: 15px;
+                }
+
+                .wishlist-items {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .wishlist-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    background: #f9f9f9;
+                    padding: 15px;
+                    border-radius: 10px;
+                    border: 1px solid #ddd;
+                }
+
+                .wishlist-item-image {
+                    width: 100px;
+                    height: auto;
+                    border-radius: 10px;
+                }
+
+                .wishlist-item-details {
+                    flex: 1;
+                }
+
+                .wishlist-item-name {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #333;
+                }
+
+                .wishlist-item-author {
+                    font-size: 14px;
+                    color: #777;
+                }
+
+                .wishlist-item-price {
+                    font-size: 16px;
+                    color: #952735;
+                    font-weight: bold;
+                }
+
+                .wishlist-item-actions {
+                    margin-top: 10px;
+                }
+
+                .wishlist-item-actions .btn {
+                    padding: 8px 15px;
+                    border-radius: 25px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin-right: 10px;
+                    text-decoration: none;
+                    display: inline-block;
+                }
+
+                .move-cart-btn {
+                    background-color: #be3144;
+                    color: white;
+                    border: none;
+                }
+
+                .remove-btn {
+                    background-color: #d75062;
+                    color: white;
+                    border: none;
+                }
+            </style>
+}
