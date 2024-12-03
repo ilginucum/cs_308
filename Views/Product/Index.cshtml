@@ -4,41 +4,127 @@
     ViewData["Title"] = "Product Management";
 }
 
-<h2>Product Management</h2>
+<style>
+    /* Scope styles to product-management specific container */
+    .product-management-container {
+        padding: 20px;
+        /* Optional padding for container */
+    }
 
-<p>
-    <a asp-action="ManageProduct" class="btn btn-primary">Create New Product</a>
-    <a asp-action="ManageComments" class="btn btn-primary">Manage Comments</a>
-    <a asp-action="OrderManagement" class="btn btn-primary">Order Information</a>
-</p>
+    /* Buttons specific to product management */
+    .product-management-container .product-btn {
+        padding: 10px 20px;
+        margin: 10px;
+        text-decoration: none;
+        border-radius: 25px;
+        color: #fff;
+        /* Text always white */
+        background-color: #be3144;
+        /* Default button background */
+        border: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        /* Smooth transitions */
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Author</th>
-            <th>Serial Number</th>
-            <th>Quantity in Stock</th>
-            <th>Genre</th>
-            <th>Price</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    .product-management-container .product-btn:hover {
+        background-color: #952735;
+        /* Background on hover */
+        color: #fff;
+        /* Ensure text remains white */
+    }
+
+    .product-management-container .product-btn:focus,
+    .product-management-container .product-btn:active {
+        outline: none;
+        box-shadow: none;
+        /* Remove focus rings */
+        background-color: #952735;
+        /* Background on focus/active */
+        color: #fff;
+        /* Ensure text remains white */
+    }
+
+    /* Table Styles scoped to this page */
+    .product-management-container .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 15px;
+        /* Rounded corners */
+        overflow: hidden;
+    }
+
+    .product-management-container .table th {
+        background-color: #be3144;
+        /* Header red */
+        color: #fff;
+        /* Header text white */
+        text-align: center;
+        padding: 10px;
+    }
+
+    .product-management-container .table td {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .product-management-container .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+        /* Alternate row background */
+    }
+
+    /* Add vertical space between heading and buttons */
+    .product-management-container h2 {
+        margin-bottom: 20px;
+        /* Adjust this value for desired spacing */
+    }
+
+    /* Ensure shared header styles are not affected */
+    header {
+        all: unset;
+        all: revert;
+        /* Revert header styles to their global defaults */
+    }
+</style>
+
+<div class="product-management-container">
+    <h2>Product Management</h2>
+
+    <p>
+        <a asp-action="ManageProduct" class="product-btn">Create New Product</a>
+        <a asp-action="ManageComments" class="product-btn">Manage Comments</a>
+        <a asp-action="OrderManagement" class="product-btn">Order Information</a>
+    </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td>@item.Name</td>
-                <td>@item.Author</td>
-                <td>@item.SerialNumber</td>
-                <td>@item.QuantityInStock</td>
-                <td>@item.Genre</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Serial Number</th>
+                <th>Quantity in Stock</th>
+                <th>Genre</th>
+                <th>Price</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Author</td>
+                    <td>@item.SerialNumber</td>
+                    <td>@item.QuantityInStock</td>
+                    <td>@item.Genre</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="product-btn">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="product-btn">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
