@@ -5,75 +5,165 @@
 
 <h2>Edit Product</h2>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Author" class="control-label"></label>
-        <input asp-for="Author" class="form-control" />
-        <span asp-validation-for="Author" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SerialNumber" class="control-label"></label>
-        <input asp-for="SerialNumber" class="form-control" />
-        <span asp-validation-for="SerialNumber" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="QuantityInStock" class="control-label"></label>
-        <input asp-for="QuantityInStock" class="form-control" type="number" />
-        <span asp-validation-for="QuantityInStock" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="WarrantyStatus" /> @Html.DisplayNameFor(model => model.WarrantyStatus)
-        </label>
-    </div>
-    <div class="form-group">
-        <label asp-for="DistributorInformation" class="control-label"></label>
-        <input asp-for="DistributorInformation" class="form-control" />
-        <span asp-validation-for="DistributorInformation" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-    <label asp-for="Genre" class="control-label"></label>
-    <select asp-for="Genre" class="form-control">
-        <option value="">Select Genre</option>
-        <option value="Fiction">Fiction</option>
-        <option value="Non-Fiction">Non-Fiction</option>
-        <option value="Mystery">Mystery</option>
-        <option value="Science Fiction">Science Fiction</option>
-        <option value="Fantasy">Fantasy</option>
-        <option value="Romance">Romance</option>
-        <option value="Thriller">Thriller</option>
-        <option value="Horror">Horror</option>
-        <option value="Biography">Biography</option>
-        <option value="History">History</option>
-        <option value="Novel">Novel</option>
-    </select>
-    <span asp-validation-for="Genre" class="text-danger"></span>
-</div>
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-    </div>
-</form>
+<style>
+    /* Container Styles */
+    .edit-container {
+        font-family: Arial, sans-serif;
+        margin: auto;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        color: #952735;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #be3144;
+        box-shadow: 0 0 5px #be3144;
+    }
+
+    .form-check-label {
+        font-weight: bold;
+        color: #952735;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background-color: #be3144;
+        border: none;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #952735;
+    }
+
+    .btn-primary:focus,
+    .btn-primary:active {
+        outline: none;
+        box-shadow: none;
+    }
+
+    a {
+        color: #be3144;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Validation Error Styles */
+    .text-danger {
+        color: #be3144;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="edit-container">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Author" class="control-label"></label>
+            <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SerialNumber" class="control-label"></label>
+            <input asp-for="SerialNumber" class="form-control" />
+            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="QuantityInStock" class="control-label"></label>
+            <input asp-for="QuantityInStock" class="form-control" type="number" />
+            <span asp-validation-for="QuantityInStock" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="WarrantyStatus" /> @Html.DisplayNameFor(model =>
+                model.WarrantyStatus)
+            </label>
+        </div>
+        <div class="form-group">
+            <label asp-for="DistributorInformation" class="control-label"></label>
+            <input asp-for="DistributorInformation" class="form-control" />
+            <span asp-validation-for="DistributorInformation" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Genre" class="control-label"></label>
+            <select asp-for="Genre" class="form-control">
+                <option value="">Select Genre</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Non-Fiction">Non-Fiction</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Science Fiction">Science Fiction</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Romance">Romance</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Horror">Horror</option>
+                <option value="Biography">Biography</option>
+                <option value="History">History</option>
+                <option value="Novel">Novel</option>
+            </select>
+            <span asp-validation-for="Genre" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
