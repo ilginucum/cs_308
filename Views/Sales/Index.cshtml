@@ -2,32 +2,32 @@
 @{
     ViewData["Title"] = "Sales Management";
     Layout = "_Layout";
-    
+
     var productsWithoutPrice = Model.Where(p => p.Price == 0.0M);
     var productsWithPrice = Model.Where(p => p.Price > 0.0M);
 }
 
 <div class="container-fluid mt-4">
-    <h2 class="text-center mb-4">Sales Management</h2>
+    <h2 class="page-title text-center">Sales Management</h2>
 
     <div class="row">
         <!-- Left Side - Products without price -->
         <div class="col-md-6 border-end">
-            <div class="card">
-                <div class="card-header bg-warning">
+            <div class="card custom-card">
+                <div class="card-header bg-processing text-white" style="background-color: #952735;">
                     <h4 class="mb-0 text-center">Products Awaiting Price</h4>
                 </div>
                 <div class="card-body">
                     @if (!productsWithoutPrice.Any())
                     {
-                        <div class="alert alert-info">
+                        <div class="alert text-center text-white" style="background-color: #dc7986; border-radius: 10px;">
                             No products awaiting price setting.
                         </div>
                     }
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table custom-table">
                                 <thead>
                                     <tr>
                                         <th>Book Name</th>
@@ -46,8 +46,8 @@
                                             <td>@product.Genre</td>
                                             <td>@product.QuantityInStock</td>
                                             <td>
-                                                <a asp-action="SetPrice" asp-route-id="@product.Id" 
-                                                   class="btn btn-primary btn-sm">
+                                                <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                                    class="btn custom-btn-primary btn-sm">
                                                     Set Price
                                                 </a>
                                             </td>
@@ -63,21 +63,21 @@
 
         <!-- Right Side - Products with price -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-success text-white">
+            <div class="card custom-card">
+                <div class="card-header text-white" style="background-color: #952735;">
                     <h4 class="mb-0 text-center">Products with Price Set</h4>
                 </div>
                 <div class="card-body">
                     @if (!productsWithPrice.Any())
                     {
-                        <div class="alert alert-info">
+                        <div class="alert text-center text-white" style="background-color: #952735; border-radius: 10px;">
                             No products with prices set.
                         </div>
                     }
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table custom-table">
                                 <thead>
                                     <tr>
                                         <th>Book Name</th>
@@ -93,13 +93,13 @@
                                         <tr>
                                             <td>@product.Name</td>
                                             <td>@product.Author</td>
-                                            <td class="text-success fw-bold">
+                                            <td class="fw-bold text-black">
                                                 @product.Price.ToString("C")
                                             </td>
                                             <td>@product.QuantityInStock</td>
                                             <td>
-                                                <a asp-action="SetPrice" asp-route-id="@product.Id" 
-                                                   class="btn btn-outline-primary btn-sm">
+                                                <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                                    class="btn custom-btn-success btn-sm">
                                                     Update Price
                                                 </a>
                                             </td>
@@ -115,22 +115,70 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // Add animation when a price is set
-        $(document).ready(function() {
-            // Check if we just returned from setting a price
-            const urlParams = new URLSearchParams(window.location.search);
-            const justUpdated = urlParams.get('updated');
-            
-            if (justUpdated) {
-                // Highlight the updated row briefly
-                const updatedRow = $(`tr[data-product-id='${justUpdated}']`);
-                updatedRow.addClass('bg-success text-white');
-                setTimeout(() => {
-                    updatedRow.removeClass('bg-success text-white');
-                }, 2000);
-            }
-        });
-    </script>
-}
+<style>
+    .page-title {
+        color: #010101;
+        font-weight: bold;
+    }
+
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .custom-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .custom-table th {
+        background-color: #be3144;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .custom-table td {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        color: black;
+        /* Ensures text color is black */
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .btn {
+        border-radius: 25px;
+        font-weight: bold;
+    }
+
+    .custom-btn-primary {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .custom-btn-primary:hover {
+        background-color: #952735;
+    }
+
+    .custom-btn-success {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .custom-btn-success:hover {
+        background-color: #952735;
+    }
+
+    .alert {
+        font-size: 16px;
+    }
+</style>
