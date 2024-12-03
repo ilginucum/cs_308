@@ -296,56 +296,56 @@ namespace e_commerce.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(string ProductId, string CommentText)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "User", new { returnUrl = Url.Action("ProductDetails", "Product", new { id = ProductId }) });
-            }
+        if (!User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "User", new { returnUrl = Url.Action("ProductDetails", "Product", new { id = ProductId }) });
+        }
 
-            if (string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(CommentText))
-            {
-                return BadRequest();
-            }
+        if (string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(CommentText))
+        {
+            return BadRequest();
+        }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Check if user has purchased the product and if it's delivered
-            var orders = await _orderRepository.FilterByAsync(o => 
-                o.UserId == userId && 
-                o.OrderStatus == "Delivered" &&
-                o.Items.Any(item => item.ProductId == ProductId));
-
-            if (!orders.Any())
-            {
-                TempData["ErrorMessage"] = "You can only comment on products you have purchased and received.";
-                return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
-            }
-
-            var userName = User.Identity.Name;
-            var product = await _productRepository.FindByIdAsync(ProductId);
-
-            var comment = new ProductComment
-            {
-                ProductId = ProductId,
-                ProductName = product?.Name,
-                UserId = userId,
-                UserName = userName,
-                CommentText = CommentText,
-                CreatedAt = DateTime.UtcNow,
-                Status = "approved" // Automatically approve since user has received the product
-            };
-
-            try
-            {
-                await _commentRepository.InsertOneAsync(comment);
-                _logger.LogInformation($"Comment automatically approved and added for product {ProductId} by user {userId}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error adding comment for product {ProductId} by user {userId}");
-                TempData["ErrorMessage"] = "An error occurred while adding your comment. Please try again.";
-            }
-
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        // Check if user has purchased the product and if it's delivered
+        var orders = await _orderRepository.FilterByAsync(o => 
+            o.UserId == userId && 
+            o.OrderStatus == "Delivered" &&
+            o.Items.Any(item => item.ProductId == ProductId));
+        
+        if (!orders.Any())
+        {
+            TempData["ErrorMessage"] = "You can only comment on products you have purchased and received.";
             return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
+        }
+
+        var userName = User.Identity.Name;
+        var product = await _productRepository.FindByIdAsync(ProductId);
+
+        var comment = new ProductComment
+        {
+            ProductId = ProductId,
+            ProductName = product?.Name,
+            UserId = userId,
+            UserName = userName,
+            CommentText = CommentText,
+            CreatedAt = DateTime.UtcNow,
+            Status = "pending" // Set status to pending for manager approval
+        };
+
+        try
+        {
+            await _commentRepository.InsertOneAsync(comment);
+            _logger.LogInformation($"Comment added and pending approval for product {ProductId} by user {userId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error adding comment for product {ProductId} by user {userId}");
+            TempData["ErrorMessage"] = "An error occurred while adding your comment. Please try again.";
+        }
+
+        return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
         }
         
         [HttpPost]
