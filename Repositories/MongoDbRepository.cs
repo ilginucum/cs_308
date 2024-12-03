@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using e_commerce.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -21,10 +20,10 @@ namespace e_commerce.Data
         Task UpdateOneAsync(Expression<Func<T, bool>> filterExpression, T document);
         Task<T> FindByIdAsync(string id);
         Task ReplaceOneAsync(T document);
-        // Yeni eklenen metodlar
         Task<T> FindOneAndUpdateAsync(Expression<Func<T, bool>> filterExpression, T document);
         Task<T> FindOneAndReplaceAsync(Expression<Func<T, bool>> filterExpression, T document);
         Task<T> FindByUserIdAsync(string userId);
+        Task EnsureIndexAsync(string fieldName, bool isUnique = false);
     }
 
     public class MongoDBRepository<T> : IMongoDBRepository<T> where T : class
@@ -114,7 +113,6 @@ namespace e_commerce.Data
             }
         }
 
-        // Yeni eklenen metodların implementasyonları
         public async Task<T> FindOneAndUpdateAsync(Expression<Func<T, bool>> filterExpression, T document)
         {
             return await _collection.FindOneAndReplaceAsync(filterExpression, document);
@@ -129,6 +127,24 @@ namespace e_commerce.Data
         {
             var filter = Builders<T>.Filter.Eq("UserId", userId);
             return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task EnsureIndexAsync(string fieldName, bool isUnique = false)
+        {
+            try
+            {
+                var indexKeys = Builders<T>.IndexKeys.Ascending(fieldName);
+                var indexOptions = new CreateIndexOptions { Unique = isUnique };
+                var indexModel = new CreateIndexModel<T>(indexKeys, indexOptions);
+
+                await _collection.Indexes.CreateOneAsync(indexModel);
+                _logger.LogInformation($"Index ensured on field: {fieldName} (Unique: {isUnique}) for collection: {typeof(T).Name}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error ensuring index on field: {fieldName} for collection: {typeof(T).Name}");
+                throw;
+            }
         }
     }
 }

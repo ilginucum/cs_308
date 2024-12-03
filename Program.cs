@@ -80,6 +80,7 @@ builder.Services.AddScoped<IMongoDBRepository<ProfileAddress>>(sp =>
        "ProfileAddress",
        sp.GetRequiredService<ILogger<MongoDBRepository<ProfileAddress>>>()
    ));
+
 builder.Services.AddScoped<IMongoDBRepository<WishlistItem>>(sp =>
     new MongoDBRepository<WishlistItem>(
         sp.GetRequiredService<IConfiguration>(),
@@ -87,11 +88,10 @@ builder.Services.AddScoped<IMongoDBRepository<WishlistItem>>(sp =>
         sp.GetRequiredService<ILogger<MongoDBRepository<WishlistItem>>>()
     ));
 
-
 // Add session support
 builder.Services.AddSession(options =>
 {
-   options.IdleTimeout = TimeSpan.FromMinutes(30); // Session süresini 7 güne çıkardım
+   options.IdleTimeout = TimeSpan.FromMinutes(30); // 30-minute session timeout
    options.Cookie.HttpOnly = true;
    options.Cookie.IsEssential = true;
 });
@@ -100,12 +100,12 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
    .AddCookie(options =>
    {
-       options.LoginPath = "/User/Login";
-       options.LogoutPath = "/User/Logout";
-       options.AccessDeniedPath = "/User/AccessDenied";
+      options.LoginPath = "/User/Login";
+      options.LogoutPath = "/User/Logout";
+      options.AccessDeniedPath = "/User/AccessDenied";
    });
-   
-// Add this line with your other service registrations
+
+// Add other services
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
@@ -126,9 +126,32 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseSession(); // Session middleware'ini ekledik
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Initialize database logic
+using (var scope = app.Services.CreateScope())
+{
+   var services = scope.ServiceProvider;
+
+   try
+   {
+      var productRepository = services.GetRequiredService<IMongoDBRepository<Product>>();
+      var wishlistRepository = services.GetRequiredService<IMongoDBRepository<WishlistItem>>();
+      var shoppingCartRepository = services.GetRequiredService<IMongoDBRepository<ShoppingCart>>();
+
+      // Example: Ensure indexes on relevant collections
+      await productRepository.EnsureIndexAsync("Name", true); // Ensure unique index on Name
+      await wishlistRepository.EnsureIndexAsync("UserId", false); // Index for faster user-specific queries
+      await shoppingCartRepository.EnsureIndexAsync("UserId", false); // Same for shopping cart
+   }
+   catch (Exception ex)
+   {
+      var logger = services.GetRequiredService<ILogger<Program>>();
+      logger.LogError(ex, "An error occurred during database initialization.");
+   }
+}
 
 app.MapControllerRoute(
    name: "default",

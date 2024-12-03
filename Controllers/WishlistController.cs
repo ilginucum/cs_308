@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using e_commerce.Models;
 using e_commerce.Data;
-using e_commerce.Controllers;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using static e_commerce.Models.WishlistItem;
 
 namespace e_commerce.Controllers
 {
@@ -12,21 +12,42 @@ namespace e_commerce.Controllers
     public class WishlistController : Controller
     {
         private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
+        private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
 
-        public WishlistController(IMongoDBRepository<WishlistItem> wishlistRepository, IMongoDBRepository<ShoppingCart> shoppingCartRepository)
+        public WishlistController(
+            IMongoDBRepository<WishlistItem> wishlistRepository,
+            IMongoDBRepository<Product> productRepository,
+            IMongoDBRepository<ShoppingCart> shoppingCartRepository)
         {
             _wishlistRepository = wishlistRepository;
+            _productRepository = productRepository;
             _shoppingCartRepository = shoppingCartRepository;
-
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Fetch all wishlist items for the user
             var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.UserId == userId);
-            return View(wishlistItems);
+
+            // Add QuantityInStock for each item
+            var wishlistViewModel = new List<WishlistViewModel>();
+            foreach (var item in wishlistItems)
+            {
+                var product = await _productRepository.FindByIdAsync(item.ProductId);
+                var quantityInStock = product?.QuantityInStock ?? 0;
+
+                wishlistViewModel.Add(new WishlistViewModel
+                {
+                    WishlistItem = item,
+                    QuantityInStock = quantityInStock
+                });
+            }
+
+            return View(wishlistViewModel);
         }
 
         [HttpPost]
@@ -34,6 +55,7 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Check if the product is already in the wishlist
             var existingItem = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (existingItem != null)
             {
@@ -41,6 +63,7 @@ namespace e_commerce.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Add a new item to the wishlist
             var wishlistItem = new WishlistItem
             {
                 ProductId = productId,
@@ -61,8 +84,9 @@ namespace e_commerce.Controllers
         public async Task<IActionResult> RemoveFromWishlist(string productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var item = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
 
+            // Find and delete the wishlist item
+            var item = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (item != null)
             {
                 await _wishlistRepository.DeleteOneAsync(item.Id);
@@ -70,7 +94,7 @@ namespace e_commerce.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        [HttpPost]
+
         [HttpPost]
         public async Task<IActionResult> MoveToCart(string productId)
         {
@@ -84,41 +108,37 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Find the existing shopping cart or create a new one
-            var shoppingCart = await _shoppingCartRepository.FindOneAsync(c => c.UserId == userId) ?? new ShoppingCart
+            // Check product stock
+            var product = await _productRepository.FindByIdAsync(productId);
+            if (product == null || product.QuantityInStock <= 0)
             {
-                UserId = userId,
-                Items = new List<CartItem>()
+                TempData["ErrorMessage"] = "Item is out of stock and cannot be added to the cart.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Add the item to the shopping cart
+            var cartItem = new CartItem
+            {
+                ProductId = wishlistItem.ProductId,
+                ProductName = wishlistItem.ProductName,
+                UnitPrice = wishlistItem.Price,
+                QuantityInCart = 1 // Default quantity
             };
 
-            // Check if the product is already in the cart
-            var existingCartItem = shoppingCart.Items.FirstOrDefault(item => item.ProductId == productId);
-            if (existingCartItem != null)
+            var shoppingCart = await _shoppingCartRepository.FindOneAsync(s => s.UserId == userId);
+            if (shoppingCart == null)
             {
-                existingCartItem.QuantityInCart += 1; // Increment quantity if already in cart
-            }
-            else
-            {
-                // Create a new CartItem and add it to the shopping cart
-                var cartItem = new CartItem
+                shoppingCart = new ShoppingCart
                 {
-                    ProductId = wishlistItem.ProductId,
-                    ProductName = wishlistItem.ProductName,
-                    UnitPrice = wishlistItem.Price,
-                    QuantityInCart = 1 // Default quantity
+                    UserId = userId,
+                    Items = new List<CartItem> { cartItem }
                 };
-                shoppingCart.Items.Add(cartItem);
-            }
 
-            // Insert or update the shopping cart
-            if (string.IsNullOrEmpty(shoppingCart.Id))
-            {
-                // Insert the new shopping cart if it doesn't exist
                 await _shoppingCartRepository.InsertOneAsync(shoppingCart);
             }
             else
             {
-                // Update the existing shopping cart
+                shoppingCart.Items.Add(cartItem);
                 await _shoppingCartRepository.ReplaceOneAsync(shoppingCart);
             }
 
@@ -129,6 +149,6 @@ namespace e_commerce.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
     }
 }
+

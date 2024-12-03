@@ -14,5 +14,6 @@ namespace e_commerce.Models
         public Dictionary<int, int> RatingDistribution { get; set; } 
 
         public List<ProductComment> Comments { get; set; } // Yorumlar listesi
+
     }
 }

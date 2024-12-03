@@ -1,149 +1,59 @@
-@model IEnumerable<e_commerce.Models.WishlistItem>
-@{
-    ViewData["Title"] = "My Wishlist";
-}
+@model IEnumerable<dynamic>
 
-<div class="wishlist-container">
-    <h2 class="wishlist-title">My Wishlist</h2>
+<div class="container mt-4">
+    <h1 class="text-center" style="color: #be3144;">My Wishlist</h1>
 
     @if (!Model.Any())
     {
-                <div class="wishlist-empty">
-                    <p>Your wishlist is empty. Add products to your wishlist!</p>
-                    <a asp-controller="Home" asp-action="Index" class="btn browse-btn">Browse Products</a>
-                </div>
+        <div class="text-center">
+            <p>Your wishlist is empty. Add products to your wishlist!</p>
+            <a asp-controller="Home" asp-action="Index" class="btn browse-btn">Browse Products</a>
+        </div>
     }
     else
     {
-                <div class="wishlist-items">
-            @foreach (var item in Model)
-            {
-                                <div class="wishlist-item">
-                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="wishlist-item-image" />
-                                    <div class="wishlist-item-details">
-                                        <h3 class="wishlist-item-name">@item.ProductName</h3>
-                                        <p class="wishlist-item-author">@item.Author</p>
-                                        <p class="wishlist-item-price">@item.Price.ToString("C")</p>
-                                        <div class="wishlist-item-actions">
-                                            <form asp-action="MoveToCart" method="post" class="d-inline">
-                                                <input type="hidden" name="productId" value="@item.ProductId" />
-                                                <button type="submit" class="btn move-cart-btn">Move to Cart</button>
-                                            </form>
-                                            <form asp-action="RemoveFromWishlist" method="post" class="d-inline">
-                                                <input type="hidden" name="productId" value="@item.ProductId" />
-                                                <button type="submit" class="btn remove-btn">Remove</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-            }
+        @foreach (var item in Model)
+        {
+            <div class="wishlist-item p-4 mb-3 shadow" style="border-radius: 15px; background-color: #ffffff;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="@item.WishlistItem.ImageUrl" alt="@item.WishlistItem.ProductName"
+                            class="img-fluid rounded shadow" style="max-height: 200px; object-fit: contain;" />
+                    </div>
+                    <div class="col-md-8">
+                        <h4 style="color: #be3144;">@item.WishlistItem.ProductName</h4>
+                        <p>By @item.WishlistItem.Author</p>
+                        <p style="color: #be3144;"><strong>$@item.WishlistItem.Price</strong></p>
+
+                        @if (item.QuantityInStock <= 0)
+                        {
+                            <!-- Disabled Move to Cart Button -->
+                            <button class="btn"
+                                style="background-color: #dc7985; color: white; border-radius: 15px; border: none !important;outline: none; box-shadow: none !important"
+                                disabled>
+                                Move to Cart
+                            </button>
+                            <p style="color: #dc7985; margin-top: 5px;">Item is out of stock.</p>
+                        }
+                        else
+                        {
+                            <!-- Enabled Move to Cart Button -->
+                            <form asp-controller="Wishlist" asp-action="MoveToCart" method="post">
+                                <input type="hidden" name="productId" value="@item.WishlistItem.ProductId" />
+                                <button type="submit" class="btn btn-success"
+                                    style="background-color: #be3144; color: white; border-radius: 15px; outline: none !important;border:none !important; box-shadow: none !important">
+                                    Move to Cart
+                                </button>
+                            </form>
+                        }
+
+                        <form asp-controller="Wishlist" asp-action="RemoveFromWishlist" method="post" style="margin-top: 10px;">
+                            <input type="hidden" name="productId" value="@item.WishlistItem.ProductId" />
+                            <button type="submit" class="btn btn-outline-danger" style="border-radius: 15px;">Remove</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+        }
     }
 </div>
-
-@section Styles {
-            <style>
-                /* Wishlist Styles */
-                .wishlist-container {
-                    max-width: 900px;
-                    margin: 30px auto;
-                    padding: 20px;
-                    background: #fff;
-                    border-radius: 15px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                }
-
-                .wishlist-title {
-                    text-align: center;
-                    color: #be3144;
-                    font-size: 24px;
-                    font-weight: bold;
-                    margin-bottom: 20px;
-                }
-
-                .wishlist-empty {
-                    text-align: center;
-                    color: #666;
-                }
-
-                .browse-btn {
-                    background-color: #952735;
-                    color: white;
-                    padding: 10px 20px;
-                    text-decoration: none;
-                    font-weight: bold;
-                    border-radius: 25px;
-                    display: inline-block;
-                    margin-top: 15px;
-                }
-
-                .wishlist-items {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .wishlist-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                    background: #f9f9f9;
-                    padding: 15px;
-                    border-radius: 10px;
-                    border: 1px solid #ddd;
-                }
-
-                .wishlist-item-image {
-                    width: 100px;
-                    height: auto;
-                    border-radius: 10px;
-                }
-
-                .wishlist-item-details {
-                    flex: 1;
-                }
-
-                .wishlist-item-name {
-                    font-size: 18px;
-                    font-weight: bold;
-                    color: #333;
-                }
-
-                .wishlist-item-author {
-                    font-size: 14px;
-                    color: #777;
-                }
-
-                .wishlist-item-price {
-                    font-size: 16px;
-                    color: #952735;
-                    font-weight: bold;
-                }
-
-                .wishlist-item-actions {
-                    margin-top: 10px;
-                }
-
-                .wishlist-item-actions .btn {
-                    padding: 8px 15px;
-                    border-radius: 25px;
-                    font-size: 14px;
-                    font-weight: bold;
-                    margin-right: 10px;
-                    text-decoration: none;
-                    display: inline-block;
-                }
-
-                .move-cart-btn {
-                    background-color: #be3144;
-                    color: white;
-                    border: none;
-                }
-
-                .remove-btn {
-                    background-color: #d75062;
-                    color: white;
-                    border: none;
-                }
-            </style>
-}
