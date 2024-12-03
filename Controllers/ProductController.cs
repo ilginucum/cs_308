@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using e_commerce.Models;
 using e_commerce.Data;
+using e_commerce.Controllers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -26,6 +27,7 @@ namespace e_commerce.Controllers
             IMongoDBRepository<Order> orderRepository,
         IMongoDBRepository<Address> addressRepository,
             IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
+            IMongoDBRepository<WishlistItem> _wishlistRepository,
             ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
@@ -86,6 +88,10 @@ namespace e_commerce.Controllers
                 return View(new List<CommentManagementViewModel>());
             }
         }
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+
 
         [HttpPost]
         [Authorize(Roles = "ProductManager")]

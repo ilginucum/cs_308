@@ -80,6 +80,13 @@ builder.Services.AddScoped<IMongoDBRepository<ProfileAddress>>(sp =>
        "ProfileAddress",
        sp.GetRequiredService<ILogger<MongoDBRepository<ProfileAddress>>>()
    ));
+builder.Services.AddScoped<IMongoDBRepository<WishlistItem>>(sp =>
+    new MongoDBRepository<WishlistItem>(
+        sp.GetRequiredService<IConfiguration>(),
+        "Wishlist",
+        sp.GetRequiredService<ILogger<MongoDBRepository<WishlistItem>>>()
+    ));
+
 
 // Add session support
 builder.Services.AddSession(options =>

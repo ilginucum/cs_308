@@ -12,7 +12,8 @@ namespace e_commerce.Controllers
    {
        private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
        private readonly IMongoDBRepository<Product> _productRepository;
-       private readonly ILogger<ShoppingCartController> _logger;
+        private readonly IMongoDBRepository<ShoppingCart> _wishlistRepository;
+        private readonly ILogger<ShoppingCartController> _logger;
 
        public ShoppingCartController(
            IMongoDBRepository<ShoppingCart> shoppingCartRepository,
@@ -207,12 +208,11 @@ namespace e_commerce.Controllers
            await _shoppingCartRepository.InsertOneAsync(cart);
            return cart;
        }
+  
+
+    }
 
 
-       
-   }
 
 
-
-   
 }

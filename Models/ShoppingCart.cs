@@ -24,5 +24,6 @@ namespace e_commerce.Models
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public decimal TotalPrice => Items.Sum(item => item.TotalPrice);
+        
     }
 }
