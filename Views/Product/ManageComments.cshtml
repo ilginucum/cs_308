@@ -1,17 +1,17 @@
-
 @model IEnumerable<e_commerce.Models.CommentManagementViewModel>
-<div class="container mt-4">
-    <h2 class="mb-4">Comment Management</h2>
+
+<div class="container mt-4 comment-management">
+    <h2 class="page-title">Comment Management</h2>
     <div class="row">
         <!-- Pending Comments -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-warning">
+            <div class="card custom-card">
+                <div class="card-header comments-header">
                     <h3 class="card-title">Pending Comments</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table custom-table">
                             <thead>
                                 <tr>
                                     <th>Book</th>
@@ -33,22 +33,22 @@
                                         <td>
                                             @if (comment.HasPurchased)
                                             {
-                                                <span class="badge bg-success">Verified Purchase</span>
+                                                <span class="badge badge-purchased">Verified Purchase</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary">Not Purchased</span>
+                                                <span class="badge badge-not-purchased">Not Purchased</span>
                                             }
                                         </td>
                                         <td>
                                             <div class="btn-group">
                                                 <form asp-action="ApproveComment" method="post" class="me-2">
                                                     <input type="hidden" name="commentId" value="@comment.Id" />
-                                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                    <button type="submit" class="btn custom-btn-success">Approve</button>
                                                 </form>
                                                 <form asp-action="RequestChange" method="post">
                                                     <input type="hidden" name="commentId" value="@comment.Id" />
-                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                    <button type="submit" class="btn custom-btn-danger">Reject</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -63,13 +63,13 @@
 
         <!-- Approved Comments -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-success text-white">
+            <div class="card custom-card">
+                <div class="card-header comments-header">
                     <h3 class="card-title">Approved Comments</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table custom-table">
                             <thead>
                                 <tr>
                                     <th>Book</th>
@@ -90,11 +90,11 @@
                                         <td>
                                             @if (comment.HasPurchased)
                                             {
-                                                <span class="badge bg-success">Verified Purchase</span>
+                                                <span class="badge badge-purchased">Verified Purchase</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary">Not Purchased</span>
+                                                <span class="badge badge-not-purchased">Not Purchased</span>
                                             }
                                         </td>
                                     </tr>
@@ -107,3 +107,102 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* General Styles */
+    .comment-management {
+        font-family: Arial, sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #be3144;
+    }
+
+    /* Card Styles */
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .comments-header {
+        background-color: #952735; /* Updated background for both headers */
+        color: white;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Table Styles */
+    .custom-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .custom-table th {
+        background-color: #be3144;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .custom-table td {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Badge Styles */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 25px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .badge-purchased {
+        background-color: #be3144; /* Use palette color */
+        color: white;
+    }
+
+    .badge-not-purchased {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    /* Button Styles */
+    .custom-btn-success {
+        background-color: #be3144;
+        border: none;
+        color: white;
+        border-radius: 25px;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .custom-btn-success:hover {
+        background-color: #952735;
+    }
+
+    .custom-btn-danger {
+        background-color: #be3144;
+        border: none;
+        color: white;
+        border-radius: 25px;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .custom-btn-danger:hover {
+        background-color: #952735;
+    }
+</style>
