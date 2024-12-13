@@ -38,7 +38,8 @@ namespace e_commerce.Controllers
 
                 var orders = await _orderRepository.FilterByAsync(o => o.UserId == userId);
                 var ordersList = orders.ToList();
-                
+
+
                 _logger.LogInformation($"Found {ordersList.Count} orders for user");
 
                 return View(ordersList);

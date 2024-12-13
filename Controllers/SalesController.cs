@@ -4,19 +4,23 @@ using e_commerce.Models;
 using e_commerce.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace e_commerce.Controllers
 {
     [Authorize(Roles = "SalesManager")]
     public class SalesController : Controller
     {
+        private readonly IMongoDBRepository<Order> _orderRepository;
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly ILogger<SalesController> _logger;
 
         public SalesController(
             IMongoDBRepository<Product> productRepository,
+            IMongoDBRepository<Order> orderRepository,
             ILogger<SalesController> logger)
         {
+            _orderRepository = orderRepository;
             _productRepository = productRepository;
             _logger = logger;
         }
@@ -26,28 +30,35 @@ namespace e_commerce.Controllers
             try
             {
                 var products = await _productRepository.GetAllAsync();
+                var orders = await _orderRepository.GetAllAsync();
+
                 if (products == null)
                 {
                     _logger.LogWarning("No products found");
                     products = new List<Product>();
                 }
-                
+
+                var viewModel = new SalesViewModel
+                {
+                    Products = products,
+                    Orders = orders
+                };
+
                 // Check for success message in TempData
                 if (TempData["SuccessMessage"] != null)
                 {
                     ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
                 }
-                
-                _logger.LogInformation($"Retrieved {products.Count()} products");
-                return View(products);
+
+                _logger.LogInformation($"Retrieved {products.Count()} products and {orders.Count()} orders");
+                return View(viewModel);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching products");
-                return View(new List<Product>());
+                _logger.LogError(ex, "Error occurred while fetching products and orders");
+                return View(new SalesViewModel());
             }
         }
-
         [HttpGet]
         public async Task<IActionResult> SetPrice(string id)
         {
@@ -61,6 +72,7 @@ namespace e_commerce.Controllers
             {
                 return NotFound();
             }
+
             return View(product);
         }
 
@@ -78,13 +90,11 @@ namespace e_commerce.Controllers
             {
                 product.Price = price;
                 await _productRepository.ReplaceOneAsync(product);
+
                 _logger.LogInformation($"Price updated successfully for product: {id}");
-                
-                // Add success message
                 TempData["SuccessMessage"] = $"Price for '{product.Name}' has been updated successfully to {price:C}";
-                
-                // Redirect with query parameter for animation
-                return RedirectToAction(nameof(Index), new { updated = id });
+
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -93,6 +103,7 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApplyDiscount(string id, int discount)
@@ -133,5 +144,43 @@ namespace e_commerce.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("Sales/CalculateProfit")]
+        public async Task<IActionResult> CalculateProfit(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var allOrders = await _orderRepository.GetAllAsync();
+
+                // Filter orders by OrderDate within the specified range
+                var filteredOrders = allOrders
+                                     .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+                                     .ToList();
+
+                // Calculate total revenue and profit/loss
+                decimal totalRevenue = filteredOrders.Sum(o => o.TotalAmount);
+                decimal totalCost = filteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)); // Assuming 30% profit margin
+                decimal profitLoss = totalRevenue - totalCost;
+
+                var products = await _productRepository.GetAllAsync();
+
+                var viewModel = new SalesViewModel
+                {
+                    Products = products,
+                    Orders = allOrders,
+                    FilteredOrders = filteredOrders,
+                    TotalRevenue = totalRevenue,
+                    ProfitLoss = profitLoss
+                };
+
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating profit");
+                return View("Index", new SalesViewModel());
+            }
+        }
     }
 }

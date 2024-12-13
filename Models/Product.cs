@@ -21,5 +21,6 @@ namespace e_commerce.Models
         public string DistributorInformation { get; set; }
         public string Genre { get; set; }
         //public string CategoryId { get; set; }
+
     }
 }

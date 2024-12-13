@@ -1,67 +1,119 @@
-@model IEnumerable<e_commerce.Models.Product>
+@model e_commerce.Models.SalesViewModel
+
 @{
     ViewData["Title"] = "Sales Management";
     Layout = "_Layout";
 
-    var productsWithoutPrice = Model.Where(p => p.Price == 0.0M);
-    var productsWithPrice = Model.Where(p => p.Price > 0.0M);
+    var productsWithoutPrice = Model.Products?.Where(p => p.Price == 0.0M) ?? new List<e_commerce.Models.Product>();
+    var productsWithPrice = Model.Products?.Where(p => p.Price > 0.0M) ?? new List<e_commerce.Models.Product>();
+
+    bool showCalculateSection = Model.FilteredOrders != null;
 }
 
 <div class="container-fluid mt-4">
     <h2 class="page-title text-center">Sales Management</h2>
 
-    <div class="row">
-        <!-- Left Side - Products without price -->
-        <div class="col-md-6 border-end">
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success text-center">@ViewBag.SuccessMessage</div>
+    }
+
+    <!-- Calculate Profit Block -->
+    <div class="row mb-4">
+        <div class="col-12">
             <div class="card custom-card">
-                <div class="card-header bg-processing text-white" style="background-color: #952735;">
-                    <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+                <div class="card-header text-white" style="background-color: #952735;">
+                    <h4 class="mb-0 text-center">
+                        <button class="header-button" id="toggleCalculateSection">Calculate Profit</button>
+                    </h4>
                 </div>
-                <div class="card-body">
-                    @if (!productsWithoutPrice.Any())
-                    {
-                        <div class="alert text-center text-white" style="background-color: #dc7986; border-radius: 10px;">
-                            No products awaiting price setting.
+                <div class="card-body" id="calculateSection" style="@(showCalculateSection ? "block" : "none")">
+                    <form asp-action="CalculateProfit" method="post" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="startDate" class="form-label">Start Date:</label>
+                                <input type="date" id="startDate" name="startDate" class="form-control" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="endDate" class="form-label">End Date:</label>
+                                <input type="date" id="endDate" name="endDate" class="form-control" required />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn custom-btn-primary w-100">Calculate</button>
+                            </div>
                         </div>
-                    }
-                    else
+                    </form>
+
+                    @if (Model.FilteredOrders != null)
                     {
-                        <div class="table-responsive">
-                            <table class="table custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>Book Name</th>
-                                        <th>Author</th>
-                                        <th>Genre</th>
-                                        <th>Stock</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var product in productsWithoutPrice)
-                                    {
+                        <div class="text-center mt-3">
+                            <h4>Total Revenue: @Model.TotalRevenue.ToString("C")</h4>
+                            <h4>Profit/Loss: @Model.ProfitLoss.ToString("C")</h4>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button class="btn btn-secondary" id="toggleDetails">Details</button>
+                        </div>
+
+                        <div id="detailsSection" style="display: none;">
+                            <h5 class="text-center mt-3">Filtered Orders</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <thead>
                                         <tr>
-                                            <td>@product.Name</td>
-                                            <td>@product.Author</td>
-                                            <td>@product.Genre</td>
-                                            <td>@product.QuantityInStock</td>
-                                            <td>
-                                                <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                    class="btn custom-btn-primary btn-sm">
-                                                    Set Price
-                                                </a>
-                                            </td>
+                                            <th>Order ID</th>
+                                            <th>User ID</th>
+                                            <th>Total Amount</th>
+                                            <th>Order Date</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in Model.FilteredOrders)
+                                        {
+                                            <tr>
+                                                <td>@order.Id</td>
+                                                <td>@order.UserId</td>
+                                                <td>@order.TotalAmount.ToString("C")</td>
+                                                <td>@order.OrderDate.ToShortDateString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     }
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Right Side - Products with price -->
+    <!-- Products Sections -->
+    <div class="row">
+        <!-- Left Side - Products Awaiting Price -->
+        <div class="col-md-6 border-end">
+            <div class="card custom-card">
+                <div class="card-header text-white" style="background-color: #952735;">
+                    <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+                </div>
+                <div class="card-body">
+                    @if (!productsWithoutPrice.Any())
+                    {
+                        <div class="alert alert-info text-center">No products awaiting price setting.</div>
+                    }
+                    else
+                    {
+                        <ul class="list-group">
+                            @foreach (var product in productsWithoutPrice)
+                            {
+                                <li class="list-group-item">@product.Name - @product.Author</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Products with Price Set and Discount Feature -->
         <div class="col-md-6">
             <div class="card custom-card">
                 <div class="card-header text-white" style="background-color: #952735;">
@@ -70,60 +122,63 @@
                 <div class="card-body">
                     @if (!productsWithPrice.Any())
                     {
-                        <div class="alert text-center text-white" style="background-color: #952735; border-radius: 10px;">
-                            No products with prices set.
-                        </div>
+                        <div class="alert alert-info text-center">No products with prices set.</div>
                     }
                     else
                     {
-                        <div class="table-responsive">
-                            <table class="table custom-table">
-                                <thead>
+                        <table class="table custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Book Name</th>
+                                    <th>Author</th>
+                                    <th>Current Price</th>
+                                    <th>Discount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in productsWithPrice)
+                                {
                                     <tr>
-                                        <th>Book Name</th>
-                                        <th>Author</th>
-                                        <th>Current Price</th>
-                                        <th>Discount</th>
-                                        <th>Stock</th>
-                                        <th>Action</th>
+                                        <td>@product.Name</td>
+                                        <td>@product.Author</td>
+                                        <td>@product.Price.ToString("C")</td>
+                                        <td>
+                                            <form asp-action="ApplyDiscount" method="post">
+                                                <input type="hidden" name="id" value="@product.Id" />
+                                                <input type="number" name="discount" class="form-control discount-input"
+                                                    placeholder="%" min="0" max="100" step="10" required />
+                                                <button type="submit" class="btn custom-btn-primary btn-sm mt-2">Apply</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                                class="btn custom-btn-primary btn-sm">Update Price</a>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var product in productsWithPrice)
-                                    {
-                                        <tr>
-                                            <td>@product.Name</td>
-                                            <td>@product.Author</td>
-                                            <td class="fw-bold text-black">
-                                                @product.Price.ToString("C")
-                                            </td>
-                                            <td>
-                                                <form asp-action="ApplyDiscount" method="post" class="d-inline">
-                                                    <input type="hidden" name="id" value="@product.Id" />
-                                                    <input type="number" name="discount"
-                                                        class="form-control discount-input d-inline-block" placeholder="%"
-                                                        step="10" min="0" max="100" required />
-                                                    <button type="submit" class="btn btn-sm apply-btn mt-1">Apply</button>
-                                                </form>
-                                            </td>
-                                            <td>@product.QuantityInStock</td>
-                                            <td>
-                                                <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                    class="btn custom-btn-success btn-sm">
-                                                    Update Price
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                }
+                            </tbody>
+                        </table>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- JavaScript for Toggling Sections -->
+<script>
+    document.getElementById("toggleCalculateSection").addEventListener("click", function () {
+        let section = document.getElementById("calculateSection");
+        section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+        section.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById("toggleDetails")?.addEventListener("click", function () {
+        let detailsSection = document.getElementById("detailsSection");
+        detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+    });
+</script>
 
 <style>
     .page-title {
@@ -136,59 +191,41 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .custom-btn-primary {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .custom-btn-primary:hover {
+        background-color: #952735;
+    }
+
     .custom-table th {
         background-color: #be3144;
         color: white;
         text-align: center;
-        padding: 10px;
     }
 
     .custom-table td {
         text-align: center;
-        padding: 10px;
-        border: 1px solid #ddd;
     }
 
-    .btn {
-        border-radius: 25px;
+    .header-button {
+        font-size: 1.5rem;
         font-weight: bold;
-    }
-
-    .custom-btn-primary,
-    .custom-btn-success {
-        background-color: #be3144;
         color: white;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
     }
 
-    .custom-btn-primary:hover,
-    .custom-btn-success:hover {
-        background-color: #952735;
-    }
-
-    .apply-btn {
-        background-color: #be3144;
-        color: white;
-    }
-
-    .apply-btn:hover {
-        background-color: #952735;
-    }
-
-    .alert {
-        font-size: 16px;
+    .header-button:hover {
+        text-decoration: underline;
     }
 
     .discount-input {
-        width: 120px;
-        height: 40px;
-        text-align: center;
-        font-size: 16px;
-        padding-right: 10px;
-    }
-
-    .discount-input::-webkit-inner-spin-button,
-    .discount-input::-webkit-outer-spin-button {
-        opacity: 1;
-        margin: 5px;
+        width: 80px;
+        display: inline-block;
     }
 </style>
