@@ -93,5 +93,45 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApplyDiscount(string id, int discount)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.FindByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                if (discount < 0 || discount > 100)
+                {
+                    ModelState.AddModelError("", "Discount must be between 0 and 100.");
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Calculate new discounted price
+                product.Price = product.Price * (1 - (discount / 100.0M));
+                await _productRepository.ReplaceOneAsync(product);
+
+                _logger.LogInformation($"Discount of {discount}% applied to product: {id}");
+                TempData["SuccessMessage"] = $"Discount of {discount}% applied to '{product.Name}'. New price: {product.Price:C}";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error applying discount to product: {id}");
+                ModelState.AddModelError("", "An error occurred while applying the discount. Please try again.");
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
     }
 }

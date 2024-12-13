@@ -83,6 +83,7 @@
                                         <th>Book Name</th>
                                         <th>Author</th>
                                         <th>Current Price</th>
+                                        <th>Discount</th>
                                         <th>Stock</th>
                                         <th>Action</th>
                                     </tr>
@@ -95,6 +96,15 @@
                                             <td>@product.Author</td>
                                             <td class="fw-bold text-black">
                                                 @product.Price.ToString("C")
+                                            </td>
+                                            <td>
+                                                <form asp-action="ApplyDiscount" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@product.Id" />
+                                                    <input type="number" name="discount"
+                                                        class="form-control discount-input d-inline-block" placeholder="%"
+                                                        step="10" min="0" max="100" required />
+                                                    <button type="submit" class="btn btn-sm apply-btn mt-1">Apply</button>
+                                                </form>
                                             </td>
                                             <td>@product.QuantityInStock</td>
                                             <td>
@@ -126,16 +136,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .card-header {
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .custom-table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
     .custom-table th {
         background-color: #be3144;
         color: white;
@@ -147,12 +147,6 @@
         text-align: center;
         padding: 10px;
         border: 1px solid #ddd;
-        color: black;
-        /* Ensures text color is black */
-    }
-
-    .custom-table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
     }
 
     .btn {
@@ -160,25 +154,41 @@
         font-weight: bold;
     }
 
-    .custom-btn-primary {
-        background-color: #be3144;
-        color: white;
-    }
-
-    .custom-btn-primary:hover {
-        background-color: #952735;
-    }
-
+    .custom-btn-primary,
     .custom-btn-success {
         background-color: #be3144;
         color: white;
     }
 
+    .custom-btn-primary:hover,
     .custom-btn-success:hover {
+        background-color: #952735;
+    }
+
+    .apply-btn {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .apply-btn:hover {
         background-color: #952735;
     }
 
     .alert {
         font-size: 16px;
+    }
+
+    .discount-input {
+        width: 120px;
+        height: 40px;
+        text-align: center;
+        font-size: 16px;
+        padding-right: 10px;
+    }
+
+    .discount-input::-webkit-inner-spin-button,
+    .discount-input::-webkit-outer-spin-button {
+        opacity: 1;
+        margin: 5px;
     }
 </style>
