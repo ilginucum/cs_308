@@ -11,6 +11,7 @@ namespace e_commerce.Controllers
     [Authorize]
     public class WishlistController : Controller
     {
+        private readonly ILogger<SalesController> _salesRepository;
         private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
@@ -18,11 +19,12 @@ namespace e_commerce.Controllers
         public WishlistController(
             IMongoDBRepository<WishlistItem> wishlistRepository,
             IMongoDBRepository<Product> productRepository,
-            IMongoDBRepository<ShoppingCart> shoppingCartRepository)
+            IMongoDBRepository<ShoppingCart> shoppingCartRepository, ILogger<SalesController> salesRepository)
         {
             _wishlistRepository = wishlistRepository;
             _productRepository = productRepository;
             _shoppingCartRepository = shoppingCartRepository;
+            _salesRepository = salesRepository;
         }
 
         [HttpGet]
@@ -148,6 +150,28 @@ namespace e_commerce.Controllers
             TempData["SuccessMessage"] = $"{wishlistItem.ProductName} has been moved to your shopping cart!";
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> NotifyDiscountedProducts()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.UserId == userId);
+
+            var notifications = new List<string>();
+
+            foreach (var item in wishlistItems)
+            {
+                if (item.DiscountedPrice < item.OriginalPrice)
+                {
+                    var discountPercentage = Math.Round((1 - (item.DiscountedPrice / item.OriginalPrice)) * 100);
+                    notifications.Add($"{item.ProductName} is now discounted by {discountPercentage}%!");
+                }
+            }
+
+            TempData["DiscountNotifications"] = notifications;
+
+            return RedirectToAction("Index");
+        }
+
 
     }
 }

@@ -10,7 +10,8 @@ namespace e_commerce.Controllers
 {
    public class ShoppingCartController : Controller
    {
-       private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
+        private readonly ILogger<SalesController> _salesRepository;
+        private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
        private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<ShoppingCart> _wishlistRepository;
         private readonly ILogger<ShoppingCartController> _logger;
@@ -18,11 +19,12 @@ namespace e_commerce.Controllers
        public ShoppingCartController(
            IMongoDBRepository<ShoppingCart> shoppingCartRepository,
            IMongoDBRepository<Product> productRepository,
-           ILogger<ShoppingCartController> logger)
+           ILogger<ShoppingCartController> logger, ILogger<SalesController> salesRepository)
        {
            _shoppingCartRepository = shoppingCartRepository;
            _productRepository = productRepository;
            _logger = logger;
+           _salesRepository = salesRepository;
        }
 
        public async Task<IActionResult> Index()
