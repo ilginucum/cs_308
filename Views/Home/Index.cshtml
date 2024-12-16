@@ -197,21 +197,9 @@
         flex-wrap: wrap;
     }
 
-    .form-select, .btn-filter {
+    .form-select {
         min-width: 150px;
         height: 40px;
-    }
-
-    .btn-search {
-        background-color: #be3144;
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-    }
-
-    .btn-search:hover {
-        background-color: #952735;
-        color: white;
     }
 
     .genre-dropdown {
@@ -238,6 +226,51 @@
         background-color: #952735;
     }
 
+    .btn-search, .btn-filter, #resetAllFilters {
+    background-color: #be3144;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    }
+
+    .btn-search:hover, .btn-filter:hover, #resetAllFilters:hover {
+        background-color: #952735;
+        color: white;
+    }
+    /* Focus durumu için */
+    .btn-search:focus, .btn-filter:focus, #resetAllFilters:focus,
+    .btn-search.focus, .btn-filter.focus, #resetAllFilters.focus {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem rgba(190, 49, 68, 0.25) !important;
+        background-color: #be3144;
+    }
+
+    /* Bootstrap'in varsayılan focus vurgusunu kaldır */
+    .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    /* Butonlara basıldığında active durumu */
+    .btn-search:active, .btn-filter:active, #resetAllFilters:active {
+        background-color: #be3144;
+        border-color: #be3144;
+        box-shadow: 0 0 0 0.25rem rgba(190, 49, 68, 0.25);
+    }
+
+    /* Update the filter button to remove any default dropdown styling */
+    .btn-filter {
+        background-color: #be3144 !important;
+        color: white !important;
+    }
+
+    /* Reset button specific styles to ensure it matches */
+    #resetAllFilters {
+        background-color: #be3144;
+        color: white;
+        border: none;
+    }
+
     /* Product Cards */
     .card {
         border: none;
@@ -255,6 +288,35 @@
         height: 300px;
         object-fit: contain;
         padding: 1rem;
+    }
+
+    .form-check-input:checked {
+    background-color: #be3144;
+    border-color: #be3144;
+    }
+
+    /* Hover durumunda da aynı rengi korumak için */
+    .form-check-input:checked:hover {
+        background-color: #be3144;
+        border-color: #be3144;
+    }
+
+    /* Fokus durumunda kutunun etrafındaki vurguyu da aynı renk yapmak için */
+    .form-check-input:focus {
+        border-color: #be3144;
+        box-shadow: 0 0 0 0.25rem rgba(190, 49, 68, 0.25);
+    }
+
+    /* Search box için */
+    .form-control:focus {
+        border-color: #be3144;
+        box-shadow: 0 0 0 0.25rem rgba(190, 49, 68, 0.25);
+    }
+
+    /* Dropdown'lar (Sort by Price ve Sort by Popularity) için */
+    .form-select:focus {
+        border-color: #be3144;
+        box-shadow: 0 0 0 0.25rem rgba(190, 49, 68, 0.25);
     }
 
     @* @media (max-width: 768px) {

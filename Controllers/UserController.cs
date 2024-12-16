@@ -57,12 +57,9 @@ namespace e_commerce.Controllers
                     var cartController = new ShoppingCartController(
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<ShoppingCart>>(),
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<Product>>(),
-                        HttpContext.RequestServices.GetRequiredService<ILogger<ShoppingCartController>>());
-                    
-                    cartController.ControllerContext = new ControllerContext
-                    {
-                        HttpContext = HttpContext
-                    };
+                        HttpContext.RequestServices.GetRequiredService<ILogger<ShoppingCartController>>(),
+                        HttpContext.RequestServices.GetRequiredService<ILogger<SalesController>>() // Add this line
+                    );
                     
                     await cartController.MergeGuestCart(user.Id);
 
