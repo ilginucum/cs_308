@@ -119,7 +119,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@product.Name</h5>
                             <p class="card-text">@product.Description</p>
-                            <p class="card-text">Price: $@product.Price</p>
+                            <p class="card-text">Price: $@product.Price.ToString("F2")</p>
                             <p class="card-text">In Stock: @product.QuantityInStock</p>
                             <p class="card-text">Author: @product.Author</p>
                             @if (!string.IsNullOrEmpty(product.Genre))
