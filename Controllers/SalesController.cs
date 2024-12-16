@@ -74,6 +74,12 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
+            // Negatif fiyat kontrolü eklendi
+            if (price < 0) 
+            {
+                ModelState.AddModelError("Price", "Price cannot be negative."); // Hata mesajı
+                return View(product); // Sayfayı geri döner ve hata mesajını gösterir
+            }
             try
             {
                 product.Price = price;
