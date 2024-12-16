@@ -39,14 +39,29 @@ namespace e_commerce.Controllers
             var wishlistViewModel = new List<WishlistViewModel>();
             foreach (var item in wishlistItems)
             {
+                int quantityInStock = 0;
                 var product = await _productRepository.FindByIdAsync(item.ProductId);
-                var quantityInStock = product?.QuantityInStock ?? 0;
 
-                wishlistViewModel.Add(new WishlistViewModel
+
+                if (product != null)
                 {
-                    WishlistItem = item,
-                    QuantityInStock = quantityInStock
-                });
+                    wishlistViewModel.Add(new WishlistViewModel
+                    {
+                        WishlistItem = new WishlistItem
+                        {
+                            Id = item.Id,
+                            ProductId = item.ProductId,
+                            UserId = item.UserId,
+                            ProductName = product.Name,
+                            Author = product.Author,
+                            Price = product.Price,
+                            ImageUrl = item.ImageUrl,
+                            OriginalPrice = product.OriginalPrice,
+                            DiscountedPrice = product.DiscountedPrice
+                        },
+                        QuantityInStock = product.QuantityInStock
+                    });
+                }
             }
 
             return View(wishlistViewModel);
