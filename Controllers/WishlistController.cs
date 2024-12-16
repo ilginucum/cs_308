@@ -37,6 +37,7 @@ namespace e_commerce.Controllers
 
             // Add QuantityInStock for each item
             var wishlistViewModel = new List<WishlistViewModel>();
+            var discountNotifications = new List<string>();
             foreach (var item in wishlistItems)
             {
                 int quantityInStock = 0;
@@ -45,6 +46,12 @@ namespace e_commerce.Controllers
 
                 if (product != null)
                 {
+                    if (product.DiscountedPrice < product.OriginalPrice)
+                    {
+                        var discountPercentage = Math.Round((1 - (product.DiscountedPrice / product.OriginalPrice)) * 100);
+                        discountNotifications.Add($"{product.Name} is now {discountPercentage}% off! Old Price: ${product.OriginalPrice}, New Price: ${product.DiscountedPrice}");
+                    }
+
                     wishlistViewModel.Add(new WishlistViewModel
                     {
                         WishlistItem = new WishlistItem
@@ -54,7 +61,7 @@ namespace e_commerce.Controllers
                             UserId = item.UserId,
                             ProductName = product.Name,
                             Author = product.Author,
-                            Price = product.Price,
+                            Price = decimal.Parse(product.Price.ToString("F2")),
                             ImageUrl = item.ImageUrl,
                             OriginalPrice = product.OriginalPrice,
                             DiscountedPrice = product.DiscountedPrice
@@ -63,7 +70,7 @@ namespace e_commerce.Controllers
                     });
                 }
             }
-
+            ViewBag.DiscountNotifications = discountNotifications;
             return View(wishlistViewModel);
         }
 

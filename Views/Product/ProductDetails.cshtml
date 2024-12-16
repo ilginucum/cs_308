@@ -32,7 +32,7 @@
             <div class="p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
                 <h2 style="color: #be3144;">Details</h2>
                 <p><strong>Author:</strong> @Model.Author</p>
-                <p><strong>Price:</strong> <span style="color: #be3144;">$@Model.Price</span></p>
+                <p><strong>Price:</strong> <span style="color: #be3144;">$@Model.Price.ToString("F2")</span></p>
                 <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
                 <p><strong>Description:</strong> @Model.Description</p>
                 <p><strong>Serial Number:</strong> @Model.SerialNumber</p>

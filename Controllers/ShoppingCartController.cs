@@ -36,7 +36,7 @@ namespace e_commerce.Controllers
                 if (product != null)
                 {
                     item.ProductName = product.Name;
-                    item.UnitPrice = product.Price;
+                    item.UnitPrice = decimal.Parse(product.Price.ToString("F2"));
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace e_commerce.Controllers
                     Id = ObjectId.GenerateNewId().ToString(),
                     ProductId = productId,
                     QuantityInCart = quantity,
-                    UnitPrice = product.Price,
+                    UnitPrice = decimal.Parse(product.Price.ToString("F2")),
                     ProductName = product.Name,
                     ShoppingCartId = cart.Id
                 };

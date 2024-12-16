@@ -3,6 +3,16 @@
 <div class="container mt-4">
     <h1 class="text-center" style="color: #be3144;">My Wishlist</h1>
 
+    @if (ViewBag.DiscountNotifications != null && ViewBag.DiscountNotifications.Count > 0)
+    {
+        <div class="alert alert-success" style="border-radius: 15px;">
+            @foreach (var notification in ViewBag.DiscountNotifications)
+            {
+                <p>@notification</p>
+            }
+        </div>
+    }
+
     @if (!Model.Any())
     {
         <div class="text-center">
@@ -19,8 +29,7 @@
 
                 @if (item.WishlistItem.DiscountedPrice < item.WishlistItem.OriginalPrice)
                 {
-                    var discountPercentage = Math.Round((1 - (item.WishlistItem.DiscountedPrice / item.WishlistItem.OriginalPrice))
-                    * 100);
+                    var discountPercentage = Math.Round((1 - (item.WishlistItem.DiscountedPrice / item.WishlistItem.OriginalPrice)) * 100);
 
                     <!-- Discount Notification at the Top -->
                     <div class="position-absolute" style="
@@ -49,9 +58,20 @@
                     <div class="col-md-8">
                         <h4 style="color: #be3144;">@item.WishlistItem.ProductName</h4>
                         <p>By @item.WishlistItem.Author</p>
-                        <p style="color: #be3144;">
-                            <strong>$@item.WishlistItem.Price</strong>
-                        </p>
+                        
+                        @if (item.WishlistItem.DiscountedPrice < item.WishlistItem.OriginalPrice)
+                        {
+                            <p style="color: #be3144;">
+                                <span style="text-decoration: line-through; color: #777;">$@item.WishlistItem.OriginalPrice</span>
+                                <strong>$@item.WishlistItem.DiscountedPrice</strong>
+                            </p>
+                        }
+                        else
+                        {
+                            <p style="color: #be3144;">
+                                <strong>$@item.WishlistItem.Price</strong>
+                            </p>
+                        }
 
                         @if (item.QuantityInStock <= 0)
                         {
