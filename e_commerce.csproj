@@ -12,6 +12,7 @@
     <PackageReference Include="itext7.bouncy-castle-adapter" Version="9.0.0" />
     <PackageReference Include="itext7.commons" Version="9.0.0" />
     <PackageReference Include="itext7.pdfhtml" Version="6.0.0" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.25" />
     <PackageReference Include="MongoDB.Driver" Version="2.30.0" />
   </ItemGroup>
 

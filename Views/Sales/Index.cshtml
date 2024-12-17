@@ -25,7 +25,7 @@
             <div class="card custom-card">
                 <div class="card-header text-white" style="background-color: #952735;">
                     <h4 class="mb-0 text-center">
-                        <button class="header-button" id="toggleCalculateSection">Calculate Profit</button>
+                        <button class="header-button" id="toggleCalculateSection">Calculate Profit / Display Invoice </center></button>
                     </h4>
                 </div>
                 <div class="card-body" id="calculateSection" style="@(showCalculateSection ? "block" : "none")">
@@ -66,6 +66,7 @@
                                             <th>User ID</th>
                                             <th>Total Amount</th>
                                             <th>Order Date</th>
+                                            <th>Display Invoices</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -76,6 +77,11 @@
                                                 <td>@order.UserId</td>
                                                 <td>@order.TotalAmount.ToString("C")</td>
                                                 <td>@order.OrderDate.ToShortDateString()</td>
+                                                <td>
+                                                    <a href="@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })" class="btn btn-primary btn-sm">
+                                                        Download PDF
+                                                    </a>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>

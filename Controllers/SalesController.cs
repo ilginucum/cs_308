@@ -2,8 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using e_commerce.Models;
 using e_commerce.Data;
+using e_commerce.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+
+
+
 
 namespace e_commerce.Controllers
 {
@@ -14,17 +21,22 @@ namespace e_commerce.Controllers
         private readonly ILogger<SalesController> _logger;
         private readonly IMongoDBRepository<Order> _orderRepository;
         private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
+        private readonly IPdfService _pdfService;
+        private readonly IMongoDBRepository<Address> _addressRepository;
+
 
         public SalesController(
             IMongoDBRepository<Product> productRepository, 
             IMongoDBRepository<Order> orderRepository,
             ILogger<SalesController> logger,
-            IMongoDBRepository<WishlistItem> wishlistRepository)
+            IMongoDBRepository<WishlistItem> wishlistRepository, IPdfService pdfService, IMongoDBRepository<Address> addressRepository)
         {
             _productRepository = productRepository;
             _orderRepository = orderRepository;
             _logger = logger;
             _wishlistRepository = wishlistRepository;
+            _pdfService = pdfService;
+            _addressRepository = addressRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -216,6 +228,37 @@ namespace e_commerce.Controllers
                 return View("Index", new SalesViewModel());
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GenerateInvoicePDF(string id)
+        {
+            var order = await _orderRepository.FindByIdAsync(id);
+
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            // Fetch the shipping address if required
+            var address = await _addressRepository.FindByIdAsync(order.AddressId);
+            if (address == null)
+            {
+                return NotFound("Shipping address not found.");
+            }
+
+            try
+            {
+                // Generate the PDF
+                byte[] pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
+                return File(pdfBytes, "application/pdf", $"Invoice_{order.Id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating invoice PDF");
+                return StatusCode(500, "An error occurred while generating the PDF.");
+            }
+        }
+
+
 
     }
 }

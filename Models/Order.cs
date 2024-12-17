@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace e_commerce.Models
 {
+    [BsonIgnoreExtraElements]
     public class Order
     {
         [BsonId]
@@ -17,10 +18,12 @@ namespace e_commerce.Models
         public decimal TotalAmount { get; set; }
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
+
     }
 
     public class OrderItem
     {
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ProductId { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }

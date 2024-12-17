@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/macbookpro/Desktop/308_deneme/cs_308-2/e_commerce.csproj": {}
+    "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj": {}
   },
   "projects": {
-    "/Users/macbookpro/Desktop/308_deneme/cs_308-2/e_commerce.csproj": {
+    "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/macbookpro/Desktop/308_deneme/cs_308-2/e_commerce.csproj",
+        "projectUniqueName": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
         "projectName": "e_commerce",
-        "projectPath": "/Users/macbookpro/Desktop/308_deneme/cs_308-2/e_commerce.csproj",
-        "packagesPath": "/Users/macbookpro/.nuget/packages/",
-        "outputPath": "/Users/macbookpro/Desktop/308_deneme/cs_308-2/obj/",
+        "projectPath": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
+        "packagesPath": "/Users/cerenverim/.nuget/packages/",
+        "outputPath": "/Users/cerenverim/Desktop/cs_308/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
+          "/Users/cerenverim/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -50,6 +50,10 @@
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.30.0, )"
+            },
+            "iTextSharp.LGPLv2.Core": {
+              "target": "Package",
+              "version": "[3.4.25, )"
             },
             "itext7": {
               "target": "Package",
@@ -87,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -9,5 +9,6 @@ namespace e_commerce.Models
         public IEnumerable<Order> FilteredOrders { get; set; }
         public decimal TotalRevenue { get; set; }
         public decimal ProfitLoss { get; set; }
+
     }
 }

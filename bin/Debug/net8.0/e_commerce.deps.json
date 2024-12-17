@@ -10,6 +10,7 @@
         "dependencies": {
           "AspNetCore.Identity.Mongo": "9.0.0",
           "MongoDB.Driver": "2.30.0",
+          "iTextSharp.LGPLv2.Core": "3.4.25",
           "itext7": "9.0.0",
           "itext7.bouncy-castle-adapter": "9.0.0",
           "itext7.commons": "9.0.0",
@@ -51,11 +52,11 @@
           }
         }
       },
-      "BouncyCastle.Cryptography/2.4.0": {
+      "BouncyCastle.Cryptography/2.5.0": {
         "runtime": {
           "lib/net6.0/BouncyCastle.Cryptography.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.4.0.33771"
+            "fileVersion": "2.5.0.6119"
           }
         }
       },
@@ -81,7 +82,7 @@
           "System.Runtime.Loader": "4.3.0",
           "System.Runtime.Serialization.Formatters": "4.3.0",
           "System.Security.Cryptography.Csp": "4.3.0",
-          "System.Text.Encoding.CodePages": "4.3.0",
+          "System.Text.Encoding.CodePages": "9.0.0",
           "System.Text.RegularExpressions": "4.3.1",
           "System.Threading.Thread": "4.3.0",
           "System.Threading.ThreadPool": "4.3.0",
@@ -137,7 +138,7 @@
       },
       "itext.bouncy-castle-adapter/9.0.0": {
         "dependencies": {
-          "BouncyCastle.Cryptography": "2.4.0",
+          "BouncyCastle.Cryptography": "2.5.0",
           "itext.commons": "9.0.0"
         },
         "runtime": {
@@ -188,6 +189,19 @@
       "itext7.pdfhtml/6.0.0": {
         "dependencies": {
           "itext.pdfhtml": "6.0.0"
+        }
+      },
+      "iTextSharp.LGPLv2.Core/3.4.25": {
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.5.0",
+          "SkiaSharp": "3.116.1",
+          "System.Text.Encoding.CodePages": "9.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/iTextSharp.LGPLv2.Core.dll": {
+            "assemblyVersion": "3.4.25.0",
+            "fileVersion": "3.4.25.0"
+          }
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/8.0.8": {
@@ -438,6 +452,46 @@
           "lib/net5.0/SharpCompress.dll": {
             "assemblyVersion": "0.30.1.0",
             "fileVersion": "0.30.1.0"
+          }
+        }
+      },
+      "SkiaSharp/3.116.1": {
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.116.1",
+          "SkiaSharp.NativeAssets.macOS": "3.116.1"
+        },
+        "runtime": {
+          "lib/net8.0/SkiaSharp.dll": {
+            "assemblyVersion": "3.116.0.0",
+            "fileVersion": "3.116.1.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.macOS/3.116.1": {
+        "runtimeTargets": {
+          "runtimes/osx/native/libSkiaSharp.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.Win32/3.116.1": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/libSkiaSharp.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libSkiaSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/libSkiaSharp.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -838,20 +892,20 @@
           "System.Runtime": "4.3.1"
         }
       },
-      "System.Text.Encoding.CodePages/4.3.0": {
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0",
-          "System.Collections": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.IO": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.1",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Text.Encoding": "4.3.0",
-          "System.Threading": "4.3.0"
+      "System.Text.Encoding.CodePages/9.0.0": {
+        "runtime": {
+          "lib/net8.0/System.Text.Encoding.CodePages.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net8.0/System.Text.Encoding.CodePages.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
         }
       },
       "System.Text.Encoding.Extensions/4.3.0": {
@@ -968,12 +1022,12 @@
       "path": "awssdk.securitytoken/3.7.100.14",
       "hashPath": "awssdk.securitytoken.3.7.100.14.nupkg.sha512"
     },
-    "BouncyCastle.Cryptography/2.4.0": {
+    "BouncyCastle.Cryptography/2.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ==",
-      "path": "bouncycastle.cryptography/2.4.0",
-      "hashPath": "bouncycastle.cryptography.2.4.0.nupkg.sha512"
+      "sha512": "sha512-rc7vRCq/KD3GtIwSgRtjanGaBwTb9nLenFDZnEcauWlssuuEoxcbMfWA3QWWho6QDMSOSkWjs657McdHzEtEcw==",
+      "path": "bouncycastle.cryptography/2.5.0",
+      "hashPath": "bouncycastle.cryptography.2.5.0.nupkg.sha512"
     },
     "DnsClient/1.6.1": {
       "type": "package",
@@ -1037,6 +1091,13 @@
       "sha512": "sha512-9X2DM9l2Ao9BaYbyXaIq1hRDiH494qU+kYBjkiulv0bQmOumxVj5LQrUcmbfB3tUv1kuGmGnTXb6HRMplWi2rw==",
       "path": "itext7.pdfhtml/6.0.0",
       "hashPath": "itext7.pdfhtml.6.0.0.nupkg.sha512"
+    },
+    "iTextSharp.LGPLv2.Core/3.4.25": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XfBNSmuydfwM6Nc6bSj/b+zKpPhVaAAlnEd/DDThIO4zzMD7VQp211kjFm7EQ/AGeNp2cTIFX2hrNk01DHPH8g==",
+      "path": "itextsharp.lgplv2.core/3.4.25",
+      "hashPath": "itextsharp.lgplv2.core.3.4.25.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/8.0.8": {
       "type": "package",
@@ -1296,6 +1357,27 @@
       "sha512": "sha512-XqD4TpfyYGa7QTPzaGlMVbcecKnXy4YmYLDWrU+JIj7IuRNl7DH2END+Ll7ekWIY8o3dAMWLFDE1xdhfIWD1nw==",
       "path": "sharpcompress/0.30.1",
       "hashPath": "sharpcompress.0.30.1.nupkg.sha512"
+    },
+    "SkiaSharp/3.116.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DNDwbRjP+aMo27dV2h/uHCVTcWubWWxHnPLiePNyl24f4Pv43mQ8AQQeseOrKR+J3AOCEs6t0sUjo0aa3j3RWQ==",
+      "path": "skiasharp/3.116.1",
+      "hashPath": "skiasharp.3.116.1.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.macOS/3.116.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3KPvpKysDmEMt0NnAZPX5U6KFk0LmG/72/IjAIJemIksIZ0Tjs9pGpr3L+zboVCv1MLVoJLKl3nJDXUG6Jda6A==",
+      "path": "skiasharp.nativeassets.macos/3.116.1",
+      "hashPath": "skiasharp.nativeassets.macos.3.116.1.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Win32/3.116.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dRQ75MCI8oz6zAs2Y1w6pq6ARs4MhdNG+gf3doOxOxdnueDXffQLGQIxON54GDoxc0WjKOoHMKBR4DhaduwwQw==",
+      "path": "skiasharp.nativeassets.win32/3.116.1",
+      "hashPath": "skiasharp.nativeassets.win32.3.116.1.nupkg.sha512"
     },
     "Snappier/1.0.0": {
       "type": "package",
@@ -1605,12 +1687,12 @@
       "path": "system.text.encoding/4.3.0",
       "hashPath": "system.text.encoding.4.3.0.nupkg.sha512"
     },
-    "System.Text.Encoding.CodePages/4.3.0": {
+    "System.Text.Encoding.CodePages/9.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-IRiEFUa5b/Gs5Egg8oqBVoywhtOeaO2KOx3j0RfcYY/raxqBuEK7NXRDgOwtYM8qbi+7S4RPXUbNt+ZxyY0/NQ==",
-      "path": "system.text.encoding.codepages/4.3.0",
-      "hashPath": "system.text.encoding.codepages.4.3.0.nupkg.sha512"
+      "sha512": "sha512-GxJTSFPQpoVd0vQRgq8hwesicxgZoHTbYMvR/UMM4IzhkHMT+ebZE11c2C1gUyxz55zWtGCWktMTHvmgLzob9g==",
+      "path": "system.text.encoding.codepages/9.0.0",
+      "hashPath": "system.text.encoding.codepages.9.0.0.nupkg.sha512"
     },
     "System.Text.Encoding.Extensions/4.3.0": {
       "type": "package",
