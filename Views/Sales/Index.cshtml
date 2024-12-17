@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div>
+
     <div class="row">
         <!-- Left Side - Products without price -->
         <div class="col-md-6 border-end">
@@ -156,15 +156,12 @@
                                             <form asp-action="ApplyDiscount" method="post">
                                                 <input type="hidden" name="id" value="@product.Id" />
 
-                                                @if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value <
-                                               product.OriginalPrice)
+                                                @if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
                                                 {
-                                                    var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value /
-                                                    product.OriginalPrice)) * 100);
+                                                    var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
                                                     <div class="mb-3">
                                                         <label class="form-label">Discount Applied:</label>
-                                                        <input type="text" class="form-control" value="@discountPercentage%"
-                                                            readonly />
+                                                        <input type="text" class="form-control" value="@discountPercentage%" readonly />
                                                     </div>
                                                     <button type="submit" class="btn btn-secondary" disabled style="
                                                         font-size: 0.7rem; 
@@ -176,14 +173,11 @@
                                                         text-transform: uppercase; 
                                                         border: none;
                                                         box-shadow: none;
-                                                        opacity: 0.8;
-                                                                ">
+                                                        opacity: 0.8;">
                                                         Discount Already Applied
-
                                                     </button>
                                                     <form asp-action="ResetDiscount" method="post" style="margin-top: 10px;">
-                                                        <input type="hidden" name="productId"
-                                                            value="@Model.Products.FirstOrDefault()?.Id" />
+                                                        <input type="hidden" name="productId" value="@Model.Products.FirstOrDefault()?.Id" />
                                                         <button type="submit" class="btn btn-danger"
                                                             style="font-size: 0.8rem; padding: 6px 12px; border-radius: 5px;">
                                                             Reset Discount
@@ -199,7 +193,6 @@
                                                     </div>
                                                     <button type="submit" class="btn btn-success">Apply</button>
                                                 }
-
                                             </form>
                                         </td>
                                         <td>
@@ -216,57 +209,6 @@
         </div>
     </div>
 </div>
-
-<!-- JavaScript for Toggling Sections -->
-<!-- JavaScript for Toggling Sections and Rendering Chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.getElementById("toggleCalculateSection").addEventListener("click", function () {
-        let section = document.getElementById("calculateSection");
-        section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
-        section.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    document.getElementById("toggleDetails")?.addEventListener("click", function () {
-        let detailsSection = document.getElementById("detailsSection");
-        detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
-    });
-
-    document.getElementById("toggleChart")?.addEventListener("click", function () {
-        let chartSection = document.getElementById("chartSection");
-        chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
-
-        if (chartSection.style.display === "block" && !window.chartInitialized) {
-            window.chartInitialized = true;
-
-            var totalRevenue = @Model.TotalRevenue;
-            var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
-            var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
-
-            var ctx = document.getElementById('profitLossChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Revenue', 'Cost', 'Profit/Loss'],
-                    datasets: [{
-                        label: 'Amount ($)',
-                        data: [totalRevenue, totalCost, profitLoss],
-                        backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                        borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    });
-</script>
 
 <style>
     .page-title {
@@ -323,10 +265,8 @@
         margin: 5px;
     }
 
-
     #toggleCalculateSection {
         background-color: #952735;
-
         color: white;
         border: none;
         font-size: 24px;
@@ -339,5 +279,56 @@
 
     #toggleCalculateSection:hover {
         background-color: #952735;
-
     }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.getElementById("toggleCalculateSection").addEventListener("click", function() {
+            let section = document.getElementById("calculateSection");
+            section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+            section.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById("toggleDetails")?.addEventListener("click", function() {
+            let detailsSection = document.getElementById("detailsSection");
+            detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+        });
+
+        document.getElementById("toggleChart")?.addEventListener("click", function() {
+            let chartSection = document.getElementById("chartSection");
+            chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
+
+            if (chartSection.style.display === "block" && !window.chartInitialized) {
+                window.chartInitialized = true;
+
+                var totalRevenue = @Model.TotalRevenue;
+                var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
+                var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
+
+                var ctx = document.getElementById('profitLossChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Revenue', 'Cost', 'Profit/Loss'],
+                        datasets: [{
+                            label: 'Amount ($)',
+                            data: [totalRevenue, totalCost, profitLoss],
+                            backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                            borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

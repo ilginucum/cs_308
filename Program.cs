@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using e_commerce.Data;
 using e_commerce.Models;
 using e_commerce.Services;
+using e_commerce.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,6 +130,8 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRoleBasedRedirect();
 
 // Initialize database logic
 using (var scope = app.Services.CreateScope())

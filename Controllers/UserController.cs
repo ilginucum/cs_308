@@ -32,7 +32,6 @@ namespace e_commerce.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-        
 
         [HttpPost]
         public async Task<IActionResult> Login(UserLogin model, string returnUrl = null)
@@ -53,26 +52,71 @@ namespace e_commerce.Controllers
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    // Guest cart birleştirme işlemini ekledik
+                    // Handle guest cart merging
                     var cartController = new ShoppingCartController(
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<ShoppingCart>>(),
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<Product>>(),
                         HttpContext.RequestServices.GetRequiredService<ILogger<ShoppingCartController>>(),
-                        HttpContext.RequestServices.GetRequiredService<ILogger<SalesController>>() // Add this line
+                        HttpContext.RequestServices.GetRequiredService<ILogger<SalesController>>()
                     );
                     
                     await cartController.MergeGuestCart(user.Id);
 
+                    // Role-based redirect logic
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
+                    
+                    // Redirect based on user role
+                    return user.UserType switch
+                    {
+                        UserType.SalesManager => RedirectToAction("Index", "Sales"),
+                        UserType.ProductManager => RedirectToAction("Index", "Product"),
+                        _ => RedirectToAction("Index", "Home")
+                    };
                 }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateManagerAccount(UserRegistration model)
+        {
+            try
+            {
+                var existingUser = await _userRepository.FindOneAsync(u => 
+                    u.Username == model.Username || u.Email == model.Email);
+                    
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Username or email already exists.");
+                    return View(model);
+                }
+
+                // Ensure UserType is either SalesManager or ProductManager
+                if (model.UserType != UserType.SalesManager && model.UserType != UserType.ProductManager)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid user type for manager account.");
+                    return View(model);
+                }
+
+                model.Password = HashPassword(model.Password);
+                await _userRepository.InsertOneAsync(model);
+
+                _logger.LogInformation($"Manager account created successfully: {model.Username}");
+                TempData["SuccessMessage"] = "Manager account created successfully.";
+                return RedirectToAction("ManagerAccounts", "Admin");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error creating manager account: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the account.");
+                return View(model);
+            }
         }
 
         [HttpGet]
