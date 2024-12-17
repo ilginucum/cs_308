@@ -238,7 +238,6 @@ namespace e_commerce.Controllers
                 return NotFound("Order not found.");
             }
 
-            // Fetch the shipping address if required
             var address = await _addressRepository.FindByIdAsync(order.AddressId);
             if (address == null)
             {
@@ -247,9 +246,11 @@ namespace e_commerce.Controllers
 
             try
             {
-                // Generate the PDF
                 byte[] pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
-                return File(pdfBytes, "application/pdf", $"Invoice_{order.Id}.pdf");
+
+                // Set Content-Disposition to inline
+                Response.Headers["Content-Disposition"] = $"inline; filename=Invoice_{order.Id}.pdf";
+                return File(pdfBytes, "application/pdf");
             }
             catch (Exception ex)
             {
@@ -257,6 +258,8 @@ namespace e_commerce.Controllers
                 return StatusCode(500, "An error occurred while generating the PDF.");
             }
         }
+
+
 
 
 

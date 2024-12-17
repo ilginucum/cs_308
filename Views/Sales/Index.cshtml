@@ -81,6 +81,10 @@
                                                     <a href="@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })" class="btn btn-primary btn-sm">
                                                         Download PDF
                                                     </a>
+                                                    <button class="btn btn-secondary btn-sm"
+                                                        onclick="printInvoice('@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })')">
+                                                        Print
+                                                    </button>
                                                 </td>
                                             </tr>
                                         }
@@ -215,6 +219,15 @@
         </div>
     </div>
 </div>
+<script>
+    function printInvoice(url) {
+        const printWindow = window.open(url, '_blank');
+        printWindow.onload = function () {
+            printWindow.print();
+        };
+    }
+</script>
+
 
 <style>
     .page-title {
