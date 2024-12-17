@@ -228,6 +228,28 @@ namespace e_commerce.Controllers
                 return View("Index", new SalesViewModel());
             }
         }
+        public async Task<IActionResult> CreateOrder(Order order, Address newAddress)
+        {
+            try
+            {
+                // If new address is provided, save it to the Address collection
+                if (!string.IsNullOrEmpty(newAddress.FullName))
+                {
+                    await _addressRepository.InsertOneAsync(newAddress);
+                    order.AddressId = newAddress.Id; // Assign the new AddressId to the order
+                }
+
+                await _orderRepository.InsertOneAsync(order);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating order");
+                return StatusCode(500, "An error occurred while creating the order.");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GenerateInvoicePDF(string id)
         {
@@ -238,17 +260,21 @@ namespace e_commerce.Controllers
                 return NotFound("Order not found.");
             }
 
+            // Fetch the address using AddressId
             var address = await _addressRepository.FindByIdAsync(order.AddressId);
+
             if (address == null)
             {
+                _logger.LogWarning($"No address found with ID: {order.AddressId}");
                 return NotFound("Shipping address not found.");
             }
 
             try
             {
+                // Generate the PDF using the fetched address
                 byte[] pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
 
-                // Set Content-Disposition to inline
+                // Display the PDF inline
                 Response.Headers["Content-Disposition"] = $"inline; filename=Invoice_{order.Id}.pdf";
                 return File(pdfBytes, "application/pdf");
             }
@@ -258,6 +284,47 @@ namespace e_commerce.Controllers
                 return StatusCode(500, "An error occurred while generating the PDF.");
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetDiscount(string productId)
+        {
+            if (string.IsNullOrEmpty(productId))
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Find the product by ID
+                var product = await _productRepository.FindByIdAsync(productId);
+                if (product == null)
+                {
+                    return NotFound("Product not found.");
+                }
+
+                // Reset the discount
+                product.DiscountedPrice = null;
+                product.Price = product.OriginalPrice;
+
+                // Update the product in the database
+                await _productRepository.ReplaceOneAsync(product);
+
+                _logger.LogInformation($"Discount reset for product: {productId}");
+
+                // Show a success message
+                TempData["SuccessMessage"] = $"Discount for '{product.Name}' has been reset successfully.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error resetting discount for product: {productId}");
+                ModelState.AddModelError("", "An error occurred while resetting the discount. Please try again.");
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
 
 
 
