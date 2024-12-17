@@ -44,6 +44,7 @@
                             </div>
                         </div>
                     </form>
+
                     @if (Model.FilteredOrders != null)
                     {
                         <div class="text-center mt-3">
@@ -52,7 +53,9 @@
                         </div>
                         <div class="text-center mt-3">
                             <button class="btn btn-secondary" id="toggleDetails">Details</button>
+                            <button class="btn btn-primary" id="toggleChart">Chart</button>
                         </div>
+
                         <div id="detailsSection" style="display: none;">
                             <h5 class="text-center mt-3">Filtered Orders</h5>
                             <div class="table-responsive">
@@ -79,12 +82,16 @@
                                 </table>
                             </div>
                         </div>
+
+                        <div id="chartSection" style="display: none; margin-top: 20px;">
+                            <canvas id="profitLossChart" width="400" height="200"></canvas>
+                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
-
+</div>
     <div class="row">
         <!-- Left Side - Products without price -->
         <div class="col-md-6 border-end">
@@ -211,6 +218,8 @@
 </div>
 
 <!-- JavaScript for Toggling Sections -->
+<!-- JavaScript for Toggling Sections and Rendering Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.getElementById("toggleCalculateSection").addEventListener("click", function () {
         let section = document.getElementById("calculateSection");
@@ -221,6 +230,41 @@
     document.getElementById("toggleDetails")?.addEventListener("click", function () {
         let detailsSection = document.getElementById("detailsSection");
         detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+    });
+
+    document.getElementById("toggleChart")?.addEventListener("click", function () {
+        let chartSection = document.getElementById("chartSection");
+        chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
+
+        if (chartSection.style.display === "block" && !window.chartInitialized) {
+            window.chartInitialized = true;
+
+            var totalRevenue = @Model.TotalRevenue;
+            var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
+            var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
+
+            var ctx = document.getElementById('profitLossChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Revenue', 'Cost', 'Profit/Loss'],
+                    datasets: [{
+                        label: 'Amount ($)',
+                        data: [totalRevenue, totalCost, profitLoss],
+                        backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                        borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
     });
 </script>
 
