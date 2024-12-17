@@ -14,7 +14,9 @@
 
     @if (ViewBag.SuccessMessage != null)
     {
-        <div class="alert alert-success text-center">@ViewBag.SuccessMessage</div>
+        <div class="alert alert-success text-center"
+            style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+            @ViewBag.SuccessMessage</div>
     }
 
     <!-- Calculate Profit Block -->
