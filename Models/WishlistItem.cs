@@ -16,7 +16,7 @@ namespace e_commerce.Models
         public decimal Price { get; set; }
         public string ImageUrl { get; set; }
         public decimal OriginalPrice { get; set; }  
-        public decimal DiscountedPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
 
         public class WishlistViewModel
         {

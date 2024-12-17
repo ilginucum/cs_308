@@ -32,10 +32,10 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Fetch all wishlist items for the user
+            
             var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.UserId == userId);
 
-            // Add QuantityInStock for each item
+            
             var wishlistViewModel = new List<WishlistViewModel>();
             var discountNotifications = new List<string>();
             foreach (var item in wishlistItems)
@@ -46,11 +46,19 @@ namespace e_commerce.Controllers
 
                 if (product != null)
                 {
-                    if (product.DiscountedPrice < product.OriginalPrice)
+                    if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
                     {
-                        var discountPercentage = Math.Round((1 - (product.DiscountedPrice / product.OriginalPrice)) * 100);
-                        discountNotifications.Add($"{product.Name} is now {discountPercentage}% off! Old Price: ${product.OriginalPrice}, New Price: ${product.DiscountedPrice}");
+                        
+                        var originalPriceRounded = Math.Round(product.OriginalPrice, 2);
+                        var discountedPriceRounded = Math.Round(product.DiscountedPrice.Value, 2);
+
+                        
+                        var discountPercentage = Math.Round(((originalPriceRounded - discountedPriceRounded) / originalPriceRounded) * 100, 2);
+
+                        
+                        discountNotifications.Add($"{product.Name} is now {discountPercentage:F2}% off! Old Price: ${originalPriceRounded:F2}, New Price: ${discountedPriceRounded:F2}");
                     }
+
 
                     wishlistViewModel.Add(new WishlistViewModel
                     {
@@ -71,6 +79,15 @@ namespace e_commerce.Controllers
                 }
             }
             ViewBag.DiscountNotifications = discountNotifications;
+            if (discountNotifications.Any())
+            {
+                Console.WriteLine("Notifications found: " + discountNotifications.Count);
+            }
+            else
+            {
+                Console.WriteLine("No notifications generated.");
+            }
+
             return View(wishlistViewModel);
         }
 
@@ -79,7 +96,7 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if the product is already in the wishlist
+            
             var existingItem = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (existingItem != null)
             {
@@ -87,7 +104,7 @@ namespace e_commerce.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Add a new item to the wishlist
+            
             var wishlistItem = new WishlistItem
             {
                 ProductId = productId,
@@ -109,7 +126,7 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Find and delete the wishlist item
+            
             var item = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (item != null)
             {
@@ -124,7 +141,7 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Find the wishlist item
+            
             var wishlistItem = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (wishlistItem == null)
             {
@@ -132,7 +149,7 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Check product stock
+            
             var product = await _productRepository.FindByIdAsync(productId);
             if (product == null || product.QuantityInStock <= 0)
             {
@@ -140,7 +157,7 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Add the item to the shopping cart
+            
             var cartItem = new CartItem
             {
                 ProductId = wishlistItem.ProductId,
@@ -166,7 +183,7 @@ namespace e_commerce.Controllers
                 await _shoppingCartRepository.ReplaceOneAsync(shoppingCart);
             }
 
-            // Remove the item from the wishlist
+            
             await _wishlistRepository.DeleteOneAsync(wishlistItem.Id);
 
             TempData["SuccessMessage"] = $"{wishlistItem.ProductName} has been moved to your shopping cart!";
@@ -182,17 +199,23 @@ namespace e_commerce.Controllers
 
             foreach (var item in wishlistItems)
             {
-                if (item.DiscountedPrice < item.OriginalPrice)
+                if (item.DiscountedPrice.HasValue && item.DiscountedPrice.Value < item.OriginalPrice)
                 {
-                    var discountPercentage = Math.Round((1 - (item.DiscountedPrice / item.OriginalPrice)) * 100);
-                    notifications.Add($"{item.ProductName} is now discounted by {discountPercentage}%!");
+                    
+                    var discountPercentage = Math.Round((1 - (item.DiscountedPrice.Value / item.OriginalPrice)) * 100);
+
+                    
+                    notifications.Add($"{item.ProductName} is now {discountPercentage}% off! Old Price: ${item.OriginalPrice:F2}, New Price: ${item.DiscountedPrice.Value:F2}");
                 }
             }
 
+            
             TempData["DiscountNotifications"] = notifications;
 
             return RedirectToAction("Index");
         }
+
+
 
 
     }

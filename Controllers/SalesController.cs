@@ -86,10 +86,10 @@ namespace e_commerce.Controllers
                 await _productRepository.ReplaceOneAsync(product);
                 _logger.LogInformation($"Price updated successfully for product: {id}");
 
-                // Add success message
+                
                 TempData["SuccessMessage"] = $"Price for '{product.Name}' has been updated successfully to {price:C}";
 
-                // Redirect with query parameter for animation
+                
                 return RedirectToAction(nameof(Index), new { updated = id });
             }
             catch (Exception ex)
@@ -107,11 +107,13 @@ namespace e_commerce.Controllers
             {
                 return NotFound();
             }
+
             var product = await _productRepository.FindByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
+
             try
             {
                 if (discount < 0 || discount > 100)
@@ -119,11 +121,24 @@ namespace e_commerce.Controllers
                     ModelState.AddModelError("", "Discount must be between 0 and 100.");
                     return RedirectToAction(nameof(Index));
                 }
-                // Calculate new discounted price
-                product.Price = product.Price * (1 - (discount / 100.0M));
+
+                
+                if (product.OriginalPrice == 0)
+                {
+                    product.OriginalPrice = product.Price;
+                }
+
+                
+                product.DiscountedPrice = Math.Round(product.OriginalPrice* (1 - (discount / 100.0M)), 2);
+
+                
+                product.Price = product.DiscountedPrice ?? product.Price;
+
                 await _productRepository.ReplaceOneAsync(product);
+
                 _logger.LogInformation($"Discount of {discount}% applied to product: {id}");
-                TempData["SuccessMessage"] = $"Discount of {discount}% applied to '{product.Name}'. New price: {product.Price:C}";
+                TempData["SuccessMessage"] = $"Discount of {discount}% applied to '{product.Name}'. New price: {product.DiscountedPrice:C}";
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -133,5 +148,6 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
     }
 }

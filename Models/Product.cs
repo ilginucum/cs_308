@@ -22,7 +22,7 @@ namespace e_commerce.Models
         public string Genre { get; set; }
         //public string CategoryId { get; set; }
         public decimal OriginalPrice { get; set; }
-        public decimal DiscountedPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
 
 
     }

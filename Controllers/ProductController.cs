@@ -148,18 +148,7 @@ namespace e_commerce.Controllers
                     _logger.LogError(ex, "Error occurred while inserting product");
                     ModelState.AddModelError("", "An error occurred while saving the product. Please try again.");
                 }
-            //}
-            //else
-            //{
-            //    _logger.LogWarning("Model state is invalid");
-            //    foreach (var modelState in ModelState.Values)
-            //    {
-            //        foreach (var error in modelState.Errors)
-            //        {
-            //            _logger.LogWarning($"Validation error: {error.ErrorMessage}");
-            //        }
-            //    }
-            //}
+
             return View(product);
         }
 
@@ -185,8 +174,7 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+
                 try
                 {
                     await _productRepository.ReplaceOneAsync(product);
@@ -198,10 +186,6 @@ namespace e_commerce.Controllers
                     _logger.LogError(ex, $"Error occurred while updating product: {product.Id}");
                     ModelState.AddModelError("", "An error occurred while updating the product. Please try again.");
                 }
-            //}
-            
-            
-
             return View(product);
         }
         [HttpGet]
@@ -337,7 +321,7 @@ namespace e_commerce.Controllers
             UserName = userName,
             CommentText = CommentText,
             CreatedAt = DateTime.UtcNow,
-            Status = "pending" // Set status to pending for manager approval
+            Status = "pending" 
         };
 
         try
@@ -425,14 +409,14 @@ namespace e_commerce.Controllers
 
                 var orderViewModel = new OrderManagementViewModel
                 {
-                    // Use "Pending" instead of "Processing"
+                    
                     ProcessingOrders = orders.Where(o => o.OrderStatus == "Pending").ToList(),
                     InTransitOrders = orders.Where(o => o.OrderStatus == "InTransit").ToList(),
                     DeliveredOrders = orders.Where(o => o.OrderStatus == "Delivered").ToList(),
                     Addresses = addresses.ToDictionary(a => a.Id, a => a)
                 };
 
-                // Debug logging
+                
                 _logger.LogInformation($"Pending Orders: {orderViewModel.ProcessingOrders.Count}");
                 _logger.LogInformation($"In Transit Orders: {orderViewModel.InTransitOrders.Count}");
                 _logger.LogInformation($"Delivered Orders: {orderViewModel.DeliveredOrders.Count}");
@@ -457,7 +441,7 @@ namespace e_commerce.Controllers
                 {
                     _logger.LogInformation($"Updating order {orderId} status from {order.OrderStatus} to {newStatus}");
                     
-                    // Convert "Processing" to "Pending" if that's the new status
+                    
                     order.OrderStatus = newStatus == "Processing" ? "Pending" : newStatus;
                     
                     await _orderRepository.ReplaceOneAsync(order);
@@ -475,9 +459,29 @@ namespace e_commerce.Controllers
                 throw;
             }
         }
-    
+        public void UpdateProductPrice(Product product, decimal newPrice, decimal discountPercentage = 0)
+        {
+            
+            product.OriginalPrice = newPrice;
+
+            
+            if (discountPercentage > 0)
+            {
+                product.DiscountedPrice = product.OriginalPrice * (1 - discountPercentage / 100);
+            }
+            else
+            {
+                product.DiscountedPrice = null; 
+            }
+
+            
+            _productRepository.ReplaceOneAsync(product);
         }
 
 
+
     }
+
+
+}
     
