@@ -97,7 +97,7 @@
                     {
                         <div class="alert alert-info text-center"
                             style=" background-color: #dc7986; color: white;border: none; border-radius: 10px;">
-                        No products awaiting price setting.</div>
+                            No products awaiting price setting.</div>
                     }
                     else
                     {
@@ -148,9 +148,51 @@
                                         <td>
                                             <form asp-action="ApplyDiscount" method="post">
                                                 <input type="hidden" name="id" value="@product.Id" />
-                                                <input type="number" name="discount" class="form-control discount-input"
-                                                    placeholder="%" min="0" max="100" step="10" required />
-                                                <button type="submit" class="btn custom-btn-primary btn-sm mt-2">Apply</button>
+
+                                                @if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value <
+                                               product.OriginalPrice)
+                                                {
+                                                    var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value /
+                                                    product.OriginalPrice)) * 100);
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Discount Applied:</label>
+                                                        <input type="text" class="form-control" value="@discountPercentage%"
+                                                            readonly />
+                                                    </div>
+                                                    <button type="submit" class="btn btn-secondary" disabled style="
+                                                        font-size: 0.7rem; 
+                                                        color: #942323; 
+                                                        background-color: #e0e0e0; 
+                                                        padding: 4px 8px; 
+                                                        cursor: not-allowed; 
+                                                        border-radius: 5px; 
+                                                        text-transform: uppercase; 
+                                                        border: none;
+                                                        box-shadow: none;
+                                                        opacity: 0.8;
+                                                                ">
+                                                        Discount Already Applied
+
+                                                    </button>
+                                                    <form asp-action="ResetDiscount" method="post" style="margin-top: 10px;">
+                                                        <input type="hidden" name="productId"
+                                                            value="@Model.Products.FirstOrDefault()?.Id" />
+                                                        <button type="submit" class="btn btn-danger"
+                                                            style="font-size: 0.8rem; padding: 6px 12px; border-radius: 5px;">
+                                                            Reset Discount
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mb-3">
+                                                        <label for="discount" class="form-label">Discount (%)</label>
+                                                        <input type="number" name="discount" class="form-control" placeholder="%"
+                                                            min="0" max="100" step="1" required />
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Apply</button>
+                                                }
+
                                             </form>
                                         </td>
                                         <td>
@@ -237,9 +279,10 @@
         margin: 5px;
     }
 
+
     #toggleCalculateSection {
         background-color: #952735;
-        
+
         color: white;
         border: none;
         font-size: 24px;
@@ -252,6 +295,5 @@
 
     #toggleCalculateSection:hover {
         background-color: #952735;
-        
+
     }
-</style>

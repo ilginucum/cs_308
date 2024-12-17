@@ -13,15 +13,18 @@ namespace e_commerce.Controllers
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly ILogger<SalesController> _logger;
         private readonly IMongoDBRepository<Order> _orderRepository;
+        private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
 
         public SalesController(
             IMongoDBRepository<Product> productRepository, 
             IMongoDBRepository<Order> orderRepository,
-            ILogger<SalesController> logger)
+            ILogger<SalesController> logger,
+            IMongoDBRepository<WishlistItem> wishlistRepository)
         {
             _productRepository = productRepository;
             _orderRepository = orderRepository;
             _logger = logger;
+            _wishlistRepository = wishlistRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -74,7 +77,6 @@ namespace e_commerce.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPrice(string id, decimal price)
         {
             var product = await _productRepository.FindByIdAsync(id);
@@ -84,20 +86,33 @@ namespace e_commerce.Controllers
             }
 
             // Negatif fiyat kontrolü eklendi
-            if (price < 0) 
+            if (price < 0)
             {
                 ModelState.AddModelError("Price", "Price cannot be negative."); // Hata mesajı
                 return View(product); // Sayfayı geri döner ve hata mesajını gösterir
             }
+
             try
             {
+                // Update product price and reset any discounts
                 product.Price = price;
+                product.OriginalPrice = price; // Sync original price
+                product.DiscountedPrice = null; // Explicitly clear discounted price
                 await _productRepository.ReplaceOneAsync(product);
+
                 _logger.LogInformation($"Price updated successfully for product: {id}");
 
-                
-                TempData["SuccessMessage"] = $"Price for '{product.Name}' has been updated successfully to {price:C}";
+                // Synchronize all wishlist items that reference this product
+                var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.ProductId == id);
+                foreach (var wishlistItem in wishlistItems)
+                {
+                    wishlistItem.Price = product.Price;
+                    wishlistItem.OriginalPrice = product.OriginalPrice;
+                    wishlistItem.DiscountedPrice = null; // Explicitly clear discounted price in wishlist items
+                    await _wishlistRepository.ReplaceOneAsync(wishlistItem);
+                }
 
+                TempData["SuccessMessage"] = $"Price for '{product.Name}' has been updated successfully to {price:C}";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -108,6 +123,10 @@ namespace e_commerce.Controllers
                 return View(product);
             }
         }
+
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApplyDiscount(string id, int discount)
@@ -122,9 +141,15 @@ namespace e_commerce.Controllers
             {
                 return NotFound();
             }
+            if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
+            {
+                TempData["ErrorMessage"] = $"A discount of {Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100)}% is already applied.";
+                return RedirectToAction(nameof(Index));
+            }
 
             try
             {
+               
                 if (discount < 0 || discount > 100)
                 {
                     ModelState.AddModelError("", "Discount must be between 0 and 100.");
@@ -157,6 +182,8 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+
         [HttpPost]
         [Route("Sales/CalculateProfit")]
         public async Task<IActionResult> CalculateProfit(DateTime startDate, DateTime endDate)

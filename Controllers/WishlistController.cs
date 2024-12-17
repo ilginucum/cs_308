@@ -26,39 +26,33 @@ namespace e_commerce.Controllers
             _shoppingCartRepository = shoppingCartRepository;
             _salesRepository = salesRepository;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            
             var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.UserId == userId);
-
-            
             var wishlistViewModel = new List<WishlistViewModel>();
             var discountNotifications = new List<string>();
+
             foreach (var item in wishlistItems)
             {
-                int quantityInStock = 0;
                 var product = await _productRepository.FindByIdAsync(item.ProductId);
-
+                
 
                 if (product != null)
                 {
+                    // Debugging statements
+                    Console.WriteLine($"Product Name: {product.Name}");
+                    Console.WriteLine($"Product Price: {product.Price}");
+                    Console.WriteLine($"Product DiscountedPrice: {product.DiscountedPrice}");
+                    Console.WriteLine($"WishlistItem Price: {item.Price}");
+
                     if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
                     {
-                        
-                        var originalPriceRounded = Math.Round(product.OriginalPrice, 2);
-                        var discountedPriceRounded = Math.Round(product.DiscountedPrice.Value, 2);
-
-                        
-                        var discountPercentage = Math.Round(((originalPriceRounded - discountedPriceRounded) / originalPriceRounded) * 100, 2);
-
-                        
-                        discountNotifications.Add($"{product.Name} is now {discountPercentage:F2}% off! Old Price: ${originalPriceRounded:F2}, New Price: ${discountedPriceRounded:F2}");
+                        var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
+                        discountNotifications.Add($"{product.Name} is now {discountPercentage}% off! Old Price: ${product.OriginalPrice:F2}, New Price: ${product.DiscountedPrice.Value:F2}");
                     }
-
 
                     wishlistViewModel.Add(new WishlistViewModel
                     {
@@ -66,10 +60,9 @@ namespace e_commerce.Controllers
                         {
                             Id = item.Id,
                             ProductId = item.ProductId,
-                            UserId = item.UserId,
                             ProductName = product.Name,
                             Author = product.Author,
-                            Price = decimal.Parse(product.Price.ToString("F2")),
+                            Price = product.DiscountedPrice ?? product.Price,
                             ImageUrl = item.ImageUrl,
                             OriginalPrice = product.OriginalPrice,
                             DiscountedPrice = product.DiscountedPrice
@@ -77,19 +70,17 @@ namespace e_commerce.Controllers
                         QuantityInStock = product.QuantityInStock
                     });
                 }
+                else
+                {
+                    Console.WriteLine($"Product with ID {item.ProductId} not found.");
+                }
             }
+
             ViewBag.DiscountNotifications = discountNotifications;
-            if (discountNotifications.Any())
-            {
-                Console.WriteLine("Notifications found: " + discountNotifications.Count);
-            }
-            else
-            {
-                Console.WriteLine("No notifications generated.");
-            }
 
             return View(wishlistViewModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddToWishlist(string productId, string productName, string author, decimal price, string imageUrl)
