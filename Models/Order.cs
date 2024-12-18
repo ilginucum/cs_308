@@ -9,6 +9,7 @@ namespace e_commerce.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+
         public string Id { get; set; }
 
         public string UserId { get; set; }
@@ -18,6 +19,8 @@ namespace e_commerce.Models
         public decimal TotalAmount { get; set; }
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
+        public bool RefundRequested { get; set; } = false;
+
 
     }
 

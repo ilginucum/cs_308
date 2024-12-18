@@ -32,6 +32,28 @@
                         <div class="order-status-badge @order.OrderStatus.ToLower()">
                             @order.OrderStatus
                         </div>
+                        @if ( (DateTime.Now - order.OrderDate).TotalDays <= 30)
+                            {
+                                <form asp-action="RequestReturn" method="post" style="margin:0;">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    
+                                </form>
+                            }
+                            <td>
+                        @if (order.RefundRequested)
+                        {
+                            <button class="btn btn-secondary" disabled style="background-color: #d9534f; color: white;">Refund Awaiting</button>
+                        }
+                        else
+                        {
+                            <form asp-action="RequestRefund" method="post">
+                                <input type="hidden" name="orderId" value="@order.Id" />
+                                <button type="submit" class="btn btn-danger">Refund Request</button>
+                            </form>
+                        }
+                    </td>
+
+               
                     </div>
                     
                     <div class="order-items-preview">
@@ -107,6 +129,7 @@
         font-size: 0.9rem;
         font-weight: 500;
         background-color: #e9ecef;
+        margin-left: 430px;
     }
 
     .order-status-badge.processing {
@@ -150,5 +173,25 @@
     .order-summary {
         text-align: right;
         margin-top: 1rem;
+    }
+    .status {
+        display: flex;
+        align-items: center;
+    }
+
+    .badge {
+        margin-right: 10px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
     }
 </style>

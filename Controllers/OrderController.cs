@@ -50,5 +50,36 @@ namespace e_commerce.Controllers
                 return View(Enumerable.Empty<Order>());
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RequestRefund(string orderId)
+        {
+            if (string.IsNullOrEmpty(orderId))
+            {
+                return NotFound();
+            }
+
+            var order = await _orderRepository.FindByIdAsync(orderId);
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            try
+            {
+                order.RefundRequested = true;
+                await _orderRepository.ReplaceOneAsync(order);
+
+                TempData["SuccessMessage"] = "Refund request has been submitted successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error requesting refund for order: {orderId}", orderId);
+                TempData["ErrorMessage"] = "An error occurred while requesting the refund.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
     }
 }

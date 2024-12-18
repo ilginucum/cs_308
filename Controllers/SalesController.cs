@@ -50,10 +50,13 @@ namespace e_commerce.Controllers
                     _logger.LogWarning("No products found");
                     products = new List<Product>();
                 }
+                var refundRequests = (await _orderRepository.FilterByAsync(o => o.RefundRequested == true)).ToList();
                 var viewModel = new SalesViewModel
                 {
                     Products = products,
-                    Orders = orders
+                    FilteredOrders = new List<Order>(),
+                    Orders = orders,
+                    RefundRequests = refundRequests
                 };
 
                 // Check for success message in TempData
@@ -203,6 +206,7 @@ namespace e_commerce.Controllers
             try
             {
                 var allOrders = await _orderRepository.GetAllAsync();
+                
                 // Filter orders by OrderDate within the specified range
                 var filteredOrders = allOrders
                                      .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
@@ -218,7 +222,9 @@ namespace e_commerce.Controllers
                     Orders = allOrders,
                     FilteredOrders = filteredOrders,
                     TotalRevenue = totalRevenue,
-                    ProfitLoss = profitLoss
+                    ProfitLoss = profitLoss,
+                    RefundRequests = (await _orderRepository.FilterByAsync(o => o.RefundRequested == true)).ToList()
+
                 };
                 return View("Index", viewModel);
             }

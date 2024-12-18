@@ -29,6 +29,7 @@
                     </h4>
                 </div>
                 <div class="card-body" id="calculateSection" style="@(showCalculateSection ? "block" : "none")">
+                    <form asp-action="ViewInvoices" method="get"></form>
                     <form asp-action="CalculateProfit" method="post" class="mb-4">
                         <div class="row">
                             <div class="col-md-4">
@@ -78,7 +79,8 @@
                                                 <td>@order.TotalAmount.ToString("C")</td>
                                                 <td>@order.OrderDate.ToShortDateString()</td>
                                                 <td>
-                                                    <a href="@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })" class="btn btn-primary btn-sm">
+                                                    <a href="@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })"
+                                                        class="btn btn-primary btn-sm">
                                                         Download PDF
                                                     </a>
                                                     <button class="btn btn-secondary btn-sm"
@@ -101,126 +103,179 @@
             </div>
         </div>
     </div>
+    <script>
+        function printInvoice(url) {
+            const printWindow = window.open(url, '_blank');
+            printWindow.onload = function () {
+                printWindow.print();
+            };
+        }
+    </script>
 
-    <div class="row">
-        <!-- Left Side - Products without price -->
-        <div class="col-md-6 border-end">
-            <div class="card custom-card">
-                <div class="card-header text-white" style="background-color: #952735;">
-                    <h4 class="mb-0 text-center">Products Awaiting Price</h4>
-                </div>
-                <div class="card-body">
-                    @if (!productsWithoutPrice.Any())
-                    {
-                        <div class="alert alert-info text-center"
-                            style=" background-color: #dc7986; color: white;border: none; border-radius: 10px;">
-                            No products awaiting price setting.</div>
-                    }
-                    else
-                    {
-                        <ul class="list-group">
-                            @foreach (var product in productsWithoutPrice)
-                            {
-                                <li class="list-group-item">@product.Name - @product.Author</li>
-                            }
-                        </ul>
-                    }
-                </div>
-            </div>
-        </div>
 
-        <!-- Right Side - Products with price -->
-        <div class="col-md-6">
-            <div class="card custom-card">
-                <div class="card-header text-white" style="background-color: #952735;">
-                    <h4 class="mb-0 text-center">Products with Price Set</h4>
-                </div>
-                <div class="card-body">
-                    @if (!productsWithPrice.Any())
-                    {
-                        <div class="alert alert-info text-center"
-                            style="background-color: #dc7986; color: white;border: none; border-radius: 10px;">
-                            No products with prices set.
-                        </div>
-                    }
-                    else
-                    {
-                        <table class="table custom-table">
-                            <thead>
-                                <tr>
-                                    <th>Book Name</th>
-                                    <th>Author</th>
-                                    <th>Current Price</th>
-                                    <th>Discount</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var product in productsWithPrice)
+            <div class="container-fluid mt-4">
+                <h2 class="page-title text-center mb-4">Sales Management</h2>
+
+                <div class="row">
+                    <!-- Products Awaiting Price Block -->
+                    <div class="col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-header text-white" style="background-color: #952735;">
+                                <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+                            </div>
+                            <div class="card-body">
+                                @if (!productsWithoutPrice.Any())
                                 {
-                                    <tr>
-                                        <td>@product.Name</td>
-                                        <td>@product.Author</td>
-                                        <td>@product.Price.ToString("C")</td>
-                                        <td>
-
-                                            <form asp-action="ApplyDiscount" method="post">
-                                                <input type="hidden" name="id" value="@product.Id" />
-
-                                                @if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
-                                                {
-                                                    var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Discount Applied:</label>
-                                                        <input type="text" class="form-control" value="@discountPercentage%" readonly />
-                                                    </div>
-                                                    
-                                                    <button type="submit" class="btn btn-secondary" disabled style="
-                                                        font-size: 0.7rem; 
-                                                        color: #942323; 
-                                                        background-color: #e0e0e0; 
-                                                        padding: 4px 8px; 
-                                                        cursor: not-allowed; 
-                                                        border-radius: 5px; 
-                                                        text-transform: uppercase; 
-                                                        border: none;
-                                                        box-shadow: none;
-                                                        opacity: 0.8;">
-                                                        Discount Already Applied
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    <div class="mb-3">
-                                                        <label for="discount" class="form-label">Discount (%)</label>
-                                                        <input type="number" name="discount" class="form-control" placeholder="%"
-                                                            min="0" max="100" step="1" required />
-                                                    </div>
-                                                    <button type="submit" class="btn btn-success">Apply</button>
-                                                }
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                class="btn custom-btn-primary btn-sm">Update Price</a>
-                                            <form asp-action="ResetDiscount" method="post" style="margin-top: 10px;">
-                                                <input type="hidden" name="productId" value="@product.Id" />
-                                                <button type="submit" class="btn btn-danger"
-                                                    style="font-size: 0.8rem; padding: 0.2px 1px; border-radius: 5px;">
-                                                    Reset Discount
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                    <div class="alert alert-info text-center"
+                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                        No products awaiting price setting.
+                                    </div>
                                 }
-                            </tbody>
-                        </table>
-                    }
+                                else
+                                {
+                                    <ul class="list-group">
+                                        @foreach (var product in productsWithoutPrice)
+                                        {
+                                            <li class="list-group-item">@product.Name - @product.Author</li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products with Price Set Block -->
+                    <div class="col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-header text-white" style="background-color: #952735;">
+                                <h4 class="mb-0 text-center">Products with Price Set</h4>
+                            </div>
+                            <div class="card-body">
+                                @if (!productsWithPrice.Any())
+                                {
+                                    <div class="alert alert-info text-center"
+                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                        No products with prices set.
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table custom-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Book Name</th>
+                                                    <th>Author</th>
+                                                    <th>Price</th>
+                                                    <th>Discount</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var product in productsWithPrice)
+                                                {
+                                                    <tr>
+                                                        <td>@product.Name</td>
+                                                        <td>@product.Author</td>
+                                                        <td>@product.Price.ToString("C")</td>
+                                                        <td>
+                                                            <form asp-action="ApplyDiscount" method="post">
+                                                                <input type="hidden" name="id" value="@product.Id" />
+                                                                <input type="number" name="discount" class="form-control"
+                                                                    placeholder="%" min="0" max="100" required />
+                                                                <button type="submit"
+                                                                    class="btn btn-success btn-sm mt-1">Apply</button>
+                                                            </form>
+                                                        </td>
+                                                        <td>
+                                                            <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                                                class="btn btn-primary btn-sm mb-1">Update Price</a>
+                                                            <form asp-action="ResetDiscount" method="post">
+                                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                                <button type="submit" class="btn btn-danger btn-sm">Reset
+                                                                    Discount</button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Refund Requests Block -->
+                    <div class="col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-header text-white" style="background-color: #952735;">
+                                <h4 class="mb-0 text-center">Refund Requests</h4>
+                            </div>
+                            <div class="card-body">
+                                @if (!Model.RefundRequests.Any())
+                                {
+                                    <div class="alert alert-info text-center"
+                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                        No refund requests.
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table custom-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order ID</th>
+                                                    <th>User ID</th>
+                                                    <th>Total</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+                                
+                                                @foreach (var order in Model.RefundRequests)
+                                                {
+                                                        <tr>
+                                                            <td>@order.Id</td>
+                                                            <td>@order.UserId</td>
+                                                            <td>@order.TotalAmount.ToString("C")</td>
+                                                            <td>
+                                                                <form asp-action="ApproveRefund" method="post"
+                                                                    style="display:inline;">
+                                                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                                                    <button type="submit"
+                                                                        class="btn btn-success btn-sm">Approve</button>
+                                                                </form>
+                                                                <form asp-action="RejectRefund" method="post"
+                                                                    style="display:inline;">
+                                                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger btn-sm">Reject</button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+
+
+
+
+
+
+
+
 <script>
     function printInvoice(url) {
         const printWindow = window.open(url, '_blank');
@@ -236,10 +291,52 @@
         color: #010101;
         font-weight: bold;
     }
+        .row {
+            margin-left: -180px;
+            margin-right: -180px;
+        }
+
+        .col-md-4 {
+            flex: 1;
+            /* Make each column take equal space */
+            max-width: 100%;
+            /* Ensure the columns can expand fully */
+            padding-left: 10px;
+            /* Optional: Adjust padding as needed */
+            padding-right: 10px;
+            /* Optional: Adjust padding as needed */
+        }
+
+        /* Ensure the form container takes full width */
+        .card.custom-card {
+            width: 100%;
+            /* Make the card occupy full width */
+        }
+
+        /* Ensure the form elements span the full width of the card */
+        .card-body form .row {
+            margin: 0;
+            /* Remove default margins */
+        }
+
+        .card-body form .row .col-md-4 {
+            flex: 1;
+            /* Make each column flexible and occupy available space */
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        /* Adjust button to fit the available width */
+        .card-body form .col-md-4 button {
+            width: 100%;
+            padding: 10px;
+            /* Add padding for better button appearance */
+        }
 
     .custom-card {
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%
     }
 
     .card-header {
@@ -285,6 +382,19 @@
         opacity: 1;
         margin: 5px;
     }
+        #chartSection {
+            width: 500px;
+            /* Set a smaller width for the container */
+            margin: 0 auto;
+            /* Center the chart horizontally */
+        }
+
+        #profitLossChart {
+            width: 100%;
+            /* Ensure the canvas scales within the container */
+            height: auto;
+            /* Maintain the aspect ratio */
+        }
 
     #toggleCalculateSection {
         background-color: #952735;
