@@ -16,24 +16,48 @@
                         <div class="card mb-3 custom-inner-card">
                             <div class="card-body">
                                 <h5 class="card-title">Order #@order.Id</h5>
-                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
-                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
-
-                                <h6>Items:</h6>
-                                <ul class="list-unstyled">
-                                    @foreach (var item in order.Items)
+                                
+                                <!-- Order Information -->
+                                <div class="order-details">
+                                    <h6>Order Information:</h6>
+                                    <p class="card-text mb-1"><strong>Customer ID:</strong> @order.UserId</p>
+                                    <p class="card-text mb-1"><strong>Order Date:</strong> @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                    <p class="card-text mb-1"><strong>Total Amount:</strong> $@order.TotalAmount</p>
+                                    @if (!string.IsNullOrEmpty(order.DeliveryId))
                                     {
-                                        <li>
-                                            @item.ProductName x @item.Quantity
-                                            ($@item.UnitPrice each)
-                                        </li>
+                                        <p class="card-text mb-1"><strong>Delivery ID:</strong> @order.DeliveryId</p>
                                     }
-                                </ul>
+                                    @if (order.RefundRequested)
+                                    {
+                                        <p class="card-text mb-1">
+                                            <strong>Refund Status:</strong> 
+                                            <span class="badge bg-warning">@order.RefundStatus</span>
+                                        </p>
+                                    }
+                                </div>
 
+                                <!-- Items Section -->
+                                <div class="mt-3">
+                                    <h6>Items:</h6>
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in order.Items)
+                                        {
+                                            <li class="mb-2">
+                                                <div class="item-details">
+                                                    <p class="mb-1"><strong>Product ID:</strong> @item.ProductId</p>
+                                                    <p class="mb-1">@item.ProductName x @item.Quantity ($@item.UnitPrice each)</p>
+                                                    <p class="mb-1"><strong>Total:</strong> $@item.TotalPrice</p>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Shipping Details -->
                                 @if (Model.Addresses.ContainsKey(order.AddressId))
                                 {
                                     var address = Model.Addresses[order.AddressId];
-                                    <div class="mt-3">
+                                    <div class="mt-3 shipping-details">
                                         <h6>Shipping Details:</h6>
                                         <p class="mb-1">@address.FullName</p>
                                         <p class="mb-1">@address.StreetAddress</p>
@@ -67,24 +91,48 @@
                         <div class="card mb-3 custom-inner-card">
                             <div class="card-body">
                                 <h5 class="card-title">Order #@order.Id</h5>
-                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
-                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
-
-                                <h6>Items:</h6>
-                                <ul class="list-unstyled">
-                                    @foreach (var item in order.Items)
+                                
+                                <!-- Order Information -->
+                                <div class="order-details">
+                                    <h6>Order Information:</h6>
+                                    <p class="card-text mb-1"><strong>Customer ID:</strong> @order.UserId</p>
+                                    <p class="card-text mb-1"><strong>Order Date:</strong> @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                    <p class="card-text mb-1"><strong>Total Amount:</strong> $@order.TotalAmount</p>
+                                    @if (!string.IsNullOrEmpty(order.DeliveryId))
                                     {
-                                        <li>
-                                            @item.ProductName x @item.Quantity
-                                            ($@item.UnitPrice each)
-                                        </li>
+                                        <p class="card-text mb-1"><strong>Delivery ID:</strong> @order.DeliveryId</p>
                                     }
-                                </ul>
+                                    @if (order.RefundRequested)
+                                    {
+                                        <p class="card-text mb-1">
+                                            <strong>Refund Status:</strong> 
+                                            <span class="badge bg-warning">@order.RefundStatus</span>
+                                        </p>
+                                    }
+                                </div>
 
+                                <!-- Items Section -->
+                                <div class="mt-3">
+                                    <h6>Items:</h6>
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in order.Items)
+                                        {
+                                            <li class="mb-2">
+                                                <div class="item-details">
+                                                    <p class="mb-1"><strong>Product ID:</strong> @item.ProductId</p>
+                                                    <p class="mb-1">@item.ProductName x @item.Quantity ($@item.UnitPrice each)</p>
+                                                    <p class="mb-1"><strong>Total:</strong> $@item.TotalPrice</p>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Shipping Details -->
                                 @if (Model.Addresses.ContainsKey(order.AddressId))
                                 {
                                     var address = Model.Addresses[order.AddressId];
-                                    <div class="mt-3">
+                                    <div class="mt-3 shipping-details">
                                         <h6>Shipping Details:</h6>
                                         <p class="mb-1">@address.FullName</p>
                                         <p class="mb-1">@address.StreetAddress</p>
@@ -118,24 +166,48 @@
                         <div class="card mb-3 custom-inner-card">
                             <div class="card-body">
                                 <h5 class="card-title">Order #@order.Id</h5>
-                                <p class="card-text">Order Date: @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
-                                <p class="card-text">Total Amount: $@order.TotalAmount</p>
-
-                                <h6>Items:</h6>
-                                <ul class="list-unstyled">
-                                    @foreach (var item in order.Items)
+                                
+                                <!-- Order Information -->
+                                <div class="order-details">
+                                    <h6>Order Information:</h6>
+                                    <p class="card-text mb-1"><strong>Customer ID:</strong> @order.UserId</p>
+                                    <p class="card-text mb-1"><strong>Order Date:</strong> @order.OrderDate.ToString("MM/dd/yyyy HH:mm")</p>
+                                    <p class="card-text mb-1"><strong>Total Amount:</strong> $@order.TotalAmount</p>
+                                    @if (!string.IsNullOrEmpty(order.DeliveryId))
                                     {
-                                        <li>
-                                            @item.ProductName x @item.Quantity
-                                            ($@item.UnitPrice each)
-                                        </li>
+                                        <p class="card-text mb-1"><strong>Delivery ID:</strong> @order.DeliveryId</p>
                                     }
-                                </ul>
+                                    @if (order.RefundRequested)
+                                    {
+                                        <p class="card-text mb-1">
+                                            <strong>Refund Status:</strong> 
+                                            <span class="badge bg-warning">@order.RefundStatus</span>
+                                        </p>
+                                    }
+                                </div>
 
+                                <!-- Items Section -->
+                                <div class="mt-3">
+                                    <h6>Items:</h6>
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in order.Items)
+                                        {
+                                            <li class="mb-2">
+                                                <div class="item-details">
+                                                    <p class="mb-1"><strong>Product ID:</strong> @item.ProductId</p>
+                                                    <p class="mb-1">@item.ProductName x @item.Quantity ($@item.UnitPrice each)</p>
+                                                    <p class="mb-1"><strong>Total:</strong> $@item.TotalPrice</p>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Shipping Details -->
                                 @if (Model.Addresses.ContainsKey(order.AddressId))
                                 {
                                     var address = Model.Addresses[order.AddressId];
-                                    <div class="mt-3">
+                                    <div class="mt-3 shipping-details">
                                         <h6>Shipping Details:</h6>
                                         <p class="mb-1">@address.FullName</p>
                                         <p class="mb-1">@address.StreetAddress</p>
@@ -168,12 +240,14 @@
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        margin-bottom: 20px;
     }
 
     .order-header {
         color: white;
         text-align: center;
         font-weight: bold;
+        padding: 15px;
     }
 
     .bg-processing {
@@ -191,11 +265,43 @@
     .custom-inner-card {
         border-radius: 10px;
         background-color: #f9f9f9;
+        transition: transform 0.2s;
+    }
+
+    .custom-inner-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .order-details {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .item-details {
+        background-color: #ffffff;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        transition: background-color 0.2s;
+    }
+
+    .item-details:hover {
+        background-color: #f8f9fa;
+    }
+
+    .shipping-details {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
     }
 
     .btn {
         border-radius: 25px;
         font-weight: bold;
+        padding: 8px 20px;
+        transition: all 0.3s;
     }
 
     .custom-btn-primary {
@@ -205,6 +311,7 @@
 
     .custom-btn-primary:hover {
         background-color: #952735;
+        transform: translateY(-1px);
     }
 
     .custom-btn-success {
@@ -214,5 +321,15 @@
 
     .custom-btn-success:hover {
         background-color: #952735;
+        transform: translateY(-1px);
+    }
+
+    .card-text.mb-1 {
+        margin-bottom: 0.25rem !important;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 15px;
     }
 </style>

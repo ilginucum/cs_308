@@ -21,6 +21,7 @@ namespace e_commerce.Models
         public string OrderStatus { get; set; }
         public bool RefundRequested { get; set; } = false;
         public string RefundStatus { get; set; }
+        public string DeliveryId { get; set; }
 
 
     }
