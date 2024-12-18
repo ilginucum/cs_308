@@ -34,6 +34,7 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             border: none;
             padding: 0.5rem 0;
+            min-width: 200px;
         }
 
         .dropdown-item {
@@ -41,14 +42,31 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: #333;
+            transition: all 0.2s ease;
         }
 
         .dropdown-item:hover {
             background-color: #f8f9fa;
+            color: #be3144;
+        }
+
+        .dropdown-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
         }
 
         .dropdown-divider {
             margin: 0.3rem 0;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-dropdown .dropdown-menu {
+            margin-top: 0.5rem;
         }
 
         .user-dropdown .btn {
@@ -120,6 +138,21 @@
                                     <li>
                                         <a class="dropdown-item" asp-controller="Product" asp-action="Index">
                                             <i class="bi bi-box"></i> Product Manager Page
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Product" asp-action="ManageProduct">
+                                            <i class="bi bi-plus-circle"></i> Add New Product
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Product" asp-action="ManageComments">
+                                            <i class="bi bi-chat-dots"></i> Manage Comments
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Product" asp-action="OrderManagement">
+                                            <i class="bi bi-truck"></i> Order Status
                                         </a>
                                     </li>
                                 }

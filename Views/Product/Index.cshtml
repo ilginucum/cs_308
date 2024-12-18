@@ -1,102 +1,138 @@
 @model IEnumerable<e_commerce.Models.Product>
-
 @{
     ViewData["Title"] = "Product Management";
 }
 
 <style>
-    /* Scope styles to product-management specific container */
     .product-management-container {
         padding: 20px;
-        /* Optional padding for container */
     }
 
-    /* Buttons specific to product management */
+    .product-management-container .top-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
     .product-management-container .product-btn {
         padding: 10px 20px;
-        margin: 10px;
         text-decoration: none;
         border-radius: 25px;
         color: #fff;
-        /* Text always white */
         background-color: #be3144;
-        /* Default button background */
         border: none;
         font-weight: bold;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        /* Smooth transitions */
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-management-container .product-btn i {
+        font-size: 1.1rem;
     }
 
     .product-management-container .product-btn:hover {
         background-color: #952735;
-        /* Background on hover */
+        transform: translateY(-1px);
         color: #fff;
-        /* Ensure text remains white */
     }
 
     .product-management-container .product-btn:focus,
     .product-management-container .product-btn:active {
         outline: none;
         box-shadow: none;
-        /* Remove focus rings */
         background-color: #952735;
-        /* Background on focus/active */
         color: #fff;
-        /* Ensure text remains white */
     }
 
-    /* Table Styles scoped to this page */
     .product-management-container .table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
         border-radius: 15px;
-        /* Rounded corners */
         overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .product-management-container .table th {
         background-color: #be3144;
-        /* Header red */
         color: #fff;
-        /* Header text white */
         text-align: center;
-        padding: 10px;
+        padding: 12px;
+        font-weight: 600;
+        white-space: nowrap;
     }
 
     .product-management-container .table td {
         text-align: center;
-        padding: 10px;
+        padding: 12px;
         border: 1px solid #ddd;
+        vertical-align: middle;
     }
 
     .product-management-container .table tbody tr:nth-child(even) {
         background-color: #f9f9f9;
-        /* Alternate row background */
     }
 
-    /* Add vertical space between heading and buttons */
+    .product-management-container .table tbody tr:hover {
+        background-color: #f5f5f5;
+        transition: background-color 0.3s ease;
+    }
+
+    .product-management-container .table td .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     .product-management-container h2 {
         margin-bottom: 20px;
-        /* Adjust this value for desired spacing */
+        color: #333;
+        font-weight: bold;
+        text-align: center;
     }
 
-    /* Ensure shared header styles are not affected */
-    header {
-        all: unset;
-        all: revert;
-        /* Revert header styles to their global defaults */
+    @@media (max-width: 768px) {
+        .product-management-container .top-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .product-management-container .product-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .product-management-container .table {
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .product-management-container .table td .action-buttons {
+            flex-direction: column;
+        }
     }
 </style>
 
 <div class="product-management-container">
     <h2>Product Management</h2>
+    
+    <div class="top-actions">
+        <a asp-action="ManageProduct" class="product-btn">
+            <i class="bi bi-plus-circle"></i> Create New Product
+        </a>
+        <a asp-action="ManageComments" class="product-btn">
+            <i class="bi bi-chat-dots"></i> Manage Comments
+        </a>
+        <a asp-action="OrderManagement" class="product-btn">
+            <i class="bi bi-truck"></i> Order Information
+        </a>
+    </div>
 
-    <p>
-        <a asp-action="ManageProduct" class="product-btn">Create New Product</a>
-        <a asp-action="ManageComments" class="product-btn">Manage Comments</a>
-        <a asp-action="OrderManagement" class="product-btn">Order Information</a>
-    </p>
     <table class="table">
         <thead>
             <tr>
@@ -120,8 +156,14 @@
                     <td>@item.Genre</td>
                     <td>@item.Price.ToString("C")</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="product-btn">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="product-btn">Delete</a>
+                        <div class="action-buttons">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="product-btn">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="product-btn">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }
