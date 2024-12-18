@@ -20,6 +20,7 @@ namespace e_commerce.Controllers
         private readonly IMongoDBRepository<Address> _addressRepository;
 
         private readonly ILogger<ProductController> _logger;
+        private readonly IMongoDBRepository<Category> _categoryRepository;
 
         public ProductController(
             IMongoDBRepository<Product> productRepository,
@@ -28,6 +29,7 @@ namespace e_commerce.Controllers
             IMongoDBRepository<Address> addressRepository,
             IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
             IMongoDBRepository<WishlistItem> _wishlistRepository,
+            IMongoDBRepository<Category> categoryRepository,
             ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
@@ -35,6 +37,7 @@ namespace e_commerce.Controllers
             _orderRepository = orderRepository;
             _addressRepository = addressRepository;
             _ratingRepository = ratingRepository;
+            _categoryRepository = categoryRepository;
             _logger = logger;
         }
 
@@ -141,8 +144,10 @@ namespace e_commerce.Controllers
 
         [HttpGet]
         [Authorize(Roles = "ProductManager")]
-        public IActionResult ManageProduct()
+        public async Task<IActionResult> ManageProduct()
         {
+            var categories = await _categoryRepository.GetAllAsync(); // MongoDB'den kategorileri al
+            ViewBag.Categories = categories.Select(c => c.Name).ToList(); // ViewBag ile View'e gönder
             return View();
         }
 
@@ -476,6 +481,35 @@ namespace e_commerce.Controllers
                 _logger.LogError(ex, $"Error updating order {orderId} status");
                 throw;
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "ProductManager")]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ProductManager")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Category koleksiyonuna ekle
+                    await _categoryRepository.InsertOneAsync(category);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while adding new category.");
+                    ModelState.AddModelError("", "Error occurred while adding category.");
+                }
+            }
+            return View(category);
         }
         public void UpdateProductPrice(Product product, decimal newPrice, decimal discountPercentage = 0)
         {

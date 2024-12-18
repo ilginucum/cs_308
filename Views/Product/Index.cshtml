@@ -26,7 +26,7 @@
 
     .action-cards {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 15px;
         margin-bottom: 25px;
     }
@@ -56,6 +56,11 @@
 
     .action-card.create {
         background-color: #be3144;
+        color: white;
+    }
+
+    .action-card.create-category {
+        background-color: #d9534f; /* Daha açık bir kırmızı tonu */
         color: white;
     }
 
@@ -182,6 +187,10 @@
         <a asp-action="ManageProduct" class="action-card create">
             <i class="bi bi-plus-circle"></i>
             <span>Create New Product</span>
+        </a>
+        <a asp-action="CreateCategory" class="action-card create-category">
+            <i class="bi bi-folder-plus"></i>
+            <span>Create New Category</span>
         </a>
         <a asp-action="ManageComments" class="action-card comments">
             <i class="bi bi-chat-dots"></i>

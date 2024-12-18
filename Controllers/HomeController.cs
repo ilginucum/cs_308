@@ -11,12 +11,14 @@ namespace e_commerce.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly IMongoDBRepository<Order> _orderRepository; // Yeni eklendi
+        private readonly IMongoDBRepository<Category> _categoryRepository;
 
-        public HomeController(ILogger<HomeController> logger, IMongoDBRepository<Product> productRepository, IMongoDBRepository<Order> orderRepository) // Yeni ekleme
+        public HomeController(ILogger<HomeController> logger, IMongoDBRepository<Product> productRepository, IMongoDBRepository<Order> orderRepository, IMongoDBRepository<Category> categoryRepository) // Yeni ekleme
         {
             _logger = logger;
             _productRepository = productRepository;
             _orderRepository = orderRepository; // Yeni ekleme
+            _categoryRepository = categoryRepository;
         }
 
          public async Task<IActionResult> Index()
@@ -35,15 +37,10 @@ namespace e_commerce.Controllers
 
         ViewBag.ProductPopularity = productPopularity; // ViewBag ile gönder (Yeni ekleme)
 
-        // Get unique genres from all products
-        var allGenres = products
-            .Where(p => !string.IsNullOrEmpty(p.Genre))
-            .Select(p => p.Genre)
-            .Distinct()
-            .OrderBy(g => g)
-            .ToList();
+        // Kategorileri MongoDB'deki Categories koleksiyonundan al
+        var categories = await _categoryRepository.GetAllAsync();
+        ViewBag.Genres = categories.Select(c => c.Name).Distinct().OrderBy(g => g).ToList();
         
-        ViewBag.Genres = allGenres;
 
         foreach (var product in products)
         {

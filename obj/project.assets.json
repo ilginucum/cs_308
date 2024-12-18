@@ -5998,19 +5998,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/betuliltir/.nuget/packages/": {}
+    "/Users/eysanmutlu/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/betuliltir/Desktop/cs_308-1/e_commerce.csproj",
+      "projectUniqueName": "/Users/eysanmutlu/cs308_29_10_2024/18aralık/cs_308/e_commerce.csproj",
       "projectName": "e_commerce",
-      "projectPath": "/Users/betuliltir/Desktop/cs_308-1/e_commerce.csproj",
-      "packagesPath": "/Users/betuliltir/.nuget/packages/",
-      "outputPath": "/Users/betuliltir/Desktop/cs_308-1/obj/",
+      "projectPath": "/Users/eysanmutlu/cs308_29_10_2024/18aralık/cs_308/e_commerce.csproj",
+      "packagesPath": "/Users/eysanmutlu/.nuget/packages/",
+      "outputPath": "/Users/eysanmutlu/cs308_29_10_2024/18aralık/cs_308/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/betuliltir/.nuget/NuGet/NuGet.Config"
+        "/Users/eysanmutlu/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6087,7 +6087,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

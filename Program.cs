@@ -82,6 +82,14 @@ builder.Services.AddScoped<IMongoDBRepository<ProfileAddress>>(sp =>
        sp.GetRequiredService<ILogger<MongoDBRepository<ProfileAddress>>>()
    ));
 
+
+builder.Services.AddScoped<IMongoDBRepository<Category>>(sp =>
+   new MongoDBRepository<Category>(
+       sp.GetRequiredService<IConfiguration>(),
+       "Categories",
+       sp.GetRequiredService<ILogger<MongoDBRepository<Category>>>()
+   ));
+
 builder.Services.AddScoped<IMongoDBRepository<WishlistItem>>(sp =>
     new MongoDBRepository<WishlistItem>(
         sp.GetRequiredService<IConfiguration>(),

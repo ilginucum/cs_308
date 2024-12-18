@@ -1,0 +1,113 @@
+@model e_commerce.Models.Category
+@{
+    ViewData["Title"] = "Create New Category";
+}
+
+<h2>Create New Category</h2>
+
+<style>
+    /* Container Styles */
+    .create-container {
+        font-family: Arial, sans-serif;
+        margin: auto;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #be3144;
+    }
+
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        color: #010101;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #be3144;
+        box-shadow: 0 0 5px #be3144;
+    }
+
+    .form-check-label {
+        font-weight: bold;
+        color: #952735;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background-color: #be3144;
+        border: none;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #952735;
+    }
+
+    .btn-primary:focus,
+    .btn-primary:active {
+        outline: none;
+        box-shadow: none;
+    }
+
+    a {
+        color: #be3144;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Validation Error Styles */
+    .text-danger {
+        color: #be3144;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="create-container">
+    <form asp-action="CreateCategory" method="post">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter category/genre name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index">Back to Product Management Page</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
