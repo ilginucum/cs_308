@@ -115,17 +115,21 @@
                                 _ => "/images/default-book.jpg"
                             };
                         }
+                        @if (product.QuantityInStock > 0)
+                        {
+                            <span class="stock-badge in-stock">In Stock</span>
+                        }
+                        else
+                        {
+                            <span class="stock-badge out-of-stock">Out of Stock</span>
+                        }
                         <img src="@imageUrl" class="card-img-top" alt="@product.Name">
                         <div class="card-body">
                             <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">@product.Description</p>
-                            <p class="card-text">Price: $@product.Price.ToString("F2")</p>
-                            <p class="card-text">In Stock: @product.QuantityInStock</p>
-                            <p class="card-text">Author: @product.Author</p>
-                            @if (!string.IsNullOrEmpty(product.Genre))
-                            {
-                                <p class="card-text">Genre: @product.Genre</p>
-                            }
+                            <p class="text-muted">by @product.Author</p>
+                            <span class="genre-badge">@product.Genre</span>
+                            <p class="card-text mt-3">@product.Description</p>
+                            <span class="price-tag">$@product.Price.ToString("F2")</span>
                         </div>
                     </div>
                 </a>
