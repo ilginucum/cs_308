@@ -5998,19 +5998,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/macbookpro/.nuget/packages/": {}
+    "/Users/betuliltir/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/macbookpro/Desktop/308_new/cs_308-1/e_commerce.csproj",
+      "projectUniqueName": "/Users/betuliltir/Desktop/cs_308-1/e_commerce.csproj",
       "projectName": "e_commerce",
-      "projectPath": "/Users/macbookpro/Desktop/308_new/cs_308-1/e_commerce.csproj",
-      "packagesPath": "/Users/macbookpro/.nuget/packages/",
-      "outputPath": "/Users/macbookpro/Desktop/308_new/cs_308-1/obj/",
+      "projectPath": "/Users/betuliltir/Desktop/cs_308-1/e_commerce.csproj",
+      "packagesPath": "/Users/betuliltir/.nuget/packages/",
+      "outputPath": "/Users/betuliltir/Desktop/cs_308-1/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
+        "/Users/betuliltir/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6087,7 +6087,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

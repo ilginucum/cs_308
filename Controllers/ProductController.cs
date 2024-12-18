@@ -25,7 +25,7 @@ namespace e_commerce.Controllers
             IMongoDBRepository<Product> productRepository,
             IMongoDBRepository<ProductComment> commentRepository,
             IMongoDBRepository<Order> orderRepository,
-        IMongoDBRepository<Address> addressRepository,
+            IMongoDBRepository<Address> addressRepository,
             IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
             IMongoDBRepository<WishlistItem> _wishlistRepository,
             ILogger<ProductController> logger)
@@ -50,6 +50,9 @@ namespace e_commerce.Controllers
         {
             try
             {
+                // Only get comments that are either:
+                // 1. From users who have purchased the product and are pending
+                // 2. Already approved comments
                 var allComments = (await _commentRepository.GetAllAsync()).ToList();
                 var viewModels = new List<CommentManagementViewModel>();
                 
@@ -65,18 +68,33 @@ namespace e_commerce.Controllers
                     
                     var hasPurchased = orders.Any();
                     
-                    viewModels.Add(new CommentManagementViewModel
+                    // Automatically reject comments from users who haven't purchased
+                    if (!hasPurchased && comment.Status == "pending")
                     {
-                        Id = comment.Id,
-                        ProductId = comment.ProductId,
-                        UserId = comment.UserId,
-                        ProductName = product?.Name ?? "Unknown Product",
-                        UserName = comment.UserName,
-                        CommentText = comment.CommentText,
-                        CreatedAt = comment.CreatedAt,
-                        Status = comment.Status,
-                        HasPurchased = hasPurchased
-                    });
+                        comment.Status = "rejected";
+                        await _commentRepository.ReplaceOneAsync(comment);
+                        _logger.LogInformation($"Comment {comment.Id} automatically rejected - no purchase verified");
+                        continue; // Skip adding to viewModels
+                    }
+                    
+                    // Only add to viewModel if:
+                    // 1. Comment is pending AND user has purchased
+                    // 2. Comment is already approved
+                    if ((comment.Status == "pending" && hasPurchased) || comment.Status == "approved")
+                    {
+                        viewModels.Add(new CommentManagementViewModel
+                        {
+                            Id = comment.Id,
+                            ProductId = comment.ProductId,
+                            UserId = comment.UserId,
+                            ProductName = product?.Name ?? "Unknown Product",
+                            UserName = comment.UserName,
+                            CommentText = comment.CommentText,
+                            CreatedAt = comment.CreatedAt,
+                            Status = comment.Status,
+                            HasPurchased = hasPurchased
+                        });
+                    }
                 }
 
                 _logger.LogInformation($"Retrieved {viewModels.Count} comments for management");
