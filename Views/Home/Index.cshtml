@@ -279,19 +279,92 @@
     .card {
         border: none;
         border-radius: 15px;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
-
+    
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
-
+    
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+        transition: transform 0.4s ease;
+    }
+    
     .card-img-top {
         height: 300px;
         object-fit: contain;
         padding: 1rem;
+        transition: transform 0.4s ease;
+    }
+    
+    /* Stock Badge */
+    .stock-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .in-stock {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .out-of-stock {
+        background-color: #be3144;
+        color: white;
+    }
+    
+    /* Price Tag */
+    .price-tag {
+        background: #be3144;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 25px;
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    /* Genre Badge */
+    .genre-badge {
+        background-color: #f8f9fa;
+        color: #be3144;
+        border: 1px solid #be3144;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+        display: inline-block;
+    }
+    
+    /* Gradient Overlay */
+    .card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .card:hover::after {
+        opacity: 1;
     }
 
     .form-check-input:checked {
