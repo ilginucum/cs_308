@@ -25,7 +25,8 @@
             <div class="card custom-card">
                 <div class="card-header text-white" style="background-color: #952735;">
                     <h4 class="mb-0 text-center">
-                        <button class="header-button" id="toggleCalculateSection">Calculate Profit / Display Invoice </center></button>
+                        <button class="header-button" id="toggleCalculateSection">Calculate Profit / Display Invoice
+                            </center></button>
                     </h4>
                 </div>
                 <div class="card-body" id="calculateSection" style="@(showCalculateSection ? "block" : "none")">
@@ -113,158 +114,159 @@
     </script>
 
 
-            <div class="container-fluid mt-4">
-                <h2 class="page-title text-center mb-4">Sales Management</h2>
+    <div class="container-fluid mt-4">
+        <h2 class="page-title text-center mb-4">Sales Management</h2>
 
-                <div class="row">
-                    <!-- Products Awaiting Price Block -->
-                    <div class="col-md-4">
-                        <div class="card custom-card">
-                            <div class="card-header text-white" style="background-color: #952735;">
-                                <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+        <div class="row">
+            <!-- Products Awaiting Price Block -->
+            <div class="col-md-4">
+                <div class="card custom-card">
+                    <div class="card-header text-white" style="background-color: #952735;">
+                        <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+                    </div>
+                    <div class="card-body">
+                        @if (!productsWithoutPrice.Any())
+                        {
+                            <div class="alert alert-info text-center"
+                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                No products awaiting price setting.
                             </div>
-                            <div class="card-body">
-                                @if (!productsWithoutPrice.Any())
+                        }
+                        else
+                        {
+                            <ul class="list-group">
+                                @foreach (var product in productsWithoutPrice)
                                 {
-                                    <div class="alert alert-info text-center"
-                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                        No products awaiting price setting.
-                                    </div>
+                                    <li class="list-group-item">@product.Name - @product.Author</li>
                                 }
-                                else
-                                {
-                                    <ul class="list-group">
-                                        @foreach (var product in productsWithoutPrice)
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products with Price Set Block -->
+            <div class="col-md-4">
+                <div class="card custom-card">
+                    <div class="card-header text-white" style="background-color: #952735;">
+                        <h4 class="mb-0 text-center">Products with Price Set</h4>
+                    </div>
+                    <div class="card-body">
+                        @if (!productsWithPrice.Any())
+                        {
+                            <div class="alert alert-info text-center"
+                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                No products with prices set.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Book Name</th>
+                                            <th>Author</th>
+                                            <th>Price</th>
+                                            <th>Discount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var product in productsWithPrice)
                                         {
-                                            <li class="list-group-item">@product.Name - @product.Author</li>
+                                            <tr>
+                                                <td>@product.Name</td>
+                                                <td>@product.Author</td>
+                                                <td>@product.Price.ToString("C")</td>
+                                                <td>
+                                                    <form asp-action="ApplyDiscount" method="post">
+                                                        <input type="hidden" name="id" value="@product.Id" />
+                                                        <input type="number" name="discount" class="form-control"
+                                                            placeholder="%" min="0" max="100" required />
+                                                        <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
+                                                    </form>
+                                                </td>
+                                                <td>
+                                                    <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                                        class="btn btn-primary btn-sm mb-1">Update Price</a>
+                                                    <form asp-action="ResetDiscount" method="post">
+                                                        <input type="hidden" name="productId" value="@product.Id" />
+                                                        <button type="submit" class="btn btn-danger btn-sm">Reset
+                                                            Discount</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
                                         }
-                                    </ul>
-                                }
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+                        }
                     </div>
+                </div>
+            </div>
 
-                    <!-- Products with Price Set Block -->
-                    <div class="col-md-4">
-                        <div class="card custom-card">
-                            <div class="card-header text-white" style="background-color: #952735;">
-                                <h4 class="mb-0 text-center">Products with Price Set</h4>
-                            </div>
-                            <div class="card-body">
-                                @if (!productsWithPrice.Any())
-                                {
-                                    <div class="alert alert-info text-center"
-                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                        No products with prices set.
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="table-responsive">
-                                        <table class="table custom-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Book Name</th>
-                                                    <th>Author</th>
-                                                    <th>Price</th>
-                                                    <th>Discount</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var product in productsWithPrice)
-                                                {
-                                                    <tr>
-                                                        <td>@product.Name</td>
-                                                        <td>@product.Author</td>
-                                                        <td>@product.Price.ToString("C")</td>
-                                                        <td>
-                                                            <form asp-action="ApplyDiscount" method="post">
-                                                                <input type="hidden" name="id" value="@product.Id" />
-                                                                <input type="number" name="discount" class="form-control"
-                                                                    placeholder="%" min="0" max="100" required />
-                                                                <button type="submit"
-                                                                    class="btn btn-success btn-sm mt-1">Apply</button>
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                                class="btn btn-primary btn-sm mb-1">Update Price</a>
-                                                            <form asp-action="ResetDiscount" method="post">
-                                                                <input type="hidden" name="productId" value="@product.Id" />
-                                                                <button type="submit" class="btn btn-danger btn-sm">Reset
-                                                                    Discount</button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
-                            </div>
-                        </div>
+            <!-- Refund Requests Block -->
+            <div class="col-md-4">
+                <div class="card custom-card">
+                    <div class="card-header text-white" style="background-color: #952735;">
+                        <h4 class="mb-0 text-center">Refund Requests</h4>
                     </div>
-
-                    <!-- Refund Requests Block -->
-                    <div class="col-md-4">
-                        <div class="card custom-card">
-                            <div class="card-header text-white" style="background-color: #952735;">
-                                <h4 class="mb-0 text-center">Refund Requests</h4>
+                    <div class="card-body">
+                        @if (!Model.RefundRequests.Any())
+                        {
+                            <div class="alert alert-info text-center"
+                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                                No refund requests.
                             </div>
-                            <div class="card-body">
-                                @if (!Model.RefundRequests.Any())
-                                {
-                                    <div class="alert alert-info text-center"
-                                        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                        No refund requests.
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="table-responsive">
-                                        <table class="table custom-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Order ID</th>
-                                                    <th>User ID</th>
-                                                    <th>Total</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-
-                                
-                                                @foreach (var order in Model.RefundRequests)
-                                                {
-                                                        <tr>
-                                                            <td>@order.Id</td>
-                                                            <td>@order.UserId</td>
-                                                            <td>@order.TotalAmount.ToString("C")</td>
-                                                            <td>
-                                                                <form asp-action="ApproveRefund" method="post"
-                                                                    style="display:inline;">
-                                                                    <input type="hidden" name="orderId" value="@order.Id" />
-                                                                    <button type="submit"
-                                                                        class="btn btn-success btn-sm">Approve</button>
-                                                                </form>
-                                                                <form asp-action="RejectRefund" method="post"
-                                                                    style="display:inline;">
-                                                                    <input type="hidden" name="orderId" value="@order.Id" />
-                                                                    <button type="submit"
-                                                                        class="btn btn-danger btn-sm">Reject</button>
-                                                                </form>
-                                                            </td>
-                                                        </tr>
-                                                
-                                            }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>User ID</th>
+                                            <th>Total</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in Model.RefundRequests)
+                                        {
+                                            <tr>
+                                                <td>@order.Id</td>
+                                                <td>@order.UserId</td>
+                                                <td>@order.TotalAmount.ToString("C")</td>
+                                                <td>
+                                                    @if (order.RefundStatus == "Complete")
+                                                    {
+                                                        <span class="badge bg-success">Refund Completed</span>
+                                                    }
+                                                    else if (order.RefundStatus == "Rejected")
+                                                    {
+                                                        <span class="badge bg-danger">Refund Rejected</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        
+                                                        <form asp-action="ApproveRefund" method="post" style=" display:inline ; width: 2px; ">
+                                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                        </form>
+                                                        <form asp-action="RejectRefund" method="post" style="display:inline;">
+                                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                        </form>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -276,21 +278,24 @@
 
 
 
-<script>
-    function printInvoice(url) {
-        const printWindow = window.open(url, '_blank');
-        printWindow.onload = function () {
-            printWindow.print();
-        };
-    }
-</script>
 
+    <script>
+        function printInvoice(url) {
+            const printWindow = window.open(url, '_blank');
+            printWindow.onload = function () {
+                printWindow.print();
+            };
+        }
+    </script>
 
 <style>
-    .page-title {
-        color: #010101;
-        font-weight: bold;
-    }
+  
+
+        .page-title {
+            color: #010101;
+            font-weight: bold;
+        }
+
         .row {
             margin-left: -180px;
             margin-right: -180px;
@@ -333,55 +338,58 @@
             /* Add padding for better button appearance */
         }
 
-    .custom-card {
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 100%
-    }
+        .custom-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%
+        }
 
-    .card-header {
-        text-align: center;
-        font-weight: bold;
-    }
+        .card-header {
+            text-align: center;
+            font-weight: bold;
+        }
 
-    .custom-table {
-        border-collapse: collapse;
-        width: 100%;
-    }
+        .custom-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
 
-    .custom-btn-primary {
-        background-color: #be3144;
-        color: white;
-    }
+        .custom-btn-primary {
+            background-color: #be3144;
+            color: white;
+        }
 
-    .custom-btn-primary:hover {
-        background-color: #952735;
-    }
+        .custom-btn-primary:hover {
+            background-color: #952735;
+        }
 
-    .custom-table th {
-        background-color: #be3144;
-        color: white;
-        text-align: center;
-    }
+        .custom-table th {
+            background-color: #be3144;
+            color: white;
+            text-align: center;
+        }
 
-    .custom-table td {
-        text-align: center;
-    }
+        .custom-table td {
+            text-align: center;
+        }
 
-    .custom-table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        .custom-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    .discount-input {
-        width: 80px;
-        display: inline-block;
-    }
+        .discount-input {
+            width: 80px;
+            display: inline-block;
+        }
 
-    .discount-input::-webkit-inner-spin-button,
-    .discount-input::-webkit-outer-spin-button {
-        opacity: 1;
-        margin: 5px;
-    }
+
+
+        .discount-input::-webkit-inner-spin-button,
+        .discount-input::-webkit-outer-spin-button {
+            opacity: 1;
+            margin: 5px;
+        }
+
         #chartSection {
             width: 500px;
             /* Set a smaller width for the container */
@@ -396,70 +404,70 @@
             /* Maintain the aspect ratio */
         }
 
-    #toggleCalculateSection {
-        background-color: #952735;
-        color: white;
-        border: none;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        width: 100%;
-        padding: 10px;
-        cursor: pointer;
-    }
+        #toggleCalculateSection {
+            background-color: #952735;
+            color: white;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+            cursor: pointer;
+        }
 
-    #toggleCalculateSection:hover {
-        background-color: #952735;
-    }
-</style>
+        #toggleCalculateSection:hover {
+            background-color: #952735;
+        }
+    </style>
 
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.getElementById("toggleCalculateSection").addEventListener("click", function() {
-            let section = document.getElementById("calculateSection");
-            section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
-            section.scrollIntoView({ behavior: 'smooth' });
-        });
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.getElementById("toggleCalculateSection").addEventListener("click", function () {
+                let section = document.getElementById("calculateSection");
+                section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
 
-        document.getElementById("toggleDetails")?.addEventListener("click", function() {
-            let detailsSection = document.getElementById("detailsSection");
-            detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
-        });
+            document.getElementById("toggleDetails")?.addEventListener("click", function () {
+                let detailsSection = document.getElementById("detailsSection");
+                detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+            });
 
-        document.getElementById("toggleChart")?.addEventListener("click", function() {
-            let chartSection = document.getElementById("chartSection");
-            chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
+            document.getElementById("toggleChart")?.addEventListener("click", function () {
+                let chartSection = document.getElementById("chartSection");
+                chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
 
-            if (chartSection.style.display === "block" && !window.chartInitialized) {
-                window.chartInitialized = true;
+                if (chartSection.style.display === "block" && !window.chartInitialized) {
+                    window.chartInitialized = true;
 
-                var totalRevenue = @Model.TotalRevenue;
-                var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
-                var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
+                    var totalRevenue = @Model.TotalRevenue;
+                    var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
+                    var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
 
-                var ctx = document.getElementById('profitLossChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Revenue', 'Cost', 'Profit/Loss'],
-                        datasets: [{
-                            label: 'Amount ($)',
-                            data: [totalRevenue, totalCost, profitLoss],
-                            backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                            borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                    var ctx = document.getElementById('profitLossChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Revenue', 'Cost', 'Profit/Loss'],
+                            datasets: [{
+                                label: 'Amount ($)',
+                                data: [totalRevenue, totalCost, profitLoss],
+                                backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                                borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
-                    }
-                });
-            }
-        });
-    </script>
-}
+                    });
+                }
+            });
+        </script>
+    }

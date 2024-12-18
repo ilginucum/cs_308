@@ -329,6 +329,29 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> ApproveRefund(string orderId)
+        {
+            var order = await _orderRepository.FindByIdAsync(orderId);
+            if (order != null)
+            {
+                order.RefundStatus = "Complete";
+                await _orderRepository.UpdateOneAsync(orderId, order);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectRefund(string orderId)
+        {
+            var order = await _orderRepository.FindByIdAsync(orderId);
+            if (order != null)
+            {
+                order.RefundStatus = "Rejected";
+                await _orderRepository.UpdateOneAsync(orderId, order);
+            }
+            return RedirectToAction("Index");
+        }
 
 
 

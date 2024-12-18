@@ -20,6 +20,7 @@ namespace e_commerce.Models
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
         public bool RefundRequested { get; set; } = false;
+        public string RefundStatus { get; set; }
 
 
     }

@@ -11,6 +11,7 @@ namespace e_commerce.Models
         public decimal TotalRevenue { get; set; }
         public decimal ProfitLoss { get; set; }
         public IEnumerable<Order> RefundRequests { get; set; }
+        public IEnumerable<Order>RefundStatus { get; set; }
 
 
     }

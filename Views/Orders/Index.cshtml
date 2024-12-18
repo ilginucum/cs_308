@@ -40,18 +40,26 @@
                                 </form>
                             }
                             <td>
-                        @if (order.RefundRequested)
-                        {
-                            <button class="btn btn-secondary" disabled style="background-color: #d9534f; color: white;">Refund Awaiting</button>
-                        }
-                        else
-                        {
-                            <form asp-action="RequestRefund" method="post">
-                                <input type="hidden" name="orderId" value="@order.Id" />
-                                <button type="submit" class="btn btn-danger">Refund Request</button>
-                            </form>
-                        }
-                    </td>
+                                @if (order.RefundStatus == "Complete")
+                                {
+                                    <span class="badge bg-success">Refund Completed</span>
+                                }
+                                else if (order.RefundStatus == "Rejected")
+                                {
+                                    <span class="badge bg-danger">Refund Rejected</span>
+                                }
+                                else if (order.RefundRequested)
+                                {
+                                    <span class="badge bg-warning">Refund Awaiting</span>
+                                }
+                                else
+                                {
+                                    <form asp-action="RequestRefund" method="post">
+                                        <input type="hidden" name="orderId" value="@order.Id" />
+                                        <button type="submit" class="btn btn-danger">Refund Request</button>
+                                    </form>
+                                }
+                            </td>
 
                
                     </div>
