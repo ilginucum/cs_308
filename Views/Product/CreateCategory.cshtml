@@ -98,6 +98,17 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
+        <!-- Genel hata mesajlarını ekrana göster -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="text-danger">
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <span>@modelError.ErrorMessage</span>
+                }
+            </div>
+        }
+
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>

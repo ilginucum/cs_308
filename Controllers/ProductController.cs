@@ -499,6 +499,14 @@ namespace e_commerce.Controllers
             {
                 try
                 {
+                    // Zaten var olan kategoriyi kontrol et
+                    var existingCategory = await _categoryRepository.FindOneAsync(c => c.Name.ToLower() == category.Name.ToLower());
+                    if (existingCategory != null)
+                    {
+                        // Eğer kategori zaten varsa hata mesajı ekle
+                        ModelState.AddModelError("", "This category/genre already exists.");
+                        return View(category);
+                    }
                     // Category koleksiyonuna ekle
                     await _categoryRepository.InsertOneAsync(category);
                     return RedirectToAction("Index");
