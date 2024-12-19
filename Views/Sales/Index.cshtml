@@ -85,8 +85,7 @@
                                                     class="btn btn-primary btn-sm">
                                                         Download PDF
                                                     </a>
-                                                    <button class="btn btn-secondary btn-sm"
-                                                    onclick="printInvoice('@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })')">
+                                                    <button class="btn btn-secondary btn-sm" onclick="printInvoice('@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id, download = false })')">
                                                         Print
                                                     </button>
                                                 </td>
@@ -298,6 +297,9 @@
             };
         }
     </script>
+
+
+
     
 
 <style>

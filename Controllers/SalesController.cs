@@ -257,7 +257,7 @@ namespace e_commerce.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GenerateInvoicePDF(string id)
+        public async Task<IActionResult> GenerateInvoicePDF(string id, bool download = true)
         {
             var order = await _orderRepository.FindByIdAsync(id);
 
@@ -279,9 +279,17 @@ namespace e_commerce.Controllers
             {
                 // Generate the PDF using the fetched address
                 byte[] pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
+                if (download)
+                {
+                    // Download the PDF
+                    Response.Headers["Content-Disposition"] = $"attachment; filename=Invoice_{order.Id}.pdf";
+                }
+                else
+                {
+                    // Display the PDF inline for printing
+                    Response.Headers["Content-Disposition"] = "inline";
+                }
 
-                // Display the PDF inline
-                Response.Headers["Content-Disposition"] = $"attachment; filename=Invoice_{order.Id}.pdf";
                 return File(pdfBytes, "application/pdf");
             }
             catch (Exception ex)
