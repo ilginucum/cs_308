@@ -1,0 +1,147 @@
+@model IEnumerable<e_commerce.Models.Order>
+@{
+    ViewData["Title"] = "Invoice Management";
+}
+
+<div class="product-management-container">
+    <div class="dashboard-header">
+        <h2>Invoice Management</h2>
+    </div>
+
+    <div class="invoices-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Order Status</th>
+                    <th>Refund Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@order.TotalAmount.ToString("C")</td>
+                        <td>
+                            <span class="status-badge @order.OrderStatus.ToLower()">
+                                @order.OrderStatus
+                            </span>
+                        </td>
+                        <td>
+                            @if (order.RefundRequested)
+                            {
+                                <span class="refund-badge">@order.RefundStatus</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td class="button-group">
+                            <a href="@Url.Action("ViewInvoice", "Product", new { orderId = order.Id })" 
+                               target="_blank" 
+                               class="action-btn view-btn">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="@Url.Action("DownloadInvoice", "Product", new { orderId = order.Id })" 
+                               class="action-btn download-btn">
+                                <i class="bi bi-download"></i> Download
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .invoices-table {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
+
+    .invoices-table table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .invoices-table th {
+        background-color: #2ecc71;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .invoices-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+    }
+
+    .view-btn {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .download-btn {
+        background-color: #2ecc71;
+        color: white;
+    }
+
+    .action-btn:hover {
+        opacity: 0.9;
+        color: white;
+        text-decoration: none;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        color: white;
+        font-size: 0.9em;
+    }
+
+    .status-badge.pending {
+        background-color: #f1c40f;
+    }
+
+    .status-badge.intransit {
+        background-color: #3498db;
+    }
+
+    .status-badge.delivered {
+        background-color: #2ecc71;
+    }
+
+    .refund-badge {
+        background-color: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+</style>

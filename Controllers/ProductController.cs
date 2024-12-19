@@ -6,7 +6,7 @@ using e_commerce.Controllers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-
+using e_commerce.Services;
 
 namespace e_commerce.Controllers
 {
@@ -21,6 +21,7 @@ namespace e_commerce.Controllers
 
         private readonly ILogger<ProductController> _logger;
         private readonly IMongoDBRepository<Category> _categoryRepository;
+        private readonly IPdfService _pdfService;
 
         public ProductController(
             IMongoDBRepository<Product> productRepository,
@@ -30,6 +31,7 @@ namespace e_commerce.Controllers
             IMongoDBRepository<Rating> ratingRepository, // Rating repository ekleniyor
             IMongoDBRepository<WishlistItem> _wishlistRepository,
             IMongoDBRepository<Category> categoryRepository,
+            IPdfService pdfService,
             ILogger<ProductController> logger)
         {
             _productRepository = productRepository;
@@ -38,6 +40,7 @@ namespace e_commerce.Controllers
             _addressRepository = addressRepository;
             _ratingRepository = ratingRepository;
             _categoryRepository = categoryRepository;
+            _pdfService = pdfService;
             _logger = logger;
         }
 
@@ -536,6 +539,77 @@ namespace e_commerce.Controllers
 
             
             _productRepository.ReplaceOneAsync(product);
+        }
+
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> InvoiceManagement()
+        {
+            try
+            {
+                var orders = await _orderRepository.GetAllAsync();
+                return View(orders.OrderByDescending(o => o.OrderDate));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving orders for invoice management");
+                return View(Enumerable.Empty<Order>());
+            }
+        }
+
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> DownloadInvoice(string orderId)
+        {
+            try
+            {
+                var order = await _orderRepository.FindByIdAsync(orderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+
+                // Get shipping address
+                var address = await _addressRepository.FindByIdAsync(order.AddressId);
+                if (address == null)
+                {
+                    return NotFound("Shipping address not found");
+                }
+
+                var pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
+                return File(pdfBytes, "application/pdf", $"Invoice_{order.Id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating invoice PDF for order {OrderId}", orderId);
+                TempData["ErrorMessage"] = "Error generating invoice PDF.";
+                return RedirectToAction(nameof(InvoiceManagement));
+            }
+        }
+        [Authorize(Roles = "ProductManager")]
+        public async Task<IActionResult> ViewInvoice(string orderId)
+        {
+            try
+            {
+                var order = await _orderRepository.FindByIdAsync(orderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+
+                var address = await _addressRepository.FindByIdAsync(order.AddressId);
+                if (address == null)
+                {
+                    return NotFound("Shipping address not found");
+                }
+
+                var pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
+                return File(pdfBytes, "application/pdf", null); // null filename means display in browser
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating invoice PDF for order {OrderId}", orderId);
+                TempData["ErrorMessage"] = "Error generating invoice PDF.";
+                return RedirectToAction(nameof(InvoiceManagement));
+            }
         }
 
 
