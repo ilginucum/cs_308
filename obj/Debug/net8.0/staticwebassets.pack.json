@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets/images/les-miserables.jpg"
     },
     {
+      "Id": "/Users/cerenverim/Desktop/cs_308/wwwroot/images/notification-bell.png",
+      "PackagePath": "staticwebassets/images/notification-bell.png"
+    },
+    {
       "Id": "/Users/cerenverim/Desktop/cs_308/wwwroot/images/romeo-and-juliet.jpg",
       "PackagePath": "staticwebassets/images/romeo-and-juliet.jpg"
     },

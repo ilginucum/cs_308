@@ -51,7 +51,7 @@ namespace e_commerce.Controllers
                     if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
                     {
                         var discountPercentage = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
-                        discountNotifications.Add($"{product.Name} is now {discountPercentage}% off! Old Price: ${product.OriginalPrice:F2}, New Price: ${product.DiscountedPrice.Value:F2}");
+                        discountNotifications.Add($"{product.Name} is now {discountPercentage}% off! Old Price: ${product.OriginalPrice:F2}, Discounted Price: ${product.DiscountedPrice.Value:F2}");
                     }
 
                     wishlistViewModel.Add(new WishlistViewModel

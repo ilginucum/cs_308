@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "6UMCOTALbqFBpBU5a6UDfFPtdCZ2Y2RqFtGuKrLenME=",
+  "Hash": "NAbhdH2WKbivt3U43noMNZqxVbSSiHA+5Zn9TdjD3I4=",
   "Source": "e_commerce",
   "BasePath": "_content/e_commerce",
   "Mode": "Default",
@@ -376,6 +376,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/Little-women.jpg"
+    },
+    {
+      "Identity": "/Users/cerenverim/Desktop/cs_308/wwwroot/images/notification-bell.png",
+      "SourceId": "e_commerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/cerenverim/Desktop/cs_308/wwwroot/",
+      "BasePath": "_content/e_commerce",
+      "RelativePath": "images/notification-bell.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/notification-bell.png"
     },
     {
       "Identity": "/Users/cerenverim/Desktop/cs_308/wwwroot/images/Notre-Dame.jpg",
