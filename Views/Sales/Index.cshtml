@@ -15,7 +15,7 @@
     @if (ViewBag.SuccessMessage != null)
     {
         <div class="alert alert-success text-center"
-            style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+        style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
             @ViewBag.SuccessMessage</div>
     }
 
@@ -82,11 +82,11 @@
                                                 <td>@order.OrderDate.ToShortDateString()</td>
                                                 <td>
                                                     <a href="@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })"
-                                                        class="btn btn-primary btn-sm">
+                                                    class="btn btn-primary btn-sm">
                                                         Download PDF
                                                     </a>
                                                     <button class="btn btn-secondary btn-sm"
-                                                        onclick="printInvoice('@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })')">
+                                                    onclick="printInvoice('@Url.Action("GenerateInvoicePDF", "Sales", new { id = order.Id })')">
                                                         Print
                                                     </button>
                                                 </td>
@@ -107,10 +107,10 @@
     </div>
     <script>
         function printInvoice(url) {
-            const printWindow = window.open(url, '_blank');
-            printWindow.onload = function () {
-                printWindow.print();
-            };
+        const printWindow = window.open(url, '_blank');
+        printWindow.onload = function () {
+        printWindow.print();
+        };
         }
     </script>
 
@@ -129,7 +129,7 @@
                         @if (!productsWithoutPrice.Any())
                         {
                             <div class="alert alert-info text-center"
-                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                            style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
                                 No products awaiting price setting.
                             </div>
                         }
@@ -156,7 +156,7 @@
                         @if (!productsWithPrice.Any())
                         {
                             <div class="alert alert-info text-center"
-                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                            style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
                                 No products with prices set.
                             </div>
                         }
@@ -181,12 +181,31 @@
                                                 <td>@product.Author</td>
                                                 <td>@product.Price.ToString("C")</td>
                                                 <td>
-                                                    <form asp-action="ApplyDiscount" method="post">
-                                                        <input type="hidden" name="id" value="@product.Id" />
-                                                        <input type="number" name="discount" class="form-control"
-                                                            placeholder="%" min="0" max="100" required />
-                                                        <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
-                                                    </form>
+                                                    @if (product.DiscountedPrice.HasValue && product.DiscountedPrice < product.OriginalPrice)
+                                                    {
+                                                        <button type="button" class="btn btn-secondary" disabled style="
+                                                                font-size: 0.7rem; 
+                                                                color: #942323; 
+                                                                background-color: #e0e0e0; 
+                                                                padding: 4px 8px; 
+                                                                cursor: not-allowed; 
+                                                                border-radius: 5px; 
+                                                                text-transform: uppercase; 
+                                                                border: none;
+                                                                box-shadow: none;
+                                                                opacity: 0.8;">
+                                                                Discount Already Applied
+                                                            </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <form asp-action="ApplyDiscount" method="post">
+                                                                <input type="hidden" name="id" value="@product.Id" />
+                                                            <input type="number" name="discount" class="form-control discount-input"
+                                                                placeholder="%" min="0" step="10" max="100" required />
+                                                                <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
+                                                            </form>
+                                                    }
                                                 </td>
                                                 <td>
                                                     <a asp-action="SetPrice" asp-route-id="@product.Id"
@@ -271,15 +290,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
     <script>
         function printInvoice(url) {
             const printWindow = window.open(url, '_blank');
@@ -288,6 +298,7 @@
             };
         }
     </script>
+    
 
 <style>
   
