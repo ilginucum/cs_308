@@ -5,6 +5,8 @@ using e_commerce.Data;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using static e_commerce.Models.WishlistItem;
+using MongoDB.Bson;
+
 
 namespace e_commerce.Controllers
 {
@@ -132,7 +134,6 @@ namespace e_commerce.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            
             var wishlistItem = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
             if (wishlistItem == null)
             {
@@ -140,7 +141,6 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
             var product = await _productRepository.FindByIdAsync(productId);
             if (product == null || product.QuantityInStock <= 0)
             {
@@ -148,38 +148,55 @@ namespace e_commerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
-            var cartItem = new CartItem
-            {
-                ProductId = wishlistItem.ProductId,
-                ProductName = wishlistItem.ProductName,
-                UnitPrice = wishlistItem.Price,
-                QuantityInCart = 1 // Default quantity
-            };
-
             var shoppingCart = await _shoppingCartRepository.FindOneAsync(s => s.UserId == userId);
+
+            CartItem cartItem; // Declare cartItem here
+
             if (shoppingCart == null)
             {
                 shoppingCart = new ShoppingCart
                 {
+                    Id = ObjectId.GenerateNewId().ToString(),
                     UserId = userId,
-                    Items = new List<CartItem> { cartItem }
+                    Items = new List<CartItem>() // Initialize empty list first
                 };
 
+                cartItem = new CartItem
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    ProductId = wishlistItem.ProductId,
+                    ProductName = wishlistItem.ProductName,
+                    UnitPrice = wishlistItem.Price,
+                    ShoppingCartId = shoppingCart.Id,
+                    QuantityInCart = 1 // Default quantity
+                };
+
+                shoppingCart.Items.Add(cartItem);
                 await _shoppingCartRepository.InsertOneAsync(shoppingCart);
             }
             else
             {
+                cartItem = new CartItem
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    ProductId = wishlistItem.ProductId,
+                    ProductName = wishlistItem.ProductName,
+                    UnitPrice = wishlistItem.Price,
+                    ShoppingCartId = shoppingCart.Id,
+                    QuantityInCart = 1 // Default quantity
+                };
+
                 shoppingCart.Items.Add(cartItem);
                 await _shoppingCartRepository.ReplaceOneAsync(shoppingCart);
             }
 
-            
+            // Delete the item from the wishlist after moving it to the cart
             await _wishlistRepository.DeleteOneAsync(wishlistItem.Id);
 
-            TempData["SuccessMessage"] = $"{wishlistItem.ProductName} has been moved to your shopping cart!";
+            // Return a redirect after the operation completes
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> NotifyDiscountedProducts()
         {

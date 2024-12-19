@@ -10,20 +10,23 @@ namespace e_commerce.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private readonly ILogger<SalesController> _salesRepository;
+        
         private readonly IMongoDBRepository<ShoppingCart> _shoppingCartRepository;
         private readonly IMongoDBRepository<Product> _productRepository;
         private readonly ILogger<ShoppingCartController> _logger;
+        private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
+
 
         public ShoppingCartController(
             IMongoDBRepository<ShoppingCart> shoppingCartRepository,
             IMongoDBRepository<Product> productRepository,
-            ILogger<ShoppingCartController> logger, ILogger<SalesController> salesRepository)
+            ILogger<ShoppingCartController> logger, IMongoDBRepository<WishlistItem> wishlistRepository)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _productRepository = productRepository;
             _logger = logger;
-            _salesRepository = salesRepository;
+            
+            _wishlistRepository = wishlistRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -84,6 +87,60 @@ namespace e_commerce.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> MoveToCart(string productId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var wishlistItem = await _wishlistRepository.FindOneAsync(w => w.ProductId == productId && w.UserId == userId);
+            if (wishlistItem == null)
+            {
+                TempData["ErrorMessage"] = "Item not found in your wishlist.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var product = await _productRepository.FindByIdAsync(productId);
+            if (product == null || product.QuantityInStock <= 0)
+            {
+                TempData["ErrorMessage"] = "Item is out of stock and cannot be added to the cart.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var shoppingCart = await _shoppingCartRepository.FindOneAsync(s => s.UserId == userId);
+
+            var cartItem = new CartItem
+            {
+                Id = ObjectId.GenerateNewId().ToString(), // Ensure a new unique ID
+                ProductId = wishlistItem.ProductId,
+                ProductName = wishlistItem.ProductName,
+                UnitPrice = wishlistItem.Price,
+                ShoppingCartId = shoppingCart?.Id ?? ObjectId.GenerateNewId().ToString(),
+                QuantityInCart = 1 // Default quantity
+            };
+
+            if (shoppingCart == null)
+            {
+                shoppingCart = new ShoppingCart
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    UserId = userId,
+                    Items = new List<CartItem> { cartItem }
+                };
+
+                await _shoppingCartRepository.InsertOneAsync(shoppingCart);
+            }
+            else
+            {
+                shoppingCart.Items.Add(cartItem);
+                await _shoppingCartRepository.ReplaceOneAsync(shoppingCart);
+            }
+
+            // Delete the item from the wishlist after moving it to the cart
+            await _wishlistRepository.DeleteOneAsync(wishlistItem.Id);
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateQuantity(string cartItemId, int change)

@@ -57,9 +57,10 @@ namespace e_commerce.Controllers
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<ShoppingCart>>(),
                         HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<Product>>(),
                         HttpContext.RequestServices.GetRequiredService<ILogger<ShoppingCartController>>(),
-                        HttpContext.RequestServices.GetRequiredService<ILogger<SalesController>>()
+                        HttpContext.RequestServices.GetRequiredService<IMongoDBRepository<WishlistItem>>() 
                     );
-                    
+
+
                     await cartController.MergeGuestCart(user.Id);
 
                     // Role-based redirect logic
