@@ -5998,19 +5998,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/eysanmutlu/.nuget/packages/": {}
+    "/Users/cerenverim/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/eysanmutlu/cs308_29_10_2024/19aralık_2/cs_308/e_commerce.csproj",
+      "projectUniqueName": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
       "projectName": "e_commerce",
-      "projectPath": "/Users/eysanmutlu/cs308_29_10_2024/19aralık_2/cs_308/e_commerce.csproj",
-      "packagesPath": "/Users/eysanmutlu/.nuget/packages/",
-      "outputPath": "/Users/eysanmutlu/cs308_29_10_2024/19aralık_2/cs_308/obj/",
+      "projectPath": "/Users/cerenverim/Desktop/cs_308/e_commerce.csproj",
+      "packagesPath": "/Users/cerenverim/.nuget/packages/",
+      "outputPath": "/Users/cerenverim/Desktop/cs_308/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/eysanmutlu/.nuget/NuGet/NuGet.Config"
+        "/Users/cerenverim/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
