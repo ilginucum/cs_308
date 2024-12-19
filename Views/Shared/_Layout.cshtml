@@ -160,7 +160,12 @@
                                             <i class="bi bi-truck"></i> Order Status
                                         </a>
                                     </li>
-                                }
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Product" asp-action="InvoiceManagement">
+                                            <i class="bi bi-file-text"></i> Display Invoices
+                                        </a>
+                                    </li>
+                                                                }
                                 else if (User.IsInRole("SalesManager"))
                                 {
                                     <li>
