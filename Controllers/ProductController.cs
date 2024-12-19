@@ -488,8 +488,10 @@ namespace e_commerce.Controllers
 
         [HttpGet]
         [Authorize(Roles = "ProductManager")]
-        public IActionResult CreateCategory()
+        public async Task<IActionResult> CreateCategory()
         {
+            var categories = await _categoryRepository.GetAllAsync();
+            ViewBag.Categories = categories.Select(c => c.Name).ToList();
             return View();
         }
 
@@ -521,6 +523,39 @@ namespace e_commerce.Controllers
                 }
             }
             return View(category);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ProductManager")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCategory(string categoryName)
+        {
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                ModelState.AddModelError("", "Please select a category to delete.");
+                return RedirectToAction(nameof(CreateCategory));
+            }
+
+            try
+            {
+                // Kategoriyi MongoDB'den sil
+                var category = await _categoryRepository.FindOneAsync(c => c.Name.ToLower() == categoryName.ToLower());
+                if (category == null)
+                {
+                    ModelState.AddModelError("", "Category not found.");
+                    return RedirectToAction(nameof(CreateCategory));
+                }
+
+                await _categoryRepository.DeleteOneAsync(category.Id);
+                TempData["SuccessMessage"] = $"Category '{categoryName}' deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting category.");
+                TempData["ErrorMessage"] = "An error occurred while deleting the category.";
+            }
+
+            return RedirectToAction(nameof(CreateCategory));
         }
         public void UpdateProductPrice(Product product, decimal newPrice, decimal discountPercentage = 0)
         {

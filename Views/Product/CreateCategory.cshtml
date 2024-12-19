@@ -3,7 +3,7 @@
     ViewData["Title"] = "Create New Category";
 }
 
-<h2>Create New Category</h2>
+
 
 <style>
     /* Container Styles */
@@ -21,6 +21,7 @@
         text-align: center;
         margin-bottom: 20px;
         color: #be3144;
+        font-weight: bold; /* yeni eklendi */
     }
 
     /* Form Styles */
@@ -41,6 +42,20 @@
         border: 1px solid #ddd;
     }
 
+    .form-control::placeholder {
+        color: #999; /* Placeholder rengini şeffaf yapar */
+        opacity: 1;
+    }
+
+    /* Select Placeholder Style */
+    select.form-control {
+        color: #999;
+    }
+
+    select.form-control option:not(:disabled) {
+        color: initial;
+    }
+
     .form-control:focus {
         outline: none;
         border-color: #be3144;
@@ -53,23 +68,27 @@
     }
 
     /* Button Styles */
-    .btn-primary {
-        background-color: #be3144;
+    .btn-primary,
+    .btn-danger {
+        background-color: #be3144; /* Her iki buton aynı renkte */
         border: none;
         color: #fff;
         padding: 10px 20px;
-        border-radius: 25px;
+        border-radius: 25px; /* Oval görünüm */
         font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover,
+    .btn-danger:hover {
         background-color: #952735;
     }
 
     .btn-primary:focus,
-    .btn-primary:active {
+    .btn-danger:focus,
+    .btn-primary:active,
+    .btn-danger:active {
         outline: none;
         box-shadow: none;
     }
@@ -91,9 +110,11 @@
 </style>
 
 <div class="create-container">
+    <!-- Create Category Section -->
     <form asp-action="CreateCategory" method="post">
+        <h2>Create New Category</h2>
         <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
+            <label asp-for="Name" class="control-label">Category Name</label>
             <input asp-for="Name" class="form-control" placeholder="Enter category/genre name" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
@@ -111,6 +132,27 @@
 
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <hr />
+
+    <!-- Delete Category Section -->
+    
+    <form asp-action="DeleteCategory" method="post">
+        <h2>Delete Category</h2>
+        <div class="form-group">
+            <label for="categoryName" class="control-label">Select Category/Genre</label>
+            <select id="categoryName" name="categoryName" class="form-control">
+                <option value="" disabled selected>Select a category</option>
+                @foreach (var category in ViewBag.Categories as List<string>)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        </div>
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Delete</button> <!-- Renk ve stil eşitlendi -->
         </div>
     </form>
 
