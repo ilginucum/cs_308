@@ -281,7 +281,7 @@ namespace e_commerce.Controllers
                 byte[] pdfBytes = await _pdfService.GenerateInvoicePdfAsync(order, address);
 
                 // Display the PDF inline
-                Response.Headers["Content-Disposition"] = $"inline; filename=Invoice_{order.Id}.pdf";
+                Response.Headers["Content-Disposition"] = $"attachment; filename=Invoice_{order.Id}.pdf";
                 return File(pdfBytes, "application/pdf");
             }
             catch (Exception ex)
@@ -352,12 +352,6 @@ namespace e_commerce.Controllers
             }
             return RedirectToAction("Index");
         }
-
-
-
-
-
-
 
     }
 }
