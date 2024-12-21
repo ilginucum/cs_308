@@ -91,7 +91,7 @@
 </style>
 
 <div class="create-container">
-    <form asp-action="ManageProduct" method="post">
+    <form asp-action="ManageProduct" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="Name" class="control-label"></label>
             <input asp-for="Name" class="form-control" />
@@ -129,6 +129,11 @@
             <label asp-for="Description" class="control-label"></label>
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Book Image</label>
+            <input type="file" name="ImageFile" class="form-control" accept="image/*" />
         </div>
 
         <div class="form-group">

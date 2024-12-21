@@ -160,20 +160,33 @@ namespace e_commerce.Controllers
         public async Task<IActionResult> ManageProduct(Product product)
         {
             _logger.LogInformation("ManageProduct POST method called");
-            //if (ModelState.IsValid)
-            //{
-                _logger.LogInformation("Model is valid. Attempting to insert product");
-                try
+            try
+            {
+                if (product.ImageFile != null && product.ImageFile.Length > 0)
                 {
-                    await _productRepository.InsertOneAsync(product);
-                    _logger.LogInformation("Product inserted successfully");
-                    return RedirectToAction(nameof(Index));
+                    // Dosya adı olarak kitap adını kullanalım
+                    var fileName = $"{product.Name.ToLower().Replace(" ", "-")}{Path.GetExtension(product.ImageFile.FileName)}";
+                    
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+                    
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await product.ImageFile.CopyToAsync(fileStream);
+                    }
+                    
+                    product.ImagePath = $"/images/{fileName}";
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred while inserting product");
-                    ModelState.AddModelError("", "An error occurred while saving the product. Please try again.");
-                }
+
+                await _productRepository.InsertOneAsync(product);
+                _logger.LogInformation("Product inserted successfully");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while inserting product");
+                ModelState.AddModelError("", "An error occurred while saving the product. Please try again.");
+            }
 
             return View(product);
         }
@@ -200,18 +213,51 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
+            try
+            {
+                // Yeni fotoğraf yüklendiyse
+                if (product.ImageFile != null && product.ImageFile.Length > 0)
+                {
+                    // Eski fotoğrafı sil (eğer varsa)
+                    var existingProduct = await _productRepository.FindByIdAsync(id);
+                    if (!string.IsNullOrEmpty(existingProduct.ImagePath))
+                    {
+                        var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", 
+                            existingProduct.ImagePath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
 
-                try
-                {
-                    await _productRepository.ReplaceOneAsync(product);
-                    _logger.LogInformation($"Product updated successfully: {product.Id}");
-                    return RedirectToAction(nameof(Index));
+                    // Yeni fotoğrafı yükle
+                    var fileName = $"{product.Name.ToLower().Replace(" ", "-")}{Path.GetExtension(product.ImageFile.FileName)}";
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+                    
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await product.ImageFile.CopyToAsync(fileStream);
+                    }
+                    
+                    product.ImagePath = $"/images/{fileName}";
                 }
-                catch (Exception ex)
+                else
                 {
-                    _logger.LogError(ex, $"Error occurred while updating product: {product.Id}");
-                    ModelState.AddModelError("", "An error occurred while updating the product. Please try again.");
+                    // Eğer yeni fotoğraf yüklenmediyse, mevcut fotoğraf yolunu koru
+                    var existingProduct = await _productRepository.FindByIdAsync(id);
+                    product.ImagePath = existingProduct.ImagePath;
                 }
+
+                await _productRepository.ReplaceOneAsync(product);
+                _logger.LogInformation($"Product updated successfully: {product.Id}");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred while updating product: {product.Id}");
+                ModelState.AddModelError("", "An error occurred while updating the product. Please try again.");
+            }
             return View(product);
         }
         [HttpGet]

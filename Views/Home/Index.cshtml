@@ -99,22 +99,11 @@
                 <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" 
                    class="text-decoration-none text-dark">
                     <div class="card h-100">
-                        @{
-                            string imageUrl = product.Name switch
-                            {
-                                "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
-                                "Anna Karenina" => "/images/anna-karenina.jpg",
-                                "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
-                                "Brave New World" => "/images/brave-new-world.jpg",
-                                "Notre Dame'ın Kamburu" => "/images/Notre-Dame.jpg",
-                                "Dune" => "/images/Dune.jpg",
-                                "Frankenstein" => "/images/frankenstein.jpg",
-                                "babam beni şahdamarımdan öptü" => "/images/Babam-beni-sah.jpg",
-                                "Pride and Prejudice" => "/images/Pride-prejiduce.jpg",
-                                "Little Women" => "/images/Little-women.jpg",
-                                _ => "/images/default-book.jpg"
-                            };
-                        }
+                    @{
+                    string imageUrl = !string.IsNullOrEmpty(product.ImagePath) 
+                    ? product.ImagePath 
+                    : "/images/default-book.jpg";
+                    }
                         @if (product.QuantityInStock > 0)
                         {
                             <span class="stock-badge in-stock">In Stock</span>

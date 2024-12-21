@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Microsoft.AspNetCore.Http;  
 
 namespace e_commerce.Models
 {
@@ -10,7 +11,6 @@ namespace e_commerce.Models
         public string Id { get; set; }
 
         public string Name { get; set; }
-        //model yerine
         public string Author { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }
@@ -20,10 +20,12 @@ namespace e_commerce.Models
         public bool WarrantyStatus { get; set; }
         public string DistributorInformation { get; set; }
         public string Genre { get; set; }
-        //public string CategoryId { get; set; }
         public decimal OriginalPrice { get; set; }
         public decimal? DiscountedPrice { get; set; }
 
-
+        // Yeni eklenecek alanlar
+        [BsonIgnore] 
+        public IFormFile ImageFile { get; set; }
+        public string ImagePath { get; set; }
     }
 }

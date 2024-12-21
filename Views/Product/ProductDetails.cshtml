@@ -8,20 +8,9 @@
     <div class="row">
         <div class="col-md-6 text-center" style="margin-top: 20px;">
             @{
-                string imageUrl = Model.Name switch
-                {
-                    "Suç ve Ceza" => "/images/crime-and-punishment.jpg",
-                    "Anna Karenina" => "/images/anna-karenina.jpg",
-                    "Romeo ve Juliet" => "/images/romeo-and-juliet.jpg",
-                    "Brave New World" => "/images/brave-new-world.jpg",
-                    "Notre Dame'ın Kamburu" => "/images/Notre-Dame.jpg",
-                    "Dune" => "/images/Dune.jpg",
-                    "Frankenstein" => "/images/frankenstein.jpg",
-                    "babam beni şahdamarımdan öptü" => "/images/Babam-beni-sah.jpg",
-                    "Pride and Prejudice" => "/images/Pride-prejiduce.jpg",
-                    "Little Women" => "/images/Little-women.jpg",
-                    _ => "/images/default-book.jpg"
-                };
+                string imageUrl = !string.IsNullOrEmpty(Model.ImagePath) 
+            ? Model.ImagePath 
+            : "/images/default-book.jpg";
             }
             <img src="@imageUrl" alt="@Model.Name" class="img-fluid shadow"
                 style="max-height: 500px; object-fit: contain; border-radius: 20px;" />
