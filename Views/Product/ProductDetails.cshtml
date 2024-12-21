@@ -33,17 +33,17 @@
                 @if (Model.DiscountedPrice.HasValue && Model.DiscountedPrice.Value < Model.OriginalPrice)
                 {
                     <p>
-                    <strong>Price:</strong>
-                    <span style="text-decoration: line-through; color: #777;">
-                    $@Model.OriginalPrice.ToString("F2")
-                    </span>
-                    <span style="color: #be3144; font-weight: bold;">
-                    $@Model.DiscountedPrice.Value.ToString("F2")
-                    </span>
+                        <strong>Price:</strong>
+                        <span style="text-decoration: line-through; color: #777;">
+                            $@Model.OriginalPrice.ToString("F2")
+                        </span>
+                        <span style="color: #be3144; font-weight: bold;">
+                            $@Model.DiscountedPrice.Value.ToString("F2")
+                        </span>
                     </p>
                 }
                 else
-                {           
+                {
                     <p><strong>Price:</strong> <span style="color: #be3144;">$@Model.Price.ToString("F2")</span></p>
                 }
                 <p><strong>In Stock:</strong> @Model.QuantityInStock</p>
@@ -61,7 +61,7 @@
                         <div class="d-flex align-items-center gap-2">
                             <button type="button" id="decrementButton" class="btn btn-outline-secondary rounded-circle">-</button>
                             <input type="number" name="quantity" id="quantity" value="1" min="1" max="@Model.QuantityInStock"
-                                class="form-control text-center" style="width: 80px; border-radius: 15px;" readonly />
+                                class="form-control text-center" style="width: 80px; border-radius: 15px;" />
                             <button type="button" id="incrementButton" class="btn btn-outline-secondary rounded-circle">+</button>
                         </div>
                         <small class="text-muted d-block mt-2">Available stock: @Model.QuantityInStock</small>
@@ -85,7 +85,8 @@
                             style="background-color: #be3144; border: none; border-radius: 15px;">Add to Cart</button>
                     }
                 </form>
-                                <!-- Add to Wishlist Form -->
+
+                <!-- Add to Wishlist Form -->
                 <form asp-controller="Wishlist" asp-action="AddToWishlist" method="post" class="mt-3">
                     <input type="hidden" name="productId" value="@Model.Id" />
                     <input type="hidden" name="productName" value="@Model.Name" />
@@ -117,8 +118,8 @@
                         <span style="min-width: 70px;">@rating.Key stars</span>
                         <div class="progress flex-grow-1" style="height: 20px;">
                             <div class="progress-bar" role="progressbar" 
-                                 style="width: @percentage%; background-color: #be3144;"
-                                 aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                style="width: @percentage%; background-color: #be3144;"
+                                aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
                                 @rating.Value
                             </div>
                         </div>
@@ -215,7 +216,7 @@
         const decrementButton = document.getElementById('decrementButton');
         const incrementButton = document.getElementById('incrementButton');
         const warningDiv = document.getElementById('stockWarning');
-        const maxStock = @Model.QuantityInStock;
+        const maxStock = parseInt(@Model.QuantityInStock); // Ensure this is parsed as an integer
 
         function showWarning(message) {
             warningDiv.textContent = message;
@@ -227,7 +228,7 @@
             const currentValue = parseInt(quantityInput.value);
             if (currentValue > 1) {
                 quantityInput.value = currentValue - 1;
-                incrementButton.disabled = false;
+                incrementButton.disabled = false; // Re-enable the increment button if it was disabled
             } else {
                 showWarning('Minimum quantity is 1');
             }
@@ -238,7 +239,7 @@
             if (currentValue < maxStock) {
                 quantityInput.value = currentValue + 1;
             } else {
-                showWarning(Maximum available stock is ${maxStock});
+                showWarning(`Maximum available stock is ${maxStock}`);
                 incrementButton.disabled = true;
             }
         });
