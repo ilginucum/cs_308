@@ -333,3 +333,206 @@
         margin: 0 auto;
     }
 </style>
+
+
+<div class="sales-management-container">
+    <div class="action-cards">
+        <div class="action-card card-profit" data-section="calculateSection">
+            <i class="bi bi-graph-up"></i>
+            <span>Revenue Analytics</span>
+            <div>Calculate Profit/Loss and View Invoices</div>
+        </div>
+        <div class="action-card card-awaiting" data-section="productsWithoutPrice">
+            <i class="bi bi-hourglass"></i>
+            <span>Products Awaiting Price</span>
+            <div>@productsWithoutPrice.Count() Products</div>
+        </div>
+        <div class="action-card card-analytics" data-section="analyticsSection">
+            <i class="bi bi-bar-chart"></i>
+            <span>Sales Analytics View</span>
+            <div>Performance Metrics</div>
+        </div>
+    </div>
+
+    <!-- Calculate Profit Section -->
+    <div id="calculateSection" class="content-section">
+        <div class="calculate-section">
+            <div class="date-container">
+                <div>
+                    <label class="date-label">Start Date:</label>
+                    <input type="date" class="date-input" required />
+                </div>
+                <div>
+                    <label class="date-label">End Date:</label>
+                    <input type="date" class="date-input" required />
+                </div>
+                <div>
+                    <button type="submit" class="calculate-button">Calculate</button>
+                </div>
+            </div>
+            
+            <div class="result-display">
+                <div class="result-text">Total Revenue: ₺0,00</div>
+                <div class="result-text">Profit/Loss: ₺0,00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Awaiting Price Section -->
+    <div id="productsWithoutPrice" class="content-section">
+        <div class="card">
+            <div class="card-body">
+                <ul class="awaiting-price-list">
+                    @foreach (var product in productsWithoutPrice)
+                    {
+                        <li class="awaiting-price-item">
+                            <div>
+                                <div class="book-info">@product.Name</div>
+                                <div class="author-info">@product.Author</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+        <!-- Analytics Section -->
+        <div id="analyticsSection" class="content-section">
+            <div class="custom-card">
+                <div class="card-header">
+                    <h4 class="mb-0">Sales Analytics</h4>
+                </div>
+                <div class="card-body">
+                    <div id="chartSection">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- İki card'ı saran container -->
+<div class="cards-container">
+    <!-- Products with Price Set Card -->
+    <div class="custom-card">
+        <div class="card-header">
+            <h4 class="mb-0">Products with Price Set</h4>
+        </div>
+        <div class="card-body">
+            @if (!productsWithPrice.Any())
+            {
+                <div class="alert alert-info text-center">No products with prices set.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table custom-table">
+                        <thead>
+                            <tr>
+                                <th>Book Name</th>
+                                <th>Author</th>
+                                <th>Price</th>
+                                <th>Discount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in productsWithPrice)
+                            {
+                                <tr>
+                                    <td>@product.Name</td>
+                                    <td>@product.Author</td>
+                                    <td>@product.Price.ToString("C")</td>
+                                    <td>
+                                        @if (product.DiscountedPrice.HasValue && product.DiscountedPrice < product.OriginalPrice)
+                                        {
+                                            <button type="button" class="btn btn-secondary" disabled>
+                                                Discount Applied
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ApplyDiscount" method="post">
+                                                <input type="hidden" name="id" value="@product.Id" />
+                                                <input type="number" name="discount" class="form-control discount-input"
+                                                    placeholder="%" min="0" step="10" max="100" required />
+                                                <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
+                                            </form>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="SetPrice" asp-route-id="@product.Id"
+                                            class="btn btn-primary btn-sm mb-1">Update Price</a>
+                                        <form asp-action="ResetDiscount" method="post">
+                                            <input type="hidden" name="productId" value="@product.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Reset Discount</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Refund Requests Card -->
+    <div class="custom-card">
+        <div class="card-header">
+            <h4 class="mb-0">Refund Requests</h4>
+        </div>
+        <div class="card-body">
+            @if (!Model.RefundRequests.Any())
+            {
+                <div class="alert alert-info text-center">No refund requests.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table custom-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User ID</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RefundRequests)
+                            {
+                                <tr>
+                                    <td>@order.Id</td>
+                                    <td>@order.UserId</td>
+                                    <td>@order.TotalAmount.ToString("C")</td>
+                                    <td>
+                                        @if (order.RefundStatus == "Complete")
+                                        {
+                                            <span class="badge bg-success">Refund Completed</span>
+                                        }
+                                        else if (order.RefundStatus == "Rejected")
+                                        {
+                                            <span class="badge bg-danger">Refund Rejected</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ApproveRefund" method="post" style="display:inline;">
+                                                <input type="hidden" name="orderId" value="@order.Id" />
+                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            </form>
+                                            <form asp-action="RejectRefund" method="post" style="display:inline;">
+                                                <input type="hidden" name="orderId" value="@order.Id" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
