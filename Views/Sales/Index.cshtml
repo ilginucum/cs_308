@@ -536,3 +536,95 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script>
+       document.addEventListener('DOMContentLoaded', function() {
+           document.querySelectorAll('.action-card').forEach(card => {
+               card.addEventListener('click', function() {
+                   const sectionId = this.getAttribute('data-section');
+                   toggleSection(sectionId);
+               });
+           });
+       });
+
+       function toggleSection(sectionId) {
+           const selectedSection = document.getElementById(sectionId);
+           if (selectedSection) {
+               if (selectedSection.style.display === 'block') {
+                   selectedSection.style.display = 'none';
+               } else {
+                   document.querySelectorAll('.content-section').forEach(section => {
+                       section.style.display = 'none';
+                   });
+                   selectedSection.style.display = 'block';
+               }
+           }
+       }
+
+       document.getElementById("toggleDetails")?.addEventListener("click", function () {
+           let detailsSection = document.getElementById("detailsSection");
+           detailsSection.style.display = detailsSection.style.display === "none" ? "block" : "none";
+       });
+
+       document.getElementById("toggleChart")?.addEventListener("click", function () {
+           let chartSection = document.getElementById("chartSection");
+           chartSection.style.display = chartSection.style.display === "none" ? "block" : "none";
+
+           if (chartSection.style.display === "block" && !window.chartInitialized) {
+               window.chartInitialized = true;
+               var ctx = document.getElementById('profitLossChart').getContext('2d');
+               new Chart(ctx, {
+                   type: 'bar',
+                   data: {
+                       labels: ['Revenue', 'Cost', 'Profit/Loss'],
+                       datasets: [{
+                           label: 'Amount ($)',
+                           data: [
+                               @Model.TotalRevenue,
+                               @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0),
+                               @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0)
+                           ],
+                           backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                           borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                           borderWidth: 1
+                       }]
+                   },
+                   options: {
+                       scales: {
+                           y: {
+                               beginAtZero: true
+                           }
+                       }
+                   }
+               });
+           }
+       });
+
+       const ctx = document.getElementById('salesChart');
+       if (ctx) {
+           new Chart(ctx, {
+               type: 'line',
+               data: {
+                   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                   datasets: [{
+                       label: 'Monthly Sales',
+                       data: [12, 19, 3, 5, 2, 3],
+                       borderColor: '#be3144',
+                       tension: 0.1
+                   }]
+               }
+           });
+       }
+
+       function printInvoice(url) {
+           const printWindow = window.open(url, '_blank');
+           printWindow.onload = function () {
+               printWindow.print();
+           };
+       }
+   </script>
+}
+
