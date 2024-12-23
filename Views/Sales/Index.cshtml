@@ -44,9 +44,9 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .card-profit { background-color: #be3144; color: white; }
-    .card-awaiting { background-color: #d9534f; color: white; }
-    .card-analytics { background-color: #2ecc71; color: white; }
+    .card-profit { background-color: #8b1e2f; color: white; } 
+    .card-awaiting { background-color: #8b1e2f; color: white; } 
+    .card-analytics { background-color: #8b1e2f; color: white; } 
 
     .content-section {
         display: none; /* Eklendi */
@@ -145,12 +145,19 @@
 
     /* Discount Applied badge için */
     .btn-secondary:disabled {
-        background-color: #9b59b6;
+        background-color: #6c757d;  /* Yeni gri renk */
         color: white;
         padding: 8px 12px;
         border-radius: 6px;
         font-size: 0.9rem;
-        opacity: 1;
+        opacity: 0.9;
+        cursor: not-allowed;
+        transition: all 0.2s;
+    }
+
+    .btn-secondary:disabled:hover {
+        opacity: 0.9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     /* Table başlıkları için */
@@ -357,23 +364,25 @@
     <!-- Calculate Profit Section -->
     <div id="calculateSection" class="content-section">
         <div class="calculate-section">
-            <div class="date-container">
-                <div>
-                    <label class="date-label">Start Date:</label>
-                    <input type="date" class="date-input" required />
+            <form asp-action="CalculateProfit" method="post">
+                <div class="date-container">
+                    <div>
+                        <label class="date-label">Start Date:</label>
+                        <input type="date" name="startDate" class="date-input" required />
+                    </div>
+                    <div>
+                        <label class="date-label">End Date:</label>
+                        <input type="date" name="endDate" class="date-input" required />
+                    </div>
+                    <div>
+                        <button type="submit" class="calculate-button">Calculate</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="date-label">End Date:</label>
-                    <input type="date" class="date-input" required />
-                </div>
-                <div>
-                    <button type="submit" class="calculate-button">Calculate</button>
-                </div>
-            </div>
+            </form>
             
             <div class="result-display">
-                <div class="result-text">Total Revenue: ₺0,00</div>
-                <div class="result-text">Profit/Loss: ₺0,00</div>
+                <div class="result-text">Total Revenue: @Model.TotalRevenue.ToString("C")</div>
+                <div class="result-text">Profit/Loss: @Model.ProfitLoss.ToString("C")</div>
             </div>
         </div>
     </div>
