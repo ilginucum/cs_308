@@ -218,6 +218,8 @@ namespace e_commerce.Controllers
                 var products = await _productRepository.GetAllAsync();
                 var viewModel = new SalesViewModel
                 {
+                    StartDate = startDate,
+                    EndDate = endDate,
                     Products = products,
                     Orders = allOrders,
                     FilteredOrders = filteredOrders,
