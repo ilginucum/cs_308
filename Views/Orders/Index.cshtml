@@ -29,31 +29,39 @@
                             <div class="order-id">Order #@order.Id.Substring(Math.Max(0, order.Id.Length - 8))</div>
                             <div class="order-date">@order.OrderDate.ToString("MMM dd, yyyy HH:mm")</div>
                         </div>
-                        <div class="status">
-                            <!-- Delivered Badge -->
-                            <span class="badge-delivered">Delivered</span>
+                        <div class="order-status-badge @order.OrderStatus.ToLower()">
+                            @order.OrderStatus
+                        </div>
+                        @if ((DateTime.Now - order.OrderDate).TotalDays <= 30)
+                        {
+                            <form asp-action="RequestReturn" method="post" style="margin:0;">
+                                <input type="hidden" name="orderId" value="@order.Id" />
 
-                            <!-- Refund Status -->
+                            </form>
+                        }
+                        <td>
                             @if (order.RefundStatus == "Complete")
                             {
-                                <span class="badge-refund-completed">Refund Completed</span>
+                                <span class="badge bg-success">Refund Completed</span>
                             }
                             else if (order.RefundStatus == "Rejected")
                             {
-                                <span class="badge-refund-rejected">Refund Rejected</span>
+                                <span class="badge bg-danger">Refund Rejected</span>
                             }
                             else if (order.RefundRequested)
                             {
-                                <span class="badge-refund-awaiting">Refund Awaiting</span>
+                                <span class="badge bg-warning">Refund Awaiting</span>
                             }
                             else
                             {
-                                <form asp-action="RequestRefund" method="post" style="display: inline;">
+                                <form asp-action="RequestRefund" method="post">
                                     <input type="hidden" name="orderId" value="@order.Id" />
                                     <button type="submit" class="btn btn-danger">Refund Request</button>
                                 </form>
                             }
-                        </div>
+                        </td>
+
+
                     </div>
 
                     <div class="order-items-preview">
@@ -123,54 +131,28 @@
         color: #666;
     }
 
-    .status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .badge-delivered,
-    .badge-refund-completed,
-    .badge-refund-rejected,
-    .badge-refund-awaiting {
-        display: inline-block;
-        font-size: 0.9rem;
-        font-weight: bold;
+    .order-status-badge {
         padding: 0.5rem 1rem;
-        /* Consistent padding for all badges */
-        border-radius: 25px;
-        /* Rounded edges for consistency */
-        text-align: center;
-        line-height: 1.2;
-        /* Vertical alignment */
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background-color: #e9ecef;
+        margin-left: 430px;
     }
 
-    .badge-delivered {
+    .order-status-badge.processing {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .order-status-badge.in-transit {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    .order-status-badge.delivered {
         background-color: #d4edda;
-        /* Green for delivered */
         color: #155724;
-        /* Text color for green */
-    }
-
-    .badge-refund-completed {
-        background-color: #28a745;
-        /* Slightly darker green for refund completed */
-        color: white;
-        /* White text for contrast */
-    }
-
-    .badge-refund-rejected {
-        background-color: #dc3545;
-        /* Red for rejected refunds */
-        color: white;
-        /* White text for rejected */
-    }
-
-    .badge-refund-awaiting {
-        background-color: #ffc107;
-        /* Yellow for awaiting refunds */
-        color: black;
-        /* Black text for visibility */
     }
 
     .order-items-preview {
@@ -201,12 +183,20 @@
         margin-top: 1rem;
     }
 
+    .status {
+        display: flex;
+        align-items: center;
+    }
+
+    .badge {
+        margin-right: 10px;
+    }
+
     .btn-danger {
         background-color: #dc3545;
         color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        /* Same border radius for consistency */
+        padding: 5px 10px;
+        border-radius: 5px;
         font-size: 0.9rem;
     }
 

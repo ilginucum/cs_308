@@ -20,22 +20,11 @@ namespace e_commerce.Models
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
         public string DeliveryId { get; set; }
-
-        [BsonElement("RefundRequested")]
-        public bool RefundRequested { get; set; }
-
-        [BsonElement("RefundApproved")]
-        public bool RefundApproved { get; set; }
-
-        [BsonElement("RefundStatus")]
+        public bool RefundRequested { get; set; } = false;
         public string RefundStatus { get; set; }
-
-        [BsonElement("RefundRejected")]
-        public bool RefundRejected { get; set; }
-
-
     }
 
+    [BsonIgnoreExtraElements]
     public class OrderItem
     {
         [BsonRepresentation(BsonType.ObjectId)]
@@ -44,14 +33,6 @@ namespace e_commerce.Models
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
-        public bool RefundRequested { get; set; } = false;
 
-        [BsonElement("RefundApproved")]
-        public bool RefundApproved { get; set; }
-
-        [BsonElement("RefundStatus")]
-        public string RefundStatus { get; set; }
-        [BsonElement("RefundRejected")]
-        public bool RefundRejected { get; set; }
     }
 }
