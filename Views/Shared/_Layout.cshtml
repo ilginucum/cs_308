@@ -117,11 +117,21 @@
                             </a>
                         </div>
 
-                        <!-- Shopping Cart -->
-                        <div class="me-3">
-                            @await Component.InvokeAsync("ShoppingCartSummary")
-                        </div>
                     }
+                    <!-- Shopping Cart -->
+                    <div class="me-3">
+                        @if (!User.IsInRole("SalesManager") && !User.IsInRole("ProductManager"))
+                        {
+                            @await Component.InvokeAsync("ShoppingCartSummary")
+                        }
+                        else if (!User.Identity.IsAuthenticated)
+                        {
+                            <!-- Non-logged-in users see a static cart button -->
+                            <a href="/ShoppingCart" class="wishlist-btn">
+                                <i class="bi bi-cart"></i> Shopping Cart
+                            </a>
+                        }
+                    </div>
 
                     <!-- User Account -->
                     @if (User.Identity.IsAuthenticated)
