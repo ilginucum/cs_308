@@ -1,0 +1,113 @@
+@model IEnumerable<e_commerce.Models.Order>
+@{
+    ViewData["Title"] = "Refund Requests";
+    Layout = "_Layout";
+}
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+<div class="card custom-card">
+    <div class="card-header text-white" style="background-color: #952735;">
+        <h4 class="mb-0 text-center">Refund Requests</h4>
+    </div>
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                No refund requests.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>User ID</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>@order.Id</td>
+                                <td>@order.UserId</td>
+                                <td>@order.TotalAmount.ToString("C")</td>
+                                <td>
+                                    @if (order.RefundStatus == "Complete")
+                                    {
+                                        <span class="badge bg-success">Refund Completed</span>
+                                    }
+                                    else if (order.RefundStatus == "Rejected")
+                                    {
+                                        <span class="badge bg-danger">Refund Rejected</span>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="ApproveRefund" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                        </form>
+                                        <form asp-action="RejectRefund" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<a asp-action="Index" class="btn custom-btn-success" style="margin: 10px; padding: 3px 10px; font-size: 12px; border-radius: 15px; background-color: #be3144; color: white;">
+    <i class="bi bi-arrow-left"></i> Back to Sales Management
+</a>
+
+<style>
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .table th {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary {
+        background-color: #be3144;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #952735;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+</style>

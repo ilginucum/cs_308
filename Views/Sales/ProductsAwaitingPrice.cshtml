@@ -1,0 +1,85 @@
+@model IEnumerable<e_commerce.Models.Product>
+@{
+    ViewData["Title"] = "Products Awaiting Price";
+    Layout = "_Layout";
+}
+
+<div class="card custom-card">
+    <div class="card-header text-white" style="background-color: #952735;">
+        <h4 class="mb-0 text-center">Products Awaiting Price</h4>
+    </div>
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                No products awaiting price setting.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Book Name</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr>
+                                <td>@product.Name</td>
+                                <td>@product.Author</td>
+                                <td>@product.Genre</td>
+                                <td>@product.QuantityInStock</td>
+                                <td>
+                                    <a asp-action="SetPrice" asp-route-id="@product.Id" class="btn btn-primary btn-sm">
+                                        Set Price
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<a asp-action="Index" class="btn custom-btn-success" style="margin: 10px; padding: 3px 10px; font-size: 12px; border-radius: 15px; background-color: #be3144; color: white;">
+    <i class="bi bi-arrow-left"></i> Back to Sales Management
+</a>
+
+<style>
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .table th {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary {
+        background-color: #be3144;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #952735;
+    }
+</style>

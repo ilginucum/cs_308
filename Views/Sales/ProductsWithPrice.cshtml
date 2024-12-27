@@ -1,0 +1,135 @@
+@model IEnumerable<e_commerce.Models.Product>
+@{
+    ViewData["Title"] = "Products with Price Set";
+    Layout = "_Layout";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="card custom-card">
+    <div class="card-header text-white" style="background-color: #952735;">
+        <h4 class="mb-0 text-center">Products with Price Set</h4>
+    </div>
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+                No products with prices set.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Book Name</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr>
+                                <td>@product.Name</td>
+                                <td>@product.Author</td>
+                                <td>@product.Price.ToString("C")</td>
+                                <td>
+                                    @if (product.DiscountedPrice.HasValue && product.DiscountedPrice < product.OriginalPrice)
+                                    {
+                                        <button type="button" class="btn btn-secondary" disabled style="font-size: 0.7rem; color: #942323; background-color: #e0e0e0; padding: 4px 8px; cursor: not-allowed; border-radius: 5px; text-transform: uppercase; border: none; box-shadow: none; opacity: 0.8;">
+                                            Discount Already Applied
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="ApplyDiscount" method="post">
+                                            <input type="hidden" name="id" value="@product.Id" />
+                                            <input type="number" name="discount" class="form-control discount-input" placeholder="%" min="0" step="10" max="100" required />
+                                            <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
+                                        </form>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="SetPrice" asp-route-id="@product.Id" class="btn btn-primary btn-sm mb-1">Update Price</a>
+                                    <form asp-action="ResetDiscount" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Reset Discount</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<a asp-action="Index" class="btn custom-btn-success" style="margin: 10px; padding: 3px 10px; font-size: 12px; border-radius: 15px; background-color: #be3144; color: white;">
+    <i class="bi bi-arrow-left"></i> Back to Sales Management
+</a>
+
+<style>
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .table th {
+        background-color: #be3144;
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;;
+    }
+
+    .btn-danger {
+    background-color: #e74c3c;
+    border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+    }
+
+    .discount-input {
+        width: 80px;
+        display: inline-block;
+    }
+
+    .discount-input::-webkit-inner-spin-button,
+    .discount-input::-webkit-outer-spin-button {
+        opacity: 1;
+        margin: 5px;
+    }
+</style>

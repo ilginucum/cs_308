@@ -88,6 +88,8 @@ namespace e_commerce.Controllers
             {
                 return NotFound();
             }
+            // Set a value in ViewBag to indicate which page we came from
+            ViewBag.ReturnAction = product.Price > 0 ? "ProductsWithPrice" : "ProductsAwaitingPrice";
             return View(product);
         }
 
@@ -129,7 +131,9 @@ namespace e_commerce.Controllers
 
                 TempData["SuccessMessage"] = $"Price for '{product.Name}' has been updated successfully to {price:C}";
 
-                return RedirectToAction(nameof(Index));
+                // Determine which page to return to based on the product's initial price state
+                string returnAction = product.Price == 0 ? "ProductsAwaitingPrice" : "ProductsWithPrice";
+                return RedirectToAction(returnAction);
             }
             catch (Exception ex)
             {
@@ -159,7 +163,7 @@ namespace e_commerce.Controllers
             if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
             {
                 TempData["ErrorMessage"] = $"A discount of {Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100)}% is already applied.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductsWithPrice));
             }
 
             try
@@ -168,7 +172,7 @@ namespace e_commerce.Controllers
                 if (discount < 0 || discount > 100)
                 {
                     ModelState.AddModelError("", "Discount must be between 0 and 100.");
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(ProductsWithPrice));
                 }
 
                 
@@ -188,13 +192,13 @@ namespace e_commerce.Controllers
                 _logger.LogInformation($"Discount of {discount}% applied to product: {id}");
                 TempData["SuccessMessage"] = $"Discount of {discount}% applied to '{product.Name}'. New price: {product.DiscountedPrice:C}";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductsWithPrice));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error applying discount to product: {id}");
                 ModelState.AddModelError("", "An error occurred while applying the discount. Please try again.");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductsWithPrice));
             }
         }
 
@@ -330,13 +334,13 @@ namespace e_commerce.Controllers
                 // Show a success message
                 TempData["SuccessMessage"] = $"Discount for '{product.Name}' has been reset successfully.";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductsWithPrice));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error resetting discount for product: {productId}");
                 ModelState.AddModelError("", "An error occurred while resetting the discount. Please try again.");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductsWithPrice));
             }
         }
         [HttpPost]
@@ -348,7 +352,7 @@ namespace e_commerce.Controllers
                 order.RefundStatus = "Complete";
                 await _orderRepository.UpdateOneAsync(orderId, order);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("RefundRequests");
         }
 
         [HttpPost]
@@ -360,8 +364,66 @@ namespace e_commerce.Controllers
                 order.RefundStatus = "Rejected";
                 await _orderRepository.UpdateOneAsync(orderId, order);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("RefundRequests");
         }
+
+        [HttpGet]
+        [Authorize(Roles = "SalesManager")]
+        public async Task<IActionResult> ProductsAwaitingPrice()
+        {
+            try
+            {
+                var products = await _productRepository.GetAllAsync();
+                var productsWithoutPrice = products.Where(p => p.Price == 0.0M).ToList();
+                return View(productsWithoutPrice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching products without price");
+                return View(new List<Product>());
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "SalesManager")]
+        public async Task<IActionResult> ProductsWithPrice()
+        {
+            try
+            {
+                var products = await _productRepository.GetAllAsync();
+                var productsWithPrice = products.Where(p => p.Price > 0.0M).ToList();
+                return View(productsWithPrice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching products with price");
+                return View(new List<Product>());
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "SalesManager")]
+        public async Task<IActionResult> RefundRequests()
+        {
+            try
+            {
+                var refundRequests = await _orderRepository.FilterByAsync(o => o.RefundRequested == true);
+               // Eğer TempData'da SuccessMessage varsa, ViewBag'e aktarıyoruz
+                if (TempData.ContainsKey("SuccessMessage"))
+                {
+                    ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+                }
+
+                return View(refundRequests.ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching refund requests");
+                return View(new List<Order>());
+            }
+        }
+
+
 
     }
 }

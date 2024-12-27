@@ -4,7 +4,10 @@ using e_commerce.Models;
 using e_commerce.Services;
 using e_commerce.Middleware;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -130,6 +133,8 @@ else
 {
    app.UseDeveloperExceptionPage();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

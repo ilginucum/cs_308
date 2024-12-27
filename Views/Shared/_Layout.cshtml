@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -181,6 +181,21 @@
                                     <li>
                                         <a class="dropdown-item" asp-controller="Sales" asp-action="Index">
                                             <i class="bi bi-graph-up"></i> Sales Manager Page
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Sales" asp-action="ProductsAwaitingPrice">
+                                            <i class="bi bi-hourglass-split"></i> Products Awaiting Price
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Sales" asp-action="ProductsWithPrice">
+                                            <i class="bi bi-cash-coin"></i> Products with Price Set
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Sales" asp-action="RefundRequests">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Refund Requests
                                         </a>
                                     </li>
                                 }

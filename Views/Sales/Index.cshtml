@@ -9,16 +9,31 @@
     bool showCalculateSection = Model.FilteredOrders != null;
 }
 
-<div class="container-fluid mt-4">
-    <h2 class="page-title text-center">Sales Management</h2>
-
+<div class="product-management-container">
     @if (ViewBag.SuccessMessage != null)
     {
-        <div class="alert alert-success text-center"
-            style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-            @ViewBag.SuccessMessage</div>
+        <div class="alert alert-success text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
+            @ViewBag.SuccessMessage
+        </div>
     }
+    <div class="dashboard-header">
+        <h2>Sales Management</h2>
+    </div>
 
+    <div class="action-cards">
+        <a asp-action="ProductsAwaitingPrice" class="action-card create">
+            <i class="bi bi-hourglass-split"></i>
+            <span>Products Awaiting Price</span>
+        </a>
+        <a asp-action="ProductsWithPrice" class="action-card invoices">
+            <i class="bi bi-cash-coin"></i>
+            <span>Products with Price Set</span>
+        </a>
+        <a asp-action="RefundRequests" class="action-card comments">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>Refund Requests</span>
+        </a>
+    </div>
 
     <!-- Calculate Profit Block -->
     <div class="row mb-4">
@@ -114,399 +129,139 @@
         }
     </script>
 
+    <style>
+        .page-title {
+            color: #010101;
+            font-weight: bold;
+        }
 
-    <div class="container-fluid mt-4">
-        <h2 class="page-title text-center mb-4">Sales Management</h2>
+        .product-management-container {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
 
-        <div class="row">
-            <!-- Products Awaiting Price Block -->
-            <div class="col-md-4">
-                <div class="card custom-card">
-                    <div class="card-header text-white" style="background-color: #952735;">
-                        <h4 class="mb-0 text-center">Products Awaiting Price</h4>
-                    </div>
-                    <div class="card-body">
-                        @if (!productsWithoutPrice.Any())
-                        {
-                            <div class="alert alert-info text-center"
-                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                No products awaiting price setting.
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Book Name</th>
-                                            <th>Author</th>
-                                            <th>Genre</th>
-                                            <th>Stock</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var product in productsWithoutPrice)
-                                        {
-                                            <tr>
-                                                <td>@product.Name</td>
-                                                <td>@product.Author</td>
-                                                <td>@product.Genre</td>
-                                                <td>@product.QuantityInStock</td>
-                                                <td>
-                                                    <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                        class="btn btn-primary btn-sm">
-                                                        Set Price
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+        .dashboard-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
 
+        .dashboard-header h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
 
-            <!-- Products with Price Set Block -->
-            <div class="col-md-4">
-                <div class="card custom-card">
-                    <div class="card-header text-white" style="background-color: #952735;">
-                        <h4 class="mb-0 text-center">Products with Price Set</h4>
-                    </div>
-                    <div class="card-body">
-                        @if (!productsWithPrice.Any())
-                        {
-                            <div class="alert alert-info text-center"
-                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                No products with prices set.
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Book Name</th>
-                                            <th>Author</th>
-                                            <th>Price</th>
-                                            <th>Discount</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var product in productsWithPrice)
-                                        {
-                                            <tr>
-                                                <td>@product.Name</td>
-                                                <td>@product.Author</td>
-                                                <td>@product.Price.ToString("C")</td>
-                                                <td>
-                                                    @if (product.DiscountedPrice.HasValue && product.DiscountedPrice <
-                                                   product.OriginalPrice)
-                                                    {
-                                                        <button type="button" class="btn btn-secondary" disabled style="
-                                                                font-size: 0.7rem; 
-                                                                color: #942323; 
-                                                                background-color: #e0e0e0; 
-                                                                padding: 4px 8px; 
-                                                                cursor: not-allowed; 
-                                                                border-radius: 5px; 
-                                                                text-transform: uppercase; 
-                                                                border: none;
-                                                                box-shadow: none;
-                                                                opacity: 0.8;">
-                                                            Discount Already Applied
-                                                        </button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <form asp-action="ApplyDiscount" method="post">
-                                                            <input type="hidden" name="id" value="@product.Id" />
-                                                            <input type="number" name="discount" class="form-control discount-input"
-                                                                placeholder="%" min="0" step="10" max="100" required />
-                                                            <button type="submit" class="btn btn-success btn-sm mt-1">Apply</button>
-                                                        </form>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <a asp-action="SetPrice" asp-route-id="@product.Id"
-                                                        class="btn btn-primary btn-sm mb-1">Update Price</a>
-                                                    <form asp-action="ResetDiscount" method="post">
-                                                        <input type="hidden" name="productId" value="@product.Id" />
-                                                        <button type="submit" class="btn btn-danger btn-sm">Reset
-                                                            Discount</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
 
-            <!-- Refund Requests Block -->
-            <div class="col-md-4">
-                <div class="card custom-card">
-                    <div class="card-header text-white" style="background-color: #952735;">
-                        <h4 class="mb-0 text-center">Refund Requests</h4>
-                    </div>
-                    <div class="card-body">
-                        @if (!Model.RefundRequests.Any())
-                        {
-                            <div class="alert alert-info text-center"
-                                style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
-                                No refund requests.
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>User ID</th>
-                                            <th>Total</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var order in Model.RefundRequests)
-                                        {
-                                            <tr>
-                                                <td>@order.Id</td>
-                                                <td>@order.UserId</td>
-                                                <td>@order.TotalAmount.ToString("C")</td>
-                                                <td>
-                                                    @if (order.RefundStatus == "Complete")
-                                                    {
-                                                        <span class="badge bg-success">Refund Completed</span>
-                                                    }
-                                                    else if (order.RefundStatus == "Rejected")
-                                                    {
-                                                        <span class="badge bg-danger">Refund Rejected</span>
-                                                    }
-                                                    else
-                                                    {
+        .action-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e9ecef;
+        }
 
-                                                        <form asp-action="ApproveRefund" method="post"
-                                                            style=" display:inline ; width: 2px; ">
-                                                            <input type="hidden" name="orderId" value="@order.Id" />
-                                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                                        </form>
-                                                        <form asp-action="RejectRefund" method="post" style="display:inline;">
-                                                            <input type="hidden" name="orderId" value="@order.Id" />
-                                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                                        </form>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-            <script>
-                function printInvoice(url) {
-                    const printWindow = window.open(url, '_blank');
-                    printWindow.onload = function () {
-                        printWindow.print();
-                    };
-                }
-            </script>
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
 
+        .action-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
 
+        .create {
+            background-color: #be3144;
+            color: white;
+        }
 
+        .invoices {
+            background-color: #2ecc71;
+            color: white;
+        }
 
+        .comments {
+            background-color: #3498db;
+            color: white;
+        }
 
-            <style>
-                .page-title {
-                    color: #010101;
-                    font-weight: bold;
-                }
+        .custom-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
 
-                .row {
-                    margin-left: 0;
-                    margin-right: 0;
-                }
+        #toggleCalculateSection {
+            background-color: #952735;
+            color: white;
+            border: none;
+            font-size: 20px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+    @section Scripts {
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        document.getElementById("toggleCalculateSection").addEventListener("click", function () {
+                            let section = document.getElementById("calculateSection");
+                            section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+                            section.scrollIntoView({ behavior: 'smooth' });
+                        });
 
-                .col-md-4 {
-                    flex: 0 0 33.333333%;
-                    /* Ensure the columns can expand fully */
-                    padding-left: 10px;
-                    /* Optional: Adjust padding as needed */
-                    padding-right: 10px;
-                    /* Optional: Adjust padding as needed */
-                }
+                        document.getElementById("toggleDetails")?.addEventListener("click", function () {
+                            let detailsSection = document.getElementById("detailsSection");
+                            detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+                        });
 
-                /* Ensure the form container takes full width */
-                .card.custom-card {
-                    width: 100%;
-                    /* Make the card occupy full width */
-                }
+                        document.getElementById("toggleChart")?.addEventListener("click", function () {
+                            let chartSection = document.getElementById("chartSection");
+                            chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
 
-                /* Ensure the form elements span the full width of the card */
-                .card-body form .row {
-                    margin: 0;
-                    /* Remove default margins */
-                }
+                            if (chartSection.style.display === "block" && !window.chartInitialized) {
+                                window.chartInitialized = true;
 
-                .card-body form .row .col-md-4 {
-                    flex: 1;
-                    /* Make each column flexible and occupy available space */
-                    padding-left: 5px;
-                    padding-right: 5px;
-                }
+                                var totalRevenue = @Model.TotalRevenue;
+                                var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
+                                var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
 
-                /* Adjust button to fit the available width */
-                .card-body form .col-md-4 button {
-                    width: 100%;
-                    padding: 10px;
-                    /* Add padding for better button appearance */
-                }
-
-                .custom-card {
-                    border-radius: 15px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    width: 100%
-                }
-
-                .card-header {
-                    text-align: center;
-                    font-weight: bold;
-                }
-
-                .custom-table {
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-
-                .custom-btn-primary {
-                    background-color: #be3144;
-                    color: white;
-                }
-
-                .custom-btn-primary:hover {
-                    background-color: #952735;
-                }
-
-                .custom-table th {
-                    background-color: #be3144;
-                    color: white;
-                    text-align: center;
-                }
-
-                .custom-table td {
-                    text-align: center;
-                }
-
-                .custom-table tbody tr:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
-
-                .discount-input {
-                    width: 80px;
-                    display: inline-block;
-                }
-
-
-
-                .discount-input::-webkit-inner-spin-button,
-                .discount-input::-webkit-outer-spin-button {
-                    opacity: 1;
-                    margin: 5px;
-                }
-
-                #chartSection {
-                    width: 500px;
-                    /* Set a smaller width for the container */
-                    margin: 0 auto;
-                    /* Center the chart horizontally */
-                }
-
-                #profitLossChart {
-                    width: 100%;
-                    /* Ensure the canvas scales within the container */
-                    height: auto;
-                    /* Maintain the aspect ratio */
-                }
-
-                #toggleCalculateSection {
-                    background-color: #952735;
-                    color: white;
-                    border: none;
-                    font-size: 24px;
-                    font-weight: bold;
-                    text-align: center;
-                    width: 100%;
-                    padding: 10px;
-                    cursor: pointer;
-                }
-
-                #toggleCalculateSection:hover {
-                    background-color: #952735;
-                }
-            </style>
-
-            @section Scripts {
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script>
-                    document.getElementById("toggleCalculateSection").addEventListener("click", function () {
-                        let section = document.getElementById("calculateSection");
-                        section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
-                        section.scrollIntoView({ behavior: 'smooth' });
-                    });
-
-                    document.getElementById("toggleDetails")?.addEventListener("click", function () {
-                        let detailsSection = document.getElementById("detailsSection");
-                        detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
-                    });
-
-                    document.getElementById("toggleChart")?.addEventListener("click", function () {
-                        let chartSection = document.getElementById("chartSection");
-                        chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
-
-                        if (chartSection.style.display === "block" && !window.chartInitialized) {
-                            window.chartInitialized = true;
-
-                            var totalRevenue = @Model.TotalRevenue;
-                            var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
-                            var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
-
-                            var ctx = document.getElementById('profitLossChart').getContext('2d');
-                            new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    labels: ['Revenue', 'Cost', 'Profit/Loss'],
-                                    datasets: [{
-                                        label: 'Amount ($)',
-                                        data: [totalRevenue, totalCost, profitLoss],
-                                        backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                                        borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true
+                                var ctx = document.getElementById('profitLossChart').getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Revenue', 'Cost', 'Profit/Loss'],
+                                        datasets: [{
+                                            label: 'Amount ($)',
+                                            data: [totalRevenue, totalCost, profitLoss],
+                                            backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                                            borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
                                         }
                                     }
-                                }
-                            });
-                        }
-                    });
-                </script>
-            }
-]
+                                });
+                            }
+                        });
+                    </script>
+                }
