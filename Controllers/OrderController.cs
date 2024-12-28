@@ -52,9 +52,9 @@ namespace e_commerce.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RequestRefund(string orderId)
+        public async Task<IActionResult> RequestRefund(string orderId, string selectedProducts)
         {
-            if (string.IsNullOrEmpty(orderId))
+            if (string.IsNullOrEmpty(orderId) || string.IsNullOrEmpty(selectedProducts))
             {
                 return NotFound();
             }
@@ -65,17 +65,64 @@ namespace e_commerce.Controllers
                 return NotFound("Order not found.");
             }
 
+            if (order.OrderStatus != "Delivered")
+            {
+                TempData["ErrorMessage"] = "You can only request refund for delivered orders.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if ((DateTime.Now - order.OrderDate).TotalDays > 30)
+            {
+                TempData["ErrorMessage"] = "Refund can only be requested within 30 days of purchase.";
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
-                order.RefundRequested = true;
-                await _orderRepository.ReplaceOneAsync(order);
+                var selectedProductIds = selectedProducts.Split(',');
+                var successCount = 0;
+                var failCount = 0;
 
-                TempData["SuccessMessage"] = "Refund request has been submitted successfully.";
+                foreach (var productId in selectedProductIds)
+                {
+                    var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+                    if (item != null && !item.RefundRequested)
+                    {
+                        item.RefundRequested = true;
+                        successCount++;
+                    }
+                    else
+                    {
+                        failCount++;
+                    }
+                }
+
+                if (successCount > 0)
+                {
+                    await _orderRepository.ReplaceOneAsync(order);
+                    
+                    var message = successCount == 1 
+                        ? "Refund request has been submitted successfully." 
+                        : $"Refund requests for {successCount} items have been submitted successfully.";
+                    
+                    if (failCount > 0)
+                    {
+                        message += $" ({failCount} items could not be processed)";
+                    }
+                    
+                    TempData["SuccessMessage"] = message;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "No valid items were found for refund request.";
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error requesting refund for order: {orderId}", orderId);
+                _logger.LogError(ex, "Error requesting refund for order: {orderId}, products: {selectedProducts}", 
+                    orderId, selectedProducts);
                 TempData["ErrorMessage"] = "An error occurred while requesting the refund.";
                 return RedirectToAction(nameof(Index));
             }

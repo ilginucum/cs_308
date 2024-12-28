@@ -1,206 +1,296 @@
 @model IEnumerable<e_commerce.Models.Order>
 @{
     ViewData["Title"] = "My Orders";
+    Layout = "_Layout";
 }
 
 <div class="container mt-4">
-    <div class="orders-header">
-        <h2 class="section-title">My Orders</h2>
-        <p class="text-muted">Track and manage your orders</p>
-    </div>
+    <h2 class="section-title">My Orders</h2>
+    <p class="text-muted">Track and manage your orders</p>
 
-    <div class="orders-container">
-        @if (!Model.Any())
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Start Shopping</a>
+        </div>
+    }
+    else
+    {
+        foreach (var order in Model)
         {
-            <div class="empty-state">
-                <div class="empty-state-icon">📦</div>
-                <h3>No Orders Yet</h3>
-                <p>You haven't placed any orders yet.</p>
-                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Start Shopping</a>
-            </div>
-        }
-        else
-        {
-            @foreach (var order in Model)
-            {
-                <div class="order-card">
-                    <div class="order-header">
-                        <div class="order-info">
-                            <div class="order-id">Order #@order.Id.Substring(Math.Max(0, order.Id.Length - 8))</div>
-                            <div class="order-date">@order.OrderDate.ToString("MMM dd, yyyy HH:mm")</div>
-                        </div>
-                        <div class="order-status-badge @order.OrderStatus.ToLower()">
-                            @order.OrderStatus
-                        </div>
-                        @if ((DateTime.Now - order.OrderDate).TotalDays <= 30)
-                        {
-                            <form asp-action="RequestReturn" method="post" style="margin:0;">
-                                <input type="hidden" name="orderId" value="@order.Id" />
-
-                            </form>
-                        }
-                        <td>
-                            @if (order.RefundStatus == "Complete")
-                            {
-                                <span class="badge bg-success">Refund Completed</span>
-                            }
-                            else if (order.RefundStatus == "Rejected")
-                            {
-                                <span class="badge bg-danger">Refund Rejected</span>
-                            }
-                            else if (order.RefundRequested)
-                            {
-                                <span class="badge bg-warning">Refund Awaiting</span>
-                            }
-                            else
-                            {
-                                <form asp-action="RequestRefund" method="post">
-                                    <input type="hidden" name="orderId" value="@order.Id" />
-                                    <button type="submit" class="btn btn-danger">Refund Request</button>
-                                </form>
-                            }
-                        </td>
-
-
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-id">Order #@order.Id.Substring(Math.Max(0, order.Id.Length - 8))</div>
+                        <div class="order-date">@order.OrderDate.ToString("MMM dd, yyyy HH:mm")</div>
                     </div>
+                    <div class="status-badge @order.OrderStatus.ToLower()">
+                        @order.OrderStatus
+                    </div>
+                </div>
 
-                    <div class="order-items-preview">
-                        @foreach (var item in order.Items)
-                        {
-                            <div class="order-item">
+                @if (order.OrderStatus == "Delivered" && (DateTime.Now - order.OrderDate).TotalDays > 30)
+                {
+                    <div class="refund-status-message">
+                        <span class="text-muted refund-expired">Refund period expired</span>
+                    </div>
+                }
+
+                <div class="order-items">
+                    @foreach (var item in order.Items)
+                    {
+                        <div class="order-item">
+                            <div class="item-details">
                                 <span class="item-name">@item.ProductName</span>
                                 <span class="item-quantity">x@(item.Quantity)</span>
                                 <span class="item-price">$@item.TotalPrice.ToString("F2")</span>
+                                
+                                @if (order.OrderStatus == "Delivered" && (DateTime.Now - order.OrderDate).TotalDays <= 30)
+                                {
+                                    if (item.RefundStatus == "Complete")
+                                    {
+                                        <span class="refund-badge refund-completed">Refund Completed</span>
+                                    }
+                                    else if (item.RefundStatus == "Rejected")
+                                    {
+                                        <span class="refund-badge refund-rejected">Refund Rejected</span>
+                                    }
+                                    else if (item.RefundRequested)
+                                    {
+                                        <span class="refund-badge refund-pending">Refund Awaiting</span>
+                                    }
+                                    else
+                                    {
+                                        <div class="form-check">
+                                            <input class="form-check-input refund-checkbox" type="checkbox" 
+                                                   data-order-id="@order.Id" 
+                                                   data-product-id="@item.ProductId" 
+                                                   name="selectedItems">
+                                            <label class="form-check-label">Select for refund</label>
+                                        </div>
+                                    }
+                                }
                             </div>
-                        }
-                    </div>
-
-                    <div class="order-summary">
-                        <div class="order-total">
-                            Total Amount: <strong>$@order.TotalAmount.ToString("F2")</strong>
                         </div>
-                    </div>
+                    }
                 </div>
-            }
+
+                @if (order.OrderStatus == "Delivered" && (DateTime.Now - order.OrderDate).TotalDays <= 30 && 
+                     order.Items.Any(i => !i.RefundRequested && string.IsNullOrEmpty(i.RefundStatus)))
+                {
+                    <div class="refund-action-bar" id="refund-action-@order.Id">
+                        <form asp-action="RequestRefund" method="post" class="refund-form">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <input type="hidden" name="selectedProducts" id="selected-products-@order.Id" />
+                            <button type="submit" class="btn-refund" disabled>Request Refund</button>
+                        </form>
+                    </div>
+                }
+
+                <div class="order-total">
+                    Total Amount: <strong>$@order.TotalAmount.ToString("F2")</strong>
+                </div>
+            </div>
         }
-    </div>
+    }
 </div>
 
 <style>
-    .orders-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 1rem;
+    .container { 
+        max-width: 900px; 
+        margin: 20px auto; 
+    }
+    
+    .empty-state { 
+        text-align: center; 
+        padding: 40px; 
+        background: white; 
+        border-radius: 10px; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    
+    .empty-state-icon { 
+        font-size: 48px; 
+        margin-bottom: 20px; 
+    }
+    
+    .order-card { 
+        background: white; 
+        border-radius: 10px; 
+        padding: 20px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    
+    .order-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 15px; 
+    }
+    
+    .order-info .order-id { 
+        font-weight: bold; 
+    }
+    
+    .order-info .order-date { 
+        color: #666; 
+        font-size: 0.9em; 
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    .refund-status-message {
+        text-align: right;
+        margin: 5px 0 15px 0;
+        font-style: italic;
+        color: #6c757d;
     }
 
-    .empty-state-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-
-    .order-card {
-        background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-    }
-
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .order-id {
-        font-weight: 600;
-        font-size: 1.1rem;
-    }
-
-    .order-date {
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .order-status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
         font-weight: 500;
-        background-color: #e9ecef;
-        margin-left: 430px;
+        display: inline-block;
+        min-width: 100px;
+        text-align: center;
     }
 
-    .order-status-badge.processing {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
-    .order-status-badge.in-transit {
-        background-color: #cce5ff;
-        color: #004085;
-    }
-
-    .order-status-badge.delivered {
+    .status-badge.delivered {
         background-color: #d4edda;
         color: #155724;
     }
 
-    .order-items-preview {
-        margin: 1rem 0;
-        padding: 1rem 0;
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
+    .status-badge.pending {
+        background-color: #e9ecef;
+        color: #495057;
     }
 
+    .status-badge.intransit {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+    
+    .order-items { 
+        border-top: 1px solid #eee; 
+        border-bottom: 1px solid #eee; 
+        padding: 15px 0; 
+    }
+    
     .order-item {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 0;
+        padding: 10px 0;
     }
-
-    .item-name {
-        flex: 1;
-    }
-
-    .item-quantity {
-        margin: 0 1rem;
-        color: #666;
-    }
-
-    .order-summary {
-        text-align: right;
-        margin-top: 1rem;
-    }
-
-    .status {
+    
+    .item-details {
         display: flex;
         align-items: center;
+        flex: 1;
+        gap: 15px;
+    }
+    
+    .item-name { 
+        flex: 1; 
+    }
+    
+    .item-quantity { 
+        color: #666;
+        min-width: 60px;
+    }
+    
+    .item-price { 
+        min-width: 80px;
+        text-align: right;
     }
 
-    .badge {
-        margin-right: 10px;
+    .refund-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        min-width: 140px;
+        text-align: center;
     }
 
-    .btn-danger {
+    .refund-completed {
+        background-color: #b8daff;
+        color: #004085;
+    }
+
+    .refund-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .refund-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .form-check {
+        margin: 0;
+        padding: 0 0 0 1.5rem;
+    }
+
+    .refund-action-bar {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        text-align: right;
+    }
+
+    .btn-refund {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
         background-color: #dc3545;
         color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.9rem;
+        border: none;
+        min-width: 140px;
+        transition: all 0.2s;
     }
 
-    .btn-danger:hover {
+    .btn-refund:not(:disabled):hover {
         background-color: #c82333;
     }
+
+    .btn-refund:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+    
+    .order-total { 
+        text-align: right; 
+        margin-top: 15px; 
+        font-size: 1.1em; 
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.refund-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const orderId = this.dataset.orderId;
+            const actionBar = document.getElementById(`refund-action-${orderId}`);
+            const submitButton = actionBar.querySelector('.btn-refund');
+            const selectedProductsInput = document.getElementById(`selected-products-${orderId}`);
+            
+            // Get all checked checkboxes for this order
+            const checkedBoxes = document.querySelectorAll(`.refund-checkbox[data-order-id="${orderId}"]:checked`);
+            
+            // Enable/disable submit button based on selections
+            submitButton.disabled = checkedBoxes.length === 0;
+            
+            // Update hidden input with selected product IDs
+            const selectedProducts = Array.from(checkedBoxes).map(cb => cb.dataset.productId);
+            selectedProductsInput.value = selectedProducts.join(',');
+        });
+    });
+});
+</script>

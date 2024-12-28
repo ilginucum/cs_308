@@ -20,8 +20,12 @@ namespace e_commerce.Models
         public DateTime OrderDate { get; set; }
         public string OrderStatus { get; set; }
         public string DeliveryId { get; set; }
+        // Eski siparişlerin uyumluluğu için tutuyoruz
+        [Obsolete]
         public bool RefundRequested { get; set; } = false;
+        [Obsolete]
         public string RefundStatus { get; set; }
+        
     }
 
     [BsonIgnoreExtraElements]
@@ -33,6 +37,8 @@ namespace e_commerce.Models
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
+        public bool RefundRequested { get; set; } = false;
+        public string RefundStatus { get; set; }
 
     }
 }

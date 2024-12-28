@@ -16,7 +16,7 @@
         <h4 class="mb-0 text-center">Refund Requests</h4>
     </div>
     <div class="card-body">
-        @if (!Model.Any())
+        @if (!Model.Any() || !Model.Any(o => o.Items.Any(i => i.RefundRequested)))
         {
             <div class="alert alert-info text-center" style="background-color: #dc7986; color: white; border: none; border-radius: 10px;">
                 No refund requests.
@@ -30,41 +30,48 @@
                         <tr>
                             <th>Order ID</th>
                             <th>User ID</th>
-                            <th>Total</th>
+                            <th>Product</th>
+                            <th>Price</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var order in Model)
                         {
-                            <tr>
-                                <td>@order.Id</td>
-                                <td>@order.UserId</td>
-                                <td>@order.TotalAmount.ToString("C")</td>
-                                <td>
-                                    @if (order.RefundStatus == "Complete")
-                                    {
-                                        <span class="badge bg-success">Refund Completed</span>
-                                    }
-                                    else if (order.RefundStatus == "Rejected")
-                                    {
-                                        <span class="badge bg-danger">Refund Rejected</span>
-                                    }
-                                    else
-                                    {
-                                        <form asp-action="ApproveRefund" method="post" style="display:inline;">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="orderId" value="@order.Id" />
-                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                        </form>
-                                        <form asp-action="RejectRefund" method="post" style="display:inline;">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="orderId" value="@order.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                        </form>
-                                    }
-                                </td>
-                            </tr>
+                            @foreach (var item in order.Items.Where(i => i.RefundRequested))
+                            {
+                                <tr>
+                                    <td>@order.Id</td>
+                                    <td>@order.UserId</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.TotalPrice.ToString("C")</td>
+                                    <td>
+                                        @if (item.RefundStatus == "Complete")
+                                        {
+                                            <span class="badge bg-success">Refund Completed</span>
+                                        }
+                                        else if (item.RefundStatus == "Rejected")
+                                        {
+                                            <span class="badge bg-danger">Refund Rejected</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ApproveRefund" method="post" style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="orderId" value="@order.Id" />
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            </form>
+                                            <form asp-action="RejectRefund" method="post" style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="orderId" value="@order.Id" />
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -109,5 +116,36 @@
     .badge {
         padding: 8px 12px;
         font-size: 0.9rem;
+    }
+
+    .btn-success {
+    background-color: #28a745;  /* Yeşil */
+    border-color: #28a745;
+    padding: 6px 12px;
+    min-width: 80px;  /* Sabit genişlik */
+    }
+
+    .btn-danger {
+        background-color: #dc3545;  /* Kırmızı */
+        border-color: #dc3545;
+        padding: 6px 12px;
+        min-width: 80px;  /* Sabit genişlik */
+    }
+
+    .btn-sm {
+        font-size: 0.875rem;
+        border-radius: 4px;
+        margin: 0 2px;
+    }
+
+    /* Var olan badge stilleri korunacak */
+    .badge.bg-success {
+        background-color: #d4edda !important;
+        color: #155724;
+    }
+
+    .badge.bg-danger {
+        background-color: #f8d7da !important;
+        color: #721c24;
     }
 </style>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/eysanmutlu/cs308_29_10_2024/cs308_27_12_2024/cs_308/e_commerce.csproj": {}
+    "/Users/eysanmutlu/cs308_29_10_2024/27 aralık devam/cs_308/e_commerce.csproj": {}
   },
   "projects": {
-    "/Users/eysanmutlu/cs308_29_10_2024/cs308_27_12_2024/cs_308/e_commerce.csproj": {
+    "/Users/eysanmutlu/cs308_29_10_2024/27 aralık devam/cs_308/e_commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eysanmutlu/cs308_29_10_2024/cs308_27_12_2024/cs_308/e_commerce.csproj",
+        "projectUniqueName": "/Users/eysanmutlu/cs308_29_10_2024/27 aralık devam/cs_308/e_commerce.csproj",
         "projectName": "e_commerce",
-        "projectPath": "/Users/eysanmutlu/cs308_29_10_2024/cs308_27_12_2024/cs_308/e_commerce.csproj",
+        "projectPath": "/Users/eysanmutlu/cs308_29_10_2024/27 aralık devam/cs_308/e_commerce.csproj",
         "packagesPath": "/Users/eysanmutlu/.nuget/packages/",
-        "outputPath": "/Users/eysanmutlu/cs308_29_10_2024/cs308_27_12_2024/cs_308/obj/",
+        "outputPath": "/Users/eysanmutlu/cs308_29_10_2024/27 aralık devam/cs_308/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/eysanmutlu/.nuget/NuGet/NuGet.Config"

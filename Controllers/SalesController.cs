@@ -50,7 +50,8 @@ namespace e_commerce.Controllers
                     _logger.LogWarning("No products found");
                     products = new List<Product>();
                 }
-                var refundRequests = (await _orderRepository.FilterByAsync(o => o.RefundRequested == true)).ToList();
+                // Ürün bazlı refund request kontrolü
+                var refundRequests = (await _orderRepository.FilterByAsync(o => o.Items.Any(i => i.RefundRequested))).ToList();
                 var viewModel = new SalesViewModel
                 {
                     Products = products,
@@ -344,25 +345,33 @@ namespace e_commerce.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> ApproveRefund(string orderId)
+        public async Task<IActionResult> ApproveRefund(string orderId, string productId)
         {
             var order = await _orderRepository.FindByIdAsync(orderId);
             if (order != null)
             {
-                order.RefundStatus = "Complete";
-                await _orderRepository.UpdateOneAsync(orderId, order);
+                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+                if (item != null)
+                {
+                    item.RefundStatus = "Complete";
+                    await _orderRepository.ReplaceOneAsync(order);
+                }
             }
             return RedirectToAction("RefundRequests");
         }
 
         [HttpPost]
-        public async Task<IActionResult> RejectRefund(string orderId)
+        public async Task<IActionResult> RejectRefund(string orderId, string productId)
         {
             var order = await _orderRepository.FindByIdAsync(orderId);
             if (order != null)
             {
-                order.RefundStatus = "Rejected";
-                await _orderRepository.UpdateOneAsync(orderId, order);
+                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+                if (item != null)
+                {
+                    item.RefundStatus = "Rejected";
+                    await _orderRepository.ReplaceOneAsync(order);
+                }
             }
             return RedirectToAction("RefundRequests");
         }
@@ -407,7 +416,8 @@ namespace e_commerce.Controllers
         {
             try
             {
-                var refundRequests = await _orderRepository.FilterByAsync(o => o.RefundRequested == true);
+                // Ürün bazlı refund request'leri getir
+                var refundRequests = await _orderRepository.FilterByAsync(o => o.Items.Any(i => i.RefundRequested));
                // Eğer TempData'da SuccessMessage varsa, ViewBag'e aktarıyoruz
                 if (TempData.ContainsKey("SuccessMessage"))
                 {
