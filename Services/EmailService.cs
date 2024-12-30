@@ -132,5 +132,81 @@ namespace e_commerce.Services
 
             return body.ToString();
         }
+        public async Task SendRefundStatusEmailAsync(Order order, OrderItem item, string userEmail, string status)
+        {
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(StoreEmail, StoreEmailPassword)
+            };
+
+            using var message = new MailMessage
+            {
+                From = new MailAddress(StoreEmail, "Book Store"),
+                Subject = $"Refund Request {status} - Order #{order.Id}",
+                IsBodyHtml = true,
+                Body = GenerateRefundEmailBody(order, item, status)
+            };
+
+            message.To.Add(userEmail);
+
+            try
+            {
+                await smtp.SendMailAsync(message);
+                _logger.LogInformation($"Refund status email sent successfully to {userEmail}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to send refund status email to {userEmail}");
+                throw;
+            }
+        }
+
+        private string GenerateRefundEmailBody(Order order, OrderItem item, string status)
+        {
+            var body = new StringBuilder();
+            body.AppendLine("<html><body style='font-family: Arial, sans-serif;'>");
+            
+            // Header
+            body.AppendLine("<div style='background-color: #f8f9fa; padding: 20px; margin-bottom: 20px;'>");
+            body.AppendLine($"<h2 style='color: #333; margin: 0;'>Refund Request {status}</h2>");
+            body.AppendLine("</div>");
+
+            // Order Information
+            body.AppendLine("<div style='margin-bottom: 20px;'>");
+            body.AppendLine($"<p><strong>Order ID:</strong> {order.Id}</p>");
+            body.AppendLine($"<p><strong>Product:</strong> {item.ProductName}</p>");
+            body.AppendLine($"<p><strong>Quantity:</strong> {item.Quantity}</p>");
+            body.AppendLine($"<p><strong>Refund Amount:</strong> {(item.Quantity * item.UnitPrice):C}</p>");
+            body.AppendLine("</div>");
+            
+            // Status specific message
+            body.AppendLine("<div style='background-color: #fff; padding: 15px; border: 1px solid #dee2e6; margin-bottom: 20px;'>");
+            if (status == "Complete")
+            {
+                body.AppendLine("<p>Your refund request has been approved. The refund amount will be processed to your original payment method within 3-5 business days.</p>");
+                body.AppendLine($"<p>Total refund amount: {(item.Quantity * item.UnitPrice):C}</p>");
+            }
+            else
+            {
+                body.AppendLine("<p>Your refund request has been reviewed and could not be approved at this time.</p>");
+                body.AppendLine("<p>If you have any questions about this decision, please contact our customer service team.</p>");
+            }
+            body.AppendLine("</div>");
+            
+            // Footer
+            body.AppendLine("<div style='margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;'>");
+            body.AppendLine("<p style='color: #666;'>If you have any questions, please don't hesitate to contact us.</p>");
+            body.AppendLine("<p style='color: #666;'>Thank you for shopping with us!</p>");
+            body.AppendLine("</div>");
+
+            body.AppendLine("</body></html>");
+            return body.ToString();
+        }
+
     }
 }

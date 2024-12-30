@@ -23,13 +23,15 @@ namespace e_commerce.Controllers
         private readonly IMongoDBRepository<WishlistItem> _wishlistRepository;
         private readonly IPdfService _pdfService;
         private readonly IMongoDBRepository<Address> _addressRepository;
+        private readonly IEmailService _emailService;
+        private readonly IMongoDBRepository<UserRegistration> _userRepository;
 
 
         public SalesController(
             IMongoDBRepository<Product> productRepository, 
             IMongoDBRepository<Order> orderRepository,
             ILogger<SalesController> logger,
-            IMongoDBRepository<WishlistItem> wishlistRepository, IPdfService pdfService, IMongoDBRepository<Address> addressRepository)
+            IMongoDBRepository<WishlistItem> wishlistRepository, IPdfService pdfService, IMongoDBRepository<Address> addressRepository, IEmailService emailService, IMongoDBRepository<UserRegistration> userRepository)
         {
             _productRepository = productRepository;
             _orderRepository = orderRepository;
@@ -37,6 +39,8 @@ namespace e_commerce.Controllers
             _wishlistRepository = wishlistRepository;
             _pdfService = pdfService;
             _addressRepository = addressRepository;
+            _emailService = emailService;
+            _userRepository = userRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -345,71 +349,116 @@ namespace e_commerce.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> ApproveRefund(string orderId, string productId)
-        {
-            try 
-            {
-                var order = await _orderRepository.FindByIdAsync(orderId);
-                if (order == null)
-                {
-                    _logger.LogWarning($"Order not found for refund approval. OrderId: {orderId}");
-                    TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("RefundRequests");
-                }
-
-                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
-                if (item == null)
-                {
-                    _logger.LogWarning($"Product item not found in order. OrderId: {orderId}, ProductId: {productId}");
-                    TempData["ErrorMessage"] = "Product not found in order.";
-                    return RedirectToAction("RefundRequests");
-                }
-
-                // Get the product to update stock
-                var product = await _productRepository.FindByIdAsync(productId);
-                if (product == null)
-                {
-                    _logger.LogWarning($"Product not found for stock update. ProductId: {productId}");
-                    TempData["ErrorMessage"] = "Product not found.";
-                    return RedirectToAction("RefundRequests");
-                }
-
-                // Update refund status
-                item.RefundStatus = "Complete";
-                await _orderRepository.ReplaceOneAsync(order);
-
-                // Update product stock
-                product.QuantityInStock += item.Quantity;
-                await _productRepository.ReplaceOneAsync(product);
-
-                _logger.LogInformation($"Refund approved and stock updated. OrderId: {orderId}, ProductId: {productId}, Quantity: {item.Quantity}");
-                TempData["SuccessMessage"] = "Refund approved and product stock updated successfully.";
-
-                return RedirectToAction("RefundRequests");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error processing refund approval. OrderId: {orderId}, ProductId: {productId}");
-                TempData["ErrorMessage"] = "An error occurred while processing the refund.";
-                return RedirectToAction("RefundRequests");
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RejectRefund(string orderId, string productId)
+    public async Task<IActionResult> ApproveRefund(string orderId, string productId)
+    {
+        try 
         {
             var order = await _orderRepository.FindByIdAsync(orderId);
-            if (order != null)
+            if (order == null)
             {
-                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
-                if (item != null)
-                {
-                    item.RefundStatus = "Rejected";
-                    await _orderRepository.ReplaceOneAsync(order);
-                }
+                _logger.LogWarning($"Order not found for refund approval. OrderId: {orderId}");
+                TempData["ErrorMessage"] = "Order not found.";
+                return RedirectToAction("RefundRequests");
             }
+
+            // Get user email
+            var user = await _userRepository.FindByIdAsync(order.UserId);
+            if (user == null)
+            {
+                _logger.LogWarning($"User not found for order. UserId: {order.UserId}");
+                TempData["ErrorMessage"] = "User information not found.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item == null)
+            {
+                _logger.LogWarning($"Product item not found in order. OrderId: {orderId}, ProductId: {productId}");
+                TempData["ErrorMessage"] = "Product not found in order.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            var product = await _productRepository.FindByIdAsync(productId);
+            if (product == null)
+            {
+                _logger.LogWarning($"Product not found for stock update. ProductId: {productId}");
+                TempData["ErrorMessage"] = "Product not found.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            // Update refund status
+            item.RefundStatus = "Complete";
+            await _orderRepository.ReplaceOneAsync(order);
+
+            // Update product stock
+            product.QuantityInStock += item.Quantity;
+            await _productRepository.ReplaceOneAsync(product);
+
+            // Send email notification
+            await _emailService.SendRefundStatusEmailAsync(order, item, user.Email, "Complete");
+
+            _logger.LogInformation($"Refund approved and stock updated. OrderId: {orderId}, ProductId: {productId}, Quantity: {item.Quantity}");
+            TempData["SuccessMessage"] = "Refund approved and product stock updated successfully.";
+
             return RedirectToAction("RefundRequests");
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error processing refund approval. OrderId: {orderId}, ProductId: {productId}");
+            TempData["ErrorMessage"] = "An error occurred while processing the refund.";
+            return RedirectToAction("RefundRequests");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RejectRefund(string orderId, string productId)
+    {
+        try
+        {
+            var order = await _orderRepository.FindByIdAsync(orderId);
+            if (order == null)
+            {
+                _logger.LogWarning($"Order not found for refund rejection. OrderId: {orderId}");
+                TempData["ErrorMessage"] = "Order not found.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            // Get user email
+            var user = await _userRepository.FindByIdAsync(order.UserId);
+            if (user == null)
+            {
+                _logger.LogWarning($"User not found for order. UserId: {order.UserId}");
+                TempData["ErrorMessage"] = "User information not found.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item == null)
+            {
+                _logger.LogWarning($"Product item not found in order. OrderId: {orderId}, ProductId: {productId}");
+                TempData["ErrorMessage"] = "Product not found in order.";
+                return RedirectToAction("RefundRequests");
+            }
+
+            item.RefundStatus = "Rejected";
+            await _orderRepository.ReplaceOneAsync(order);
+
+            // Send email notification
+            await _emailService.SendRefundStatusEmailAsync(order, item, user.Email, "Rejected");
+
+            _logger.LogInformation($"Refund rejected. OrderId: {orderId}, ProductId: {productId}");
+            TempData["SuccessMessage"] = "Refund request has been rejected and customer has been notified.";
+
+            return RedirectToAction("RefundRequests");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error processing refund rejection. OrderId: {orderId}, ProductId: {productId}");
+            TempData["ErrorMessage"] = "An error occurred while processing the refund rejection.";
+            return RedirectToAction("RefundRequests");
+        }
+    }
+
 
         [HttpGet]
         [Authorize(Roles = "SalesManager")]
