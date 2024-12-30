@@ -347,17 +347,52 @@ namespace e_commerce.Controllers
         [HttpPost]
         public async Task<IActionResult> ApproveRefund(string orderId, string productId)
         {
-            var order = await _orderRepository.FindByIdAsync(orderId);
-            if (order != null)
+            try 
             {
-                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
-                if (item != null)
+                var order = await _orderRepository.FindByIdAsync(orderId);
+                if (order == null)
                 {
-                    item.RefundStatus = "Complete";
-                    await _orderRepository.ReplaceOneAsync(order);
+                    _logger.LogWarning($"Order not found for refund approval. OrderId: {orderId}");
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("RefundRequests");
                 }
+
+                var item = order.Items.FirstOrDefault(i => i.ProductId == productId);
+                if (item == null)
+                {
+                    _logger.LogWarning($"Product item not found in order. OrderId: {orderId}, ProductId: {productId}");
+                    TempData["ErrorMessage"] = "Product not found in order.";
+                    return RedirectToAction("RefundRequests");
+                }
+
+                // Get the product to update stock
+                var product = await _productRepository.FindByIdAsync(productId);
+                if (product == null)
+                {
+                    _logger.LogWarning($"Product not found for stock update. ProductId: {productId}");
+                    TempData["ErrorMessage"] = "Product not found.";
+                    return RedirectToAction("RefundRequests");
+                }
+
+                // Update refund status
+                item.RefundStatus = "Complete";
+                await _orderRepository.ReplaceOneAsync(order);
+
+                // Update product stock
+                product.QuantityInStock += item.Quantity;
+                await _productRepository.ReplaceOneAsync(product);
+
+                _logger.LogInformation($"Refund approved and stock updated. OrderId: {orderId}, ProductId: {productId}, Quantity: {item.Quantity}");
+                TempData["SuccessMessage"] = "Refund approved and product stock updated successfully.";
+
+                return RedirectToAction("RefundRequests");
             }
-            return RedirectToAction("RefundRequests");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error processing refund approval. OrderId: {orderId}, ProductId: {productId}");
+                TempData["ErrorMessage"] = "An error occurred while processing the refund.";
+                return RedirectToAction("RefundRequests");
+            }
         }
 
         [HttpPost]
