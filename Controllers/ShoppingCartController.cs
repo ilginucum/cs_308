@@ -40,6 +40,7 @@ namespace e_commerce.Controllers
                 {
                     item.ProductName = product.Name;
                     item.UnitPrice = decimal.Parse(product.Price.ToString("F2"));
+                    item.ImagePath = product.ImagePath;
                 }
                 else
                 {
@@ -77,7 +78,8 @@ namespace e_commerce.Controllers
                     QuantityInCart = quantity,
                     UnitPrice = decimal.Parse(product.Price.ToString("F2")),
                     ProductName = product.Name,
-                    ShoppingCartId = cart.Id
+                    ShoppingCartId = cart.Id,
+                    ImagePath = product.ImagePath
                 };
                 cart.Items.Add(newItem);
             }

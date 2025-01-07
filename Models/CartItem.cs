@@ -33,6 +33,8 @@ namespace e_commerce.Models
         public decimal TotalPrice => QuantityInCart * UnitPrice;
         public decimal? DiscountedPrice { get; set; }
 
+        public string ImagePath { get; set; }
+
         // ShoppingCart referansını kaldırdık çünkü bu, döngüsel referansa yol açabilir
     }
 }
