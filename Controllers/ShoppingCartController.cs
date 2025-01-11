@@ -41,10 +41,12 @@ namespace e_commerce.Controllers
                     item.ProductName = product.Name;
                     item.UnitPrice = decimal.Parse(product.Price.ToString("F2"));
                     item.ImagePath = product.ImagePath;
+                    item.AvailableQuantity = product.QuantityInStock;
                 }
                 else
                 {
                     item.ProductName = "Unknown Product";
+                    item.AvailableQuantity = 0;
                 }
             }
 
@@ -60,14 +62,29 @@ namespace e_commerce.Controllers
                 return NotFound();
             }
 
+            // Check if requested quantity is available
+            if (quantity > product.QuantityInStock)
+            {
+                // Instead of showing alert, we'll handle it in the view with the stock warning
+                return RedirectToAction("ProductDetails", "Product", new { id = productId });
+            }
+
             var cart = await GetOrCreateCartAsync();
             var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
 
             if (existingItem != null)
             {
+                // Check if the sum of existing and new quantity exceeds stock
+                if (existingItem.QuantityInCart + quantity > product.QuantityInStock)
+                {
+                    TempData["ErrorMessage"] = "Requested quantity exceeds available stock.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 existingItem.QuantityInCart += quantity;
                 existingItem.ProductName = product.Name;
                 existingItem.UnitPrice = product.Price;
+                existingItem.AvailableQuantity = product.QuantityInStock;
             }
             else
             {
@@ -79,7 +96,8 @@ namespace e_commerce.Controllers
                     UnitPrice = decimal.Parse(product.Price.ToString("F2")),
                     ProductName = product.Name,
                     ShoppingCartId = cart.Id,
-                    ImagePath = product.ImagePath
+                    ImagePath = product.ImagePath,
+                    AvailableQuantity = product.QuantityInStock
                 };
                 cart.Items.Add(newItem);
             }
@@ -89,6 +107,7 @@ namespace e_commerce.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> MoveToCart(string productId)
         {
@@ -148,22 +167,40 @@ namespace e_commerce.Controllers
         public async Task<IActionResult> UpdateQuantity(string cartItemId, int change)
         {
             var cart = await GetOrCreateCartAsync();
-
             var item = cart.Items.FirstOrDefault(i => i.Id == cartItemId);
+            
             if (item != null)
             {
-                item.QuantityInCart += change;
-                if (item.QuantityInCart <= 0)
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product == null)
                 {
-                    cart.Items.Remove(item);
+                    return NotFound();
                 }
 
-                cart.UpdatedAt = DateTime.UtcNow;
-                await _shoppingCartRepository.ReplaceOneAsync(cart);
+                var newQuantity = item.QuantityInCart + change;
+
+                // Check if the new quantity is within valid range
+                if (newQuantity > 0 && newQuantity <= product.QuantityInStock)
+                {
+                    item.QuantityInCart = newQuantity;
+                    cart.UpdatedAt = DateTime.UtcNow;
+                    await _shoppingCartRepository.ReplaceOneAsync(cart);
+                }
+                else if (newQuantity <= 0)
+                {
+                    cart.Items.Remove(item);
+                    cart.UpdatedAt = DateTime.UtcNow;
+                    await _shoppingCartRepository.ReplaceOneAsync(cart);
+                }
+                else
+                {
+                    TempData[$"QuantityError_{item.Id}"] = true;
+                }
             }
 
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(string cartItemId)

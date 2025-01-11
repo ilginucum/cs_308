@@ -35,6 +35,8 @@ namespace e_commerce.Models
 
         public string ImagePath { get; set; }
 
+        public int AvailableQuantity { get; set; } // Add this property
+
         // ShoppingCart referansını kaldırdık çünkü bu, döngüsel referansa yol açabilir
     }
 }

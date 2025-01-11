@@ -1,8 +1,6 @@
 @model e_commerce.Models.ShoppingCart
 
-<!-- Content kısmı -->
 <div class="main-container">
-    <!-- Cart Details -->
     <div class="cart-detail">
         <h2>Cart Details</h2>
         @if (Model.Items.Any())
@@ -29,19 +27,30 @@
                             <td><img src="@imageUrl" class="cart-item-img" alt="@item.ProductName"></td>
                             <td>@item.ProductName</td>
                             <td>$@item.UnitPrice</td>
-                            <td>
+                            <td class="quantity-cell">
                                 <form asp-controller="ShoppingCart" asp-action="UpdateQuantity" method="post">
                                     <input type="hidden" name="cartItemId" value="@item.Id" />
-                                    <button type="submit" name="change" value="-1" class="btn-rounded">-</button>
-                                    @item.QuantityInCart
-                                    <button type="submit" name="change" value="1" class="btn-rounded">+</button>
+                                    <div class="quantity-controls">
+                                        <button type="submit" name="change" value="-1" class="quantity-btn" 
+                                                @(item.QuantityInCart <= 1 ? "disabled" : "")>-</button>
+                                        <input type="text" readonly value="@item.QuantityInCart" class="quantity-input" />
+                                        <button type="submit" name="change" value="1" class="quantity-btn"
+                                                @(item.QuantityInCart >= item.AvailableQuantity ? "disabled" : "")>+</button>
+                                    </div>
+                                    <div class="stock-info">Available stock: @item.AvailableQuantity</div>
+                                    @if (TempData[$"QuantityError_{item.Id}"] != null)
+                                    {
+                                        <div class="stock-warning">
+                                            Maximum available stock is @item.AvailableQuantity
+                                        </div>
+                                    }
                                 </form>
                             </td>
                             <td>$@(item.QuantityInCart * item.UnitPrice)</td>
                             <td>
                                 <form asp-controller="ShoppingCart" asp-action="RemoveFromCart" method="post">
                                     <input type="hidden" name="cartItemId" value="@item.Id" />
-                                    <button type="submit" class="btn-rounded">Remove</button>
+                                    <button type="submit" class="btn-remove">Remove</button>
                                 </form>
                             </td>
                         </tr>
@@ -55,11 +64,10 @@
         }
     </div>
 
-    <!-- Cart Summary -->
     <div class="cart-summary">
         <h2>Cart Summary</h2>
         <p>Total: $@Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice)</p>
-        <button class="btn-rounded" 
+        <button class="btn-checkout" 
                 onclick="location.href='/Checkout/Address'"
                 @(Model.Items.Sum(i => i.QuantityInCart * i.UnitPrice) == 0 ? "disabled" : "")>
             Proceed to Checkout
@@ -67,7 +75,6 @@
     </div>
 </div>
 
-<!-- Gift Card Section -->
 <div class="gift-card">
     <label>
         <input type="checkbox"> Use Gift Card
@@ -111,22 +118,80 @@
         border-radius: 8px;
     }
 
-    .btn-rounded {
-        background-color: #be3144;
-        color: #ffffff;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 20px;
-        cursor: pointer;
+    .quantity-cell {
+        padding: 15px !important;
     }
 
-    .btn-rounded:hover {
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background-color: #be3144;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-btn:hover {
         background-color: #952735;
     }
 
-    .btn-rounded[disabled] {
+    .quantity-btn[disabled] {
         background-color: #dc7896;
         cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .quantity-input {
+        width: 50px;
+        height: 32px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 16px;
+        background-color: white;
+    }
+
+    .stock-info {
+        color: #666;
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .stock-warning {
+        color: #be3144;
+        background-color: #fbe9eb;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin: 8px 0;
+        font-size: 14px;
+        border: 1px solid #fad2d7;
+    }
+
+    .btn-remove {
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-remove:hover {
+        background-color: #ff0000;
     }
 
     .cart-summary {
@@ -137,6 +202,27 @@
         text-align: center;
     }
 
+    .btn-checkout {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        min-width: 200px;
+    }
+
+    .btn-checkout:hover {
+        background-color: #45a049;
+    }
+
+    .btn-checkout[disabled] {
+        background-color:#a5d6a7;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
     .gift-card {
         margin-top: 2rem;
         background-color: #ffffff;
@@ -144,5 +230,4 @@
         padding: 15px;
         text-align: center;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
 </style>

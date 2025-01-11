@@ -9,139 +9,139 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = e_commerce
 build_property.RootNamespace = e_commerce
-build_property.ProjectDir = /Users/betuliltir/Desktop/cs_308-2/
+build_property.ProjectDir = /Users/betuliltir/Desktop/cs_308-4/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/betuliltir/Desktop/cs_308-2
+build_property.MSBuildProjectDirectory = /Users/betuliltir/Desktop/cs_308-4
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Checkout/Address.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Checkout/Address.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hlY2tvdXQvQWRkcmVzcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/CreditCard/Confirmation.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/CreditCard/Confirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3JlZGl0Q2FyZC9Db25maXJtYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/CreditCard/EnterCreditCard.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/CreditCard/EnterCreditCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ3JlZGl0Q2FyZC9FbnRlckNyZWRpdENhcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Home/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Home/Privacy.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Orders/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Orders/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3JkZXJzL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/CreateCategory.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/CreateCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9DcmVhdGVDYXRlZ29yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/Delete.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/Edit.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/InvoiceManagement.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/InvoiceManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9JbnZvaWNlTWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/ManageComments.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/ManageComments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9NYW5hZ2VDb21tZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/ManageProduct.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/ManageProduct.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9NYW5hZ2VQcm9kdWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/OrderManagement.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/OrderManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9PcmRlck1hbmFnZW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Product/ProductDetails.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Product/ProductDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVjdC9Qcm9kdWN0RGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Sales/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Sales/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Sales/ProductsAwaitingPrice.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Sales/ProductsAwaitingPrice.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvUHJvZHVjdHNBd2FpdGluZ1ByaWNlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Sales/ProductsWithPrice.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Sales/ProductsWithPrice.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvUHJvZHVjdHNXaXRoUHJpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Sales/RefundRequests.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Sales/RefundRequests.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvUmVmdW5kUmVxdWVzdHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Sales/SetPrice.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Sales/SetPrice.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2FsZXMvU2V0UHJpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Shared/Components/ShoppingCartSummary/Default.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Shared/Components/ShoppingCartSummary/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvU2hvcHBpbmdDYXJ0U3VtbWFyeS9EZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Shared/Error.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Shared/_ValidationScriptsPartial.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/ShoppingCart/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/ShoppingCart/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvcHBpbmdDYXJ0L0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/User/AccessDenied.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/User/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9BY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/User/Login.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/User/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/User/Profile.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/User/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9Qcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/User/Registration.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/User/Registration.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlci9SZWdpc3RyYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Wishlist/Index.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Wishlist/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvV2lzaGxpc3QvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/_ViewImports.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/_ViewStart.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/betuliltir/Desktop/cs_308-2/Views/Shared/_Layout.cshtml]
+[/Users/betuliltir/Desktop/cs_308-4/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-tta7zllwk8
