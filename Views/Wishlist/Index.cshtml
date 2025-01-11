@@ -3,43 +3,39 @@
 <div class="container mt-4">
     <h1 class="text-center" style="color: #be3144;">My Wishlist</h1>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success"
+            style="border-radius: 10px; padding: 8px 12px; font-size: 1.2rem; background-color: #ffffff; color: #952735; text-align: center; border-color: #ffffff;">
+            <p style="margin: 0;">
+                <strong>@TempData["SuccessMessage"].ToString().Split(" has been")[0]</strong> has been added to your wishlist!
+            </p>
+        </div>
+    }
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success"
-            style="border-radius: 10px; padding: 8px 12px; font-size: 1.2rem; background-color: #ffffff; color: #952735 ;text-align: center; border-color: #ffffff;">
-                <p style="margin: 0;">
-                    <strong>@TempData["SuccessMessage"].ToString().Split(" has been")[0]</strong> has been added to your
-                    wishlist!
+    @if (ViewBag.DiscountNotifications != null && ViewBag.DiscountNotifications.Count > 0)
+    {
+        <div style="margin-top: 6px;"></div>
+
+        <div class="alert alert-success"
+            style="border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; background-color: #dc7986; color: #ffffff; text-align: center; border-color: #dc7986;">
+            @foreach (var notification in ViewBag.DiscountNotifications)
+            {
+                <p style="margin: 0; line-height: 1.5;">
+                    <strong>@notification.Split('!')[0]!</strong> @notification.Split('!')[1]
                 </p>
-            </div>
-        }
-
-        @if (ViewBag.DiscountNotifications != null && ViewBag.DiscountNotifications.Count > 0)
-        {
-            <div style="margin-top: 6px;"></div> <!-- Adds a small gap -->
-
-            <div class="alert alert-success"
-                style="border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; background-color: #dc7986; color: #ffffff; text-align: center; border-color: #dc7986;">
-                @foreach (var notification in ViewBag.DiscountNotifications)
-                {
-                    <p style="margin: 0; line-height: 1.5;">
-                        <strong>@notification.Split('!')[0]!</strong> @notification.Split('!')[1]
-                    </p>
-                }
-            </div>
-        }
-    </div>
-
-
-
-
+            }
+        </div>
+    }
 
     @if (!Model.Any())
     {
         <div class="text-center">
             <p>Your wishlist is empty. Add products to your wishlist!</p>
-            <a asp-controller="Home" asp-action="Index" class="btn browse-btn">Browse Products</a>
+            <a asp-controller="Home" asp-action="Index" class="btn" 
+                style="background-color: #4CAF50; color: white; border-radius: 15px; padding: 8px 20px; transition: all 0.3s ease;">
+                Browse Products
+            </a>
         </div>
     }
     else
@@ -51,9 +47,7 @@
 
                 @if (item.WishlistItem.DiscountedPrice < item.WishlistItem.OriginalPrice)
                 {
-                var discountPercentage = Math.Round((1 - (item.WishlistItem.DiscountedPrice / item.WishlistItem.OriginalPrice)) * 100);
-
- 
+                    var discountPercentage = Math.Round((1 - (item.WishlistItem.DiscountedPrice / item.WishlistItem.OriginalPrice)) * 100);
                     
                     <div class="position-absolute" style="
                         top: -10px;
@@ -82,26 +76,27 @@
                         <h4 style="color: #be3144;">@item.WishlistItem.ProductName</h4>
                         <p>By @item.WishlistItem.Author</p>
                         
-                        @if (item.WishlistItem.DiscountedPrice < item.WishlistItem.OriginalPrice){
-                        <p style="color: #be3144;">
-                            <span style="text-decoration: line-through; color: #777;">
-                                $@item.WishlistItem.OriginalPrice.ToString("F2")
-                            </span>
-                            <strong>$@item.WishlistItem.DiscountedPrice.ToString("F2")</strong>
-                        </p>
-                    }
-                    else
-                    {
-                        <p style="color: #be3144;">
-                            <strong>$@item.WishlistItem.Price.ToString("F2")</strong>
-                        </p>
-                    }
+                        @if (item.WishlistItem.DiscountedPrice < item.WishlistItem.OriginalPrice)
+                        {
+                            <p style="color: #be3144;">
+                                <span style="text-decoration: line-through; color: #777;">
+                                    $@item.WishlistItem.OriginalPrice.ToString("F2")
+                                </span>
+                                <strong>$@item.WishlistItem.DiscountedPrice.ToString("F2")</strong>
+                            </p>
+                        }
+                        else
+                        {
+                            <p style="color: #be3144;">
+                                <strong>$@item.WishlistItem.Price.ToString("F2")</strong>
+                            </p>
+                        }
 
                         @if (item.QuantityInStock <= 0)
                         {
-                            
                             <button class="btn"
-                                style="background-color: #dc7985; color: white; border-radius: 15px; border: none !important; outline: none; box-shadow: none !important"
+                                style="background-color: #808080; color: white; border-radius: 15px; border: none; 
+                                padding: 8px 20px; cursor: not-allowed; opacity: 0.7; transition: all 0.3s ease;"
                                 disabled>
                                 Move to Cart
                             </button>
@@ -109,11 +104,11 @@
                         }
                         else
                         {
-                            
                             <form asp-controller="Wishlist" asp-action="MoveToCart" method="post">
                                 <input type="hidden" name="productId" value="@item.WishlistItem.ProductId" />
-                                <button type="submit" class="btn btn-success"
-                                    style="background-color: #be3144; color: white; border-radius: 15px; outline: none !important; border: none !important; box-shadow: none !important">
+                                <button type="submit" class="btn"
+                                    style="background-color: #4CAF50; color: white; border-radius: 15px; border: none;
+                                    padding: 8px 20px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                     Move to Cart
                                 </button>
                             </form>
@@ -121,7 +116,11 @@
 
                         <form asp-controller="Wishlist" asp-action="RemoveFromWishlist" method="post" style="margin-top: 10px;">
                             <input type="hidden" name="productId" value="@item.WishlistItem.ProductId" />
-                            <button type="submit" class="btn btn-outline-danger" style="border-radius: 15px;">Remove</button>
+                            <button type="submit" class="btn"
+                                style="background-color: #ff4444; color: white; border-radius: 15px; border: none;
+                                padding: 8px 20px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                Remove
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -129,4 +128,3 @@
         }
     }
 </div>
-
