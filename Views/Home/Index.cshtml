@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Product List -->
     <div id="productList" class="row">
         @foreach (var product in Model)
@@ -106,7 +106,7 @@
                     }
                         @if (product.QuantityInStock > 0)
                         {
-                            <span class="stock-badge in-stock">In Stock</span>
+                            
                         }
                         else
                         {
@@ -120,6 +120,56 @@
                             <p class="card-text mt-3">@product.Description</p>
                             <span class="price-tag">$@product.Price.ToString("F2")</span>
                         </div>
+                        @if (product.DiscountedPrice.HasValue)
+                        {
+                        var discountRate = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
+                        <div class="discount-badge">
+                            <div class="discount-content">
+                                <span class="discount-rate">-@discountRate%</span>
+                                <span class="discount-text">OFF</span>
+                            </div>
+                        </div>
+                        }
+
+                        <style>
+                        .discount-badge {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: #be3144;
+                        background: linear-gradient(135deg, #be3144, #952735);
+                        padding: 8px 12px;
+                        border-radius: 50px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        transform: rotate(0deg);
+                        transition: transform 0.3s ease;
+                        }
+
+                        .discount-badge:hover {
+                        transform: rotate(-10deg) scale(1.1);
+                        }
+
+                        .discount-content {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        line-height: 1;
+                        }
+
+                        .discount-rate {
+                        color: white;
+                        font-weight: bold;
+                        font-size: 1.1em;
+                        margin-bottom: 2px;
+                        }
+
+                        .discount-text {
+                        color: rgba(255,255,255,0.9);
+                        font-size: 0.7em;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        }
+                        </style>
                     </div>
                 </a>
             </div>
