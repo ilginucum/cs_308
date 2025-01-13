@@ -25,6 +25,8 @@ namespace e_commerce.Models
         public bool RefundRequested { get; set; } = false;
         [Obsolete]
         public string RefundStatus { get; set; }
+        [BsonIgnore]
+        public Address ShippingAddress { get; set; }
         
     }
 

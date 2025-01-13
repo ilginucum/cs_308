@@ -12,47 +12,57 @@ namespace e_commerce.Controllers
         private readonly IMongoDBRepository<Order> _orderRepository;
         private readonly IMongoDBRepository<Product> _productRepository; // Ekle
         private readonly ILogger<OrdersController> _logger;
+        private readonly IMongoDBRepository<Address> _addressRepository;
 
         public OrdersController(
             IMongoDBRepository<Order> orderRepository,
-            IMongoDBRepository<Product> productRepository, // Ekle
+            IMongoDBRepository<Product> productRepository, 
+            IMongoDBRepository<Address> addressRepository,
             ILogger<OrdersController> logger)
         {
             _orderRepository = orderRepository;
-            _productRepository = productRepository; // Ekle
+            _productRepository = productRepository;
+            _addressRepository = addressRepository;
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            try
+            public async Task<IActionResult> Index()
             {
-                // Add debug logging
-                _logger.LogInformation("Accessing Orders Index");
-                
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _logger.LogInformation($"Current UserId: {userId}");
-
-                if (string.IsNullOrEmpty(userId))
+                try
                 {
-                    _logger.LogWarning("UserId is null or empty");
+                    _logger.LogInformation("Accessing Orders Index");
+                    
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    _logger.LogInformation($"Current UserId: {userId}");
+
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        _logger.LogWarning("UserId is null or empty");
+                        return View(Enumerable.Empty<Order>());
+                    }
+
+                    var orders = await _orderRepository.FilterByAsync(o => o.UserId == userId);
+                    var ordersList = orders.ToList();
+
+                    // Load addresses for all orders
+                    foreach (var order in ordersList)
+                    {
+                        if (!string.IsNullOrEmpty(order.AddressId))
+                        {
+                            order.ShippingAddress = await _addressRepository.FindByIdAsync(order.AddressId);
+                        }
+                    }
+
+                    _logger.LogInformation($"Found {ordersList.Count} orders for user");
+
+                    return View(ordersList);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error retrieving orders");
                     return View(Enumerable.Empty<Order>());
                 }
-
-                var orders = await _orderRepository.FilterByAsync(o => o.UserId == userId);
-                var ordersList = orders.ToList();
-
-
-                _logger.LogInformation($"Found {ordersList.Count} orders for user");
-
-                return View(ordersList);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving orders");
-                return View(Enumerable.Empty<Order>());
-            }
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RequestRefund(string orderId, string selectedProducts)
