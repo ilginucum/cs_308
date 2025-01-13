@@ -231,14 +231,27 @@ namespace e_commerce.Controllers
             {
                 var allOrders = await _orderRepository.GetAllAsync();
                 
+                // Ensure we're using end of day for the end date
+                endDate = endDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                
                 // Filter orders by OrderDate within the specified range
                 var filteredOrders = allOrders
-                                     .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
-                                     .ToList();
-                // Calculate total revenue and profit/loss
-                decimal totalRevenue = filteredOrders.Sum(o => o.TotalAmount);
-                decimal totalCost = filteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)); // Assuming 30% profit margin
-                decimal profitLoss = totalRevenue - totalCost;
+                    .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+                    .ToList();
+
+                // Group orders by month
+                var monthlyData = filteredOrders
+                    .GroupBy(o => new DateTime(o.OrderDate.Year, o.OrderDate.Month, 1))
+                    .OrderBy(g => g.Key)
+                    .Select(g => new SalesViewModel.MonthlyData
+                    {
+                        Month = g.Key,
+                        Revenue = g.Sum(o => o.TotalAmount),
+                        Cost = g.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)), // 70% cost assumption
+                        Profit = g.Sum(o => o.TotalAmount) - g.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M))
+                    })
+                    .ToList();
+
                 var products = await _productRepository.GetAllAsync();
                 var viewModel = new SalesViewModel
                 {
@@ -247,11 +260,13 @@ namespace e_commerce.Controllers
                     Products = products,
                     Orders = allOrders,
                     FilteredOrders = filteredOrders,
-                    TotalRevenue = totalRevenue,
-                    ProfitLoss = profitLoss,
-                    RefundRequests = (await _orderRepository.FilterByAsync(o => o.RefundRequested == true)).ToList()
-
+                    TotalRevenue = monthlyData.Sum(m => m.Revenue),
+                    ProfitLoss = monthlyData.Sum(m => m.Profit),
+                    MonthlyFinancialData = monthlyData,
+                    RefundRequests = await _orderRepository.FilterByAsync(o => o.RefundRequested == true)
                 };
+
+                _logger.LogInformation($"Calculated profit for period {startDate:d} to {endDate:d}. Total Revenue: {viewModel.TotalRevenue:C}");
                 return View("Index", viewModel);
             }
             catch (Exception ex)

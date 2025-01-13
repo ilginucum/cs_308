@@ -41,36 +41,39 @@
             <div class="card custom-card">
                 <div class="card-header text-white" style="background-color: #952735;">
                     <h4 class="mb-0 text-center">
-                        <button class="header-button" id="toggleCalculateSection">Calculate Profit / Display Invoice
-                            </center></button>
+                        <button class="header-button" id="toggleCalculateSection">Calculate Profit / Display Invoice</button>
                     </h4>
                 </div>
                 <div class="card-body" id="calculateSection" style="@(showCalculateSection ? "block" : "none")">
-                    <form asp-action="ViewInvoices" method="get"></form>
                     <form asp-action="CalculateProfit" method="post" class="mb-4">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="startDate" class="form-label">Start Date:</label>
-                                <input type="date" id="startDate" name="startDate" class="form-control" required />
+                                <input type="date" id="startDate" name="startDate" class="form-control" 
+                                       required value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="endDate" class="form-label">End Date:</label>
-                                <input type="date" id="endDate" name="endDate" class="form-control" required />
+                                <input type="date" id="endDate" name="endDate" class="form-control" 
+                                       required value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
+                            <div class="col-md-3 d-flex align-items-end">
                                 <button type="submit" class="btn custom-btn-primary w-100">Calculate</button>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="button" id="resetDates" class="btn btn-secondary w-100">Reset Dates</button>
                             </div>
                         </div>
                     </form>
 
                     @if (Model.FilteredOrders != null)
                     {
-                        <div class="text-center mt-3">
+                        <div class="results-summary text-center mt-3">
                             <h4>Total Revenue: @Model.TotalRevenue.ToString("C")</h4>
                             <h4>Profit/Loss: @Model.ProfitLoss.ToString("C")</h4>
                         </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-secondary" id="toggleDetails">Details</button>
+                        <div class="action-buttons text-center mt-3">
+                            <button class="btn btn-secondary me-2" id="toggleDetails">Details</button>
                             <button class="btn btn-primary" id="toggleChart">Chart</button>
                         </div>
 
@@ -112,22 +115,16 @@
                             </div>
                         </div>
 
-                        <div id="chartSection" style="display: none; margin-top: 20px;">
-                            <canvas id="profitLossChart" width="400" height="200"></canvas>
+                        <div id="chartSection" style="display: none;">
+                            <div class="chart-container">
+                                <canvas id="profitLossChart"></canvas>
+                            </div>
                         </div>
                     }
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        function printInvoice(url) {
-            const printWindow = window.open(url, '_blank');
-            printWindow.onload = function () {
-                printWindow.print();
-            };
-        }
-    </script>
 
     <style>
         .page-title {
@@ -213,55 +210,241 @@
             font-size: 20px;
             padding: 10px;
             cursor: pointer;
+            width: 100%;
+        }
+
+        .custom-btn-primary {
+            background-color: #be3144;
+            color: white;
+            border: none;
+        }
+
+        .custom-btn-primary:hover {
+            background-color: #952735;
+            color: white;
+        }
+
+        #chartSection {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 30px !important;
+            margin-bottom: 30px;
+            padding: 20px;
+            height: 500px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .table.custom-table {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table.custom-table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .table.custom-table tbody tr:hover {
+            background-color: #f8f9fa;
         }
     </style>
+
     @section Scripts {
-                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                    <script>
-                        document.getElementById("toggleCalculateSection").addEventListener("click", function () {
-                            let section = document.getElementById("calculateSection");
-                            section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
-                            section.scrollIntoView({ behavior: 'smooth' });
-                        });
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get the date inputs
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
+                
+                // Check if we have stored dates in localStorage
+                const storedStartDate = localStorage.getItem('salesStartDate');
+                const storedEndDate = localStorage.getItem('salesEndDate');
+                
+                // If we have stored dates and no model dates, use the stored dates
+                if (storedStartDate && !startDateInput.value) {
+                    startDateInput.value = storedStartDate;
+                }
+                if (storedEndDate && !endDateInput.value) {
+                    endDateInput.value = storedEndDate;
+                }
+                
+                // Store dates when form is submitted
+                document.querySelector('form').addEventListener('submit', function() {
+                    localStorage.setItem('salesStartDate', startDateInput.value);
+                    localStorage.setItem('salesEndDate', endDateInput.value);
+                });
+                
+                // Reset dates button handler
+                document.getElementById('resetDates').addEventListener('click', function() {
+                    // Clear the form
+                    startDateInput.value = '';
+                    endDateInput.value = '';
+                    
+                    // Clear localStorage
+                    localStorage.removeItem('salesStartDate');
+                    localStorage.removeItem('salesEndDate');
+                    
+                    // Hide only the results sections while keeping the input form visible
+                    let chartSection = document.getElementById('chartSection');
+                    let detailsSection = document.getElementById('detailsSection');
+                    
+                    if (chartSection) {
+                        chartSection.style.display = 'none';
+                        if (window.myChart) {
+                            window.myChart.destroy();
+                        }
+                    }
+                    
+                    if (detailsSection) {
+                        detailsSection.style.display = 'none';
+                    }
+                    
+                    // Hide the results summary
+                    const resultsSummary = document.querySelector('.results-summary');
+                    if (resultsSummary) {
+                        resultsSummary.style.display = 'none';
+                    }
+                    
+                    // Hide the action buttons
+                    const actionButtons = document.querySelector('.action-buttons');
+                    if (actionButtons) {
+                        actionButtons.style.display = 'none';
+                    }
+                    
+                    // Optional: Scroll to top of the form
+                    document.querySelector('.card-header').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
 
-                        document.getElementById("toggleDetails")?.addEventListener("click", function () {
-                            let detailsSection = document.getElementById("detailsSection");
-                            detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
-                        });
+            document.getElementById("toggleCalculateSection").addEventListener("click", function () {
+                let section = document.getElementById("calculateSection");
+                section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
 
-                        document.getElementById("toggleChart")?.addEventListener("click", function () {
-                            let chartSection = document.getElementById("chartSection");
-                            chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
+            document.getElementById("toggleDetails")?.addEventListener("click", function () {
+                let detailsSection = document.getElementById("detailsSection");
+                detailsSection.style.display = (detailsSection.style.display === "none" || detailsSection.style.display === "") ? "block" : "none";
+            });
 
-                            if (chartSection.style.display === "block" && !window.chartInitialized) {
-                                window.chartInitialized = true;
+            document.getElementById("toggleChart")?.addEventListener("click", function () {
+                let chartSection = document.getElementById("chartSection");
+                chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
 
-                                var totalRevenue = @Model.TotalRevenue;
-                                var totalCost = @((Model.FilteredOrders != null) ? Model.FilteredOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)) : 0);
-                                var profitLoss = @((Model.ProfitLoss != null) ? Model.ProfitLoss : 0);
+                if (chartSection.style.display === "block") {
+                    // Check if we need to reinitialize the chart
+                    if (window.myChart) {
+                        window.myChart.destroy();
+                    }
 
-                                var ctx = document.getElementById('profitLossChart').getContext('2d');
-                                new Chart(ctx, {
-                                    type: 'bar',
-                                    data: {
-                                        labels: ['Revenue', 'Cost', 'Profit/Loss'],
-                                        datasets: [{
-                                            label: 'Amount ($)',
-                                            data: [totalRevenue, totalCost, profitLoss],
-                                            backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                                            borderColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                                            borderWidth: 1
-                                        }]
-                                    },
-                                    options: {
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true
-                                            }
+                    // Get the monthly data from the model
+                    var monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyFinancialData ?? new List<SalesViewModel.MonthlyData>()));
+
+                    // Prepare the data for the chart
+                    var months = monthlyData.map(d => {
+                        var date = new Date(d.month);
+                        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    });
+                    
+                    var revenues = monthlyData.map(d => d.revenue);
+                    var costs = monthlyData.map(d => d.cost);
+                    var profits = monthlyData.map(d => d.profit);
+
+                    // Professional color scheme
+                    const colors = {
+                        revenue: {
+                            fill: 'rgba(65, 131, 215, 0.7)',
+                            border: 'rgb(65, 131, 215)'
+                        },
+                        cost: {
+                            fill: 'rgba(231, 76, 60, 0.7)',
+                            border: 'rgb(231, 76, 60)'
+                        },
+                        profit: {
+                            fill: 'rgba(46, 204, 113, 0.7)',
+                            border: 'rgb(46, 204, 113)'
+                        }
+                    };
+
+                    var ctx = document.getElementById('profitLossChart').getContext('2d');
+                    window.myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: months,
+                            datasets: [
+                                {
+                                    label: 'Revenue',
+                                    data: revenues,
+                                    backgroundColor: colors.revenue.fill,
+                                    borderColor: colors.revenue.border,
+                                    borderWidth: 2,
+                                    borderRadius: 4,
+                                    barPercentage: 0.8,
+                                    categoryPercentage: 0.9
+                                },
+                                {
+                                    label: 'Cost',
+                                    data: costs,
+                                    backgroundColor: '#ff6384',
+                                    borderColor: '#ff6384',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Profit',
+                                    data: profits,
+                                    backgroundColor: '#4bc0c0',
+                                    borderColor: '#4bc0c0',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '$' + value.toFixed(2);
                                         }
                                     }
-                                });
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': $' + context.raw.toFixed(2);
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
                             }
-                        });
-                    </script>
+                        }
+                    });
                 }
+            });
+
+            function printInvoice(url) {
+                const printWindow = window.open(url, '_blank');
+                printWindow.onload = function () {
+                    printWindow.print();
+                };
+            }
+        </script>
+    }
+</div>
