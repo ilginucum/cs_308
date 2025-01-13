@@ -18,7 +18,7 @@
                                     <th>User</th>
                                     <th>Comment</th>
                                     <th>Date</th>
-                                    <th>Purchased</th>
+                                    
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -30,16 +30,7 @@
                                         <td>@comment.UserName</td>
                                         <td>@comment.CommentText</td>
                                         <td>@comment.CreatedAt.ToString("dd/MM/yyyy")</td>
-                                        <td>
-                                            @if (comment.HasPurchased)
-                                            {
-                                                <span class="badge badge-purchased">Verified Purchase</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-not-purchased">Not Purchased</span>
-                                            }
-                                        </td>
+                                        
                                         <td>
                                             <div class="btn-group">
                                                 <form asp-action="ApproveComment" method="post" class="me-2">
@@ -89,7 +80,7 @@
                                     <th>User</th>
                                     <th>Comment</th>
                                     <th>Date</th>
-                                    <th>Purchased</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,16 +91,6 @@
                                         <td>@comment.UserName</td>
                                         <td>@comment.CommentText</td>
                                         <td>@comment.CreatedAt.ToString("dd/MM/yyyy")</td>
-                                        <td>
-                                            @if (comment.HasPurchased)
-                                            {
-                                                <span class="badge badge-purchased">Verified Purchase</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-not-purchased">Not Purchased</span>
-                                            }
-                                        </td>
                                     </tr>
                                 }
                             </tbody>

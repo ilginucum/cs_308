@@ -129,30 +129,23 @@
         <h3 style="color: #be3144;">Rate this Product</h3>
         @if (User?.Identity != null && User.Identity.IsAuthenticated)
         {
-            @if (ViewBag.HasPurchased)
-            {
-                <form asp-action="AddRating" asp-controller="Product" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="ProductId" value="@Model.Id" />
-                    <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
+            
+            <form asp-action="AddRating" asp-controller="Product" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.Id" />
+                <input type="hidden" id="selectedRating" name="selectedRating" value="0" />
 
-                    <div id="rating" class="d-flex">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
-                        }
-                    </div>
-
-                    <button type="submit" class="btn btn-primary rounded mt-3"
-                        style="background-color: #be3144; border-radius: 15px;">Submit Rating</button>
-                </form>
-            }
-            else
-            {
-                <div class="alert alert-info" style="border-radius: 15px;">
-                    You can rate this product after purchasing it.
+                <div id="rating" class="d-flex">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer; color: #ccc;">&#9733;</span>
+                    }
                 </div>
-            }
+
+                <button type="submit" class="btn btn-primary rounded mt-3"
+                    style="background-color: #be3144; border-radius: 15px;">Submit Rating</button>
+            </form>
+            
         }
         else
         {
@@ -164,7 +157,7 @@
     <!-- Comments Section -->
     <div class="mt-4 p-4 shadow" style="background-color: #ffffff; border-radius: 20px;">
         <h3 style="color: #be3144;">Comments</h3>
-        @if (User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated && ViewBag.HasPurchased)
         {
             <form asp-action="AddComment" asp-controller="Product" method="post">
                 @Html.AntiForgeryToken()
@@ -176,6 +169,10 @@
                 <button type="submit" class="btn btn-primary rounded mt-3"
                     style="background-color: #be3144; border-radius: 15px;">Add Comment</button>
             </form>
+        }
+        else if (!ViewBag.HasPurchased)  // Ekstra mesaj kısmı
+        {
+            <p>You can only comment on products you have purchased and received.</p>
         }
         else
         {

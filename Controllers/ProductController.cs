@@ -316,12 +316,15 @@ namespace e_commerce.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                 _logger.LogInformation($"Checking purchase status for user {userId} and product {id}");
+
                 var orders = await _orderRepository.FilterByAsync(o => 
                     o.UserId == userId && 
                     o.OrderStatus == "Delivered" &&
                     o.Items.Any(item => item.ProductId == id));
                 
                 hasPurchased = orders.Any();
+                _logger.LogInformation($"HasPurchased result: {hasPurchased}");
             }
 
             // Get comments and ratings
@@ -426,19 +429,6 @@ namespace e_commerce.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Check if user has purchased the product
-            var orders = await _orderRepository.FilterByAsync(o => 
-                o.UserId == userId && 
-                o.OrderStatus == "Delivered" &&
-                o.Items.Any(item => item.ProductId == ProductId));
-            
-            if (!orders.Any())
-            {
-                TempData["ErrorMessage"] = "You can only rate products you have purchased.";
-                return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
-            }
-
             var userName = User.Identity.Name;
 
             // Check for existing rating

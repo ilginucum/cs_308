@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dPNB6et0aNE=",
+  "dgSpecHash": "ycn3MvpnUKY=",
   "success": true,
-  "projectFilePath": "/Users/eysanmutlu/cs308_29_10_2024/cs308_13_deneme2/cs_308/e_commerce.csproj",
+  "projectFilePath": "/Users/eysanmutlu/cs308_29_10_2024/cs308_13_01_deneme3/cs_308/e_commerce.csproj",
   "expectedPackageFiles": [
     "/Users/eysanmutlu/.nuget/packages/aspnetcore.identity.mongo/9.0.0/aspnetcore.identity.mongo.9.0.0.nupkg.sha512",
     "/Users/eysanmutlu/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
