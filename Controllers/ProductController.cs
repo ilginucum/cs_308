@@ -429,6 +429,19 @@ namespace e_commerce.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Check if user has purchased the product and if it's delivered
+            var orders = await _orderRepository.FilterByAsync(o => 
+                o.UserId == userId && 
+                o.OrderStatus == "Delivered" &&
+                o.Items.Any(item => item.ProductId == ProductId));
+            
+            if (!orders.Any())
+            {
+                TempData["ErrorMessage"] = "You can only rate products you have purchased and received.";
+                return RedirectToAction(nameof(ProductDetails), new { id = ProductId });
+            }
+            
             var userName = User.Identity.Name;
 
             // Check for existing rating
