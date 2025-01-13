@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets/images/iyi-adam.jpg"
     },
     {
+      "Id": "/Users/macbookpro/Desktop/308_new/cs_308-14/wwwroot/images/küçük-prens.jpg",
+      "PackagePath": "staticwebassets/images/küçük-prens.jpg"
+    },
+    {
       "Id": "/Users/macbookpro/Desktop/308_new/cs_308-14/wwwroot/images/les-miserables.jpg",
       "PackagePath": "staticwebassets/images/les-miserables.jpg"
     },

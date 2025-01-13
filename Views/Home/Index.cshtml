@@ -87,92 +87,95 @@
     <div id="productList" class="row">
         @foreach (var product in Model)
         {
-            <div class="col-md-4 mb-4 product-item" 
-                 data-name="@product.Name" 
-                 data-author="@product.Author" 
-                 data-price="@product.Price"
-                 data-genre="@product.Genre"
-                 data-description="@product.Description"
-                 data-popularity="@(ViewBag.ProductPopularity != null && 
-                              ViewBag.ProductPopularity.ContainsKey(product.Id) ? 
-                              ViewBag.ProductPopularity[product.Id] : 0)">
-                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" 
-                   class="text-decoration-none text-dark">
-                    <div class="card h-100">
-                    @{
-                    string imageUrl = !string.IsNullOrEmpty(product.ImagePath) 
-                    ? product.ImagePath 
-                    : "/images/default-book.jpg";
-                    }
-                        @if (product.QuantityInStock > 0)
-                        {
-                            
+            @if (product.Price > 0) // Sadece fiyatı 0'dan büyük olan ürünleri göster
+            {
+                <div class="col-md-4 mb-4 product-item" 
+                    data-name="@product.Name" 
+                    data-author="@product.Author" 
+                    data-price="@product.Price"
+                    data-genre="@product.Genre"
+                    data-description="@product.Description"
+                    data-popularity="@(ViewBag.ProductPopularity != null && 
+                                ViewBag.ProductPopularity.ContainsKey(product.Id) ? 
+                                ViewBag.ProductPopularity[product.Id] : 0)">
+                    <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" 
+                    class="text-decoration-none text-dark">
+                        <div class="card h-100">
+                        @{
+                        string imageUrl = !string.IsNullOrEmpty(product.ImagePath) 
+                        ? product.ImagePath 
+                        : "/images/default-book.jpg";
                         }
-                        else
-                        {
-                            <span class="stock-badge out-of-stock">Out of Stock</span>
-                        }
-                        <img src="@imageUrl" class="card-img-top" alt="@product.Name">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="text-muted">by @product.Author</p>
-                            <span class="genre-badge">@product.Genre</span>
-                            <p class="card-text mt-3">@product.Description</p>
-                            <span class="price-tag">$@product.Price.ToString("F2")</span>
-                        </div>
-                        @if (product.DiscountedPrice.HasValue)
-                        {
-                        var discountRate = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
-                        <div class="discount-badge">
-                            <div class="discount-content">
-                                <span class="discount-rate">-@discountRate%</span>
-                                <span class="discount-text">OFF</span>
+                            @if (product.QuantityInStock > 0)
+                            {
+                                
+                            }
+                            else
+                            {
+                                <span class="stock-badge out-of-stock">Out of Stock</span>
+                            }
+                            <img src="@imageUrl" class="card-img-top" alt="@product.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="text-muted">by @product.Author</p>
+                                <span class="genre-badge">@product.Genre</span>
+                                <p class="card-text mt-3">@product.Description</p>
+                                <span class="price-tag">$@product.Price.ToString("F2")</span>
                             </div>
+                            @if (product.DiscountedPrice.HasValue)
+                            {
+                            var discountRate = Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100);
+                            <div class="discount-badge">
+                                <div class="discount-content">
+                                    <span class="discount-rate">-@discountRate%</span>
+                                    <span class="discount-text">OFF</span>
+                                </div>
+                            </div>
+                            }
+
+                            <style>
+                            .discount-badge {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            background: #5cb85c;
+                            background: linear-gradient(135deg, #5cb85c, #4cae4c);
+                            padding: 8px 12px;
+                            border-radius: 50px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            transform: rotate(0deg);
+                            transition: transform 0.3s ease;
+                            }
+
+                            .discount-badge:hover {
+                            transform: rotate(-10deg) scale(1.1);
+                            }
+
+                            .discount-content {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            line-height: 1;
+                            }
+
+                            .discount-rate {
+                            color: white;
+                            font-weight: bold;
+                            font-size: 1.1em;
+                            margin-bottom: 2px;
+                            }
+
+                            .discount-text {
+                            color: rgba(255,255,255,0.9);
+                            font-size: 0.7em;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                            }
+                            </style>
                         </div>
-                        }
-
-                        <style>
-                        .discount-badge {
-                        position: absolute;
-                        top: 10px;
-                        right: 10px;
-                        background: #be3144;
-                        background: linear-gradient(135deg, #be3144, #952735);
-                        padding: 8px 12px;
-                        border-radius: 50px;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                        transform: rotate(0deg);
-                        transition: transform 0.3s ease;
-                        }
-
-                        .discount-badge:hover {
-                        transform: rotate(-10deg) scale(1.1);
-                        }
-
-                        .discount-content {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        line-height: 1;
-                        }
-
-                        .discount-rate {
-                        color: white;
-                        font-weight: bold;
-                        font-size: 1.1em;
-                        margin-bottom: 2px;
-                        }
-
-                        .discount-text {
-                        color: rgba(255,255,255,0.9);
-                        font-size: 0.7em;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-                        }
-                        </style>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            }
         }
     </div>
 </div>
@@ -344,6 +347,7 @@
     /* Stock Badge */
     .stock-badge {
         position: absolute;
+        background: #c7001b; 
         top: 10px;
         right: 10px;
         padding: 5px 12px;
@@ -359,7 +363,7 @@
     }
     
     .out-of-stock {
-        background-color: #be3144;
+        background-color: #c7001b;
         color: white;
     }
     
