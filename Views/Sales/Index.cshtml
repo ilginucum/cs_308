@@ -263,15 +263,12 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Get the date inputs
                 const startDateInput = document.getElementById('startDate');
                 const endDateInput = document.getElementById('endDate');
                 
-                // Check if we have stored dates in localStorage
                 const storedStartDate = localStorage.getItem('salesStartDate');
                 const storedEndDate = localStorage.getItem('salesEndDate');
                 
-                // If we have stored dates and no model dates, use the stored dates
                 if (storedStartDate && !startDateInput.value) {
                     startDateInput.value = storedStartDate;
                 }
@@ -279,23 +276,18 @@
                     endDateInput.value = storedEndDate;
                 }
                 
-                // Store dates when form is submitted
                 document.querySelector('form').addEventListener('submit', function() {
                     localStorage.setItem('salesStartDate', startDateInput.value);
                     localStorage.setItem('salesEndDate', endDateInput.value);
                 });
                 
-                // Reset dates button handler
                 document.getElementById('resetDates').addEventListener('click', function() {
-                    // Clear the form
                     startDateInput.value = '';
                     endDateInput.value = '';
                     
-                    // Clear localStorage
                     localStorage.removeItem('salesStartDate');
                     localStorage.removeItem('salesEndDate');
                     
-                    // Hide only the results sections while keeping the input form visible
                     let chartSection = document.getElementById('chartSection');
                     let detailsSection = document.getElementById('detailsSection');
                     
@@ -310,19 +302,16 @@
                         detailsSection.style.display = 'none';
                     }
                     
-                    // Hide the results summary
                     const resultsSummary = document.querySelector('.results-summary');
                     if (resultsSummary) {
                         resultsSummary.style.display = 'none';
                     }
                     
-                    // Hide the action buttons
                     const actionButtons = document.querySelector('.action-buttons');
                     if (actionButtons) {
                         actionButtons.style.display = 'none';
                     }
                     
-                    // Optional: Scroll to top of the form
                     document.querySelector('.card-header').scrollIntoView({ behavior: 'smooth' });
                 });
             });
@@ -343,39 +332,23 @@
                 chartSection.style.display = (chartSection.style.display === "none" || chartSection.style.display === "") ? "block" : "none";
 
                 if (chartSection.style.display === "block") {
-                    // Check if we need to reinitialize the chart
                     if (window.myChart) {
                         window.myChart.destroy();
                     }
 
-                    // Get the monthly data from the model
                     var monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyFinancialData ?? new List<SalesViewModel.MonthlyData>()));
+                    
+                    // Sort the data by date
+                    monthlyData.sort((a, b) => new Date(a.month) - new Date(b.month));
 
-                    // Prepare the data for the chart
                     var months = monthlyData.map(d => {
                         var date = new Date(d.month);
                         return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
                     });
                     
-                    var revenues = monthlyData.map(d => d.revenue);
-                    var costs = monthlyData.map(d => d.cost);
-                    var profits = monthlyData.map(d => d.profit);
-
-                    // Professional color scheme
-                    const colors = {
-                        revenue: {
-                            fill: 'rgba(65, 131, 215, 0.7)',
-                            border: 'rgb(65, 131, 215)'
-                        },
-                        cost: {
-                            fill: 'rgba(231, 76, 60, 0.7)',
-                            border: 'rgb(231, 76, 60)'
-                        },
-                        profit: {
-                            fill: 'rgba(46, 204, 113, 0.7)',
-                            border: 'rgb(46, 204, 113)'
-                        }
-                    };
+                    var revenues = monthlyData.map(d => d.revenue || 0);
+                    var costs = monthlyData.map(d => d.cost || 0);
+                    var profits = monthlyData.map(d => d.profit || 0);
 
                     var ctx = document.getElementById('profitLossChart').getContext('2d');
                     window.myChart = new Chart(ctx, {
@@ -386,52 +359,128 @@
                                 {
                                     label: 'Revenue',
                                     data: revenues,
-                                    backgroundColor: colors.revenue.fill,
-                                    borderColor: colors.revenue.border,
+                                    backgroundColor: 'rgba(65, 131, 215, 0.7)',
+                                    borderColor: 'rgb(65, 131, 215)',
                                     borderWidth: 2,
                                     borderRadius: 4,
-                                    barPercentage: 0.8,
-                                    categoryPercentage: 0.9
+                                    order: 2
                                 },
                                 {
                                     label: 'Cost',
                                     data: costs,
-                                    backgroundColor: '#ff6384',
-                                    borderColor: '#ff6384',
-                                    borderWidth: 1
+                                    backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                                    borderColor: 'rgb(231, 76, 60)',
+                                    borderWidth: 2,
+                                    borderRadius: 4,
+                                    order: 2
                                 },
                                 {
-                                    label: 'Profit',
+                                    label: 'Profit/Loss',
                                     data: profits,
-                                    backgroundColor: '#4bc0c0',
-                                    borderColor: '#4bc0c0',
-                                    borderWidth: 1
+                                    type: 'line',
+                                    borderColor: 'rgb(46, 204, 113)',
+                                    backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                                    borderWidth: 3,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    fill: false,
+                                    tension: 0.4,
+                                    order: 1
                                 }
                             ]
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: {
+                                intersect: false,
+                                mode: 'index'
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)',
+                                        drawBorder: false
+                                    },
                                     ticks: {
+                                        padding: 10,
+                                        color: '#666',
+                                        font: {
+                                            size: 12,
+                                            weight: '500'
+                                        },
                                         callback: function(value) {
-                                            return '$' + value.toFixed(2);
+                                            return '$' + value.toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        padding: 10,
+                                        color: '#666',
+                                        font: {
+                                            size: 12,
+                                            weight: '500'
                                         }
                                     }
                                 }
                             },
                             plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return context.dataset.label + ': $' + context.raw.toFixed(2);
-                                        }
+                                title: {
+                                    display: true,
+                                    text: 'Monthly Financial Performance',
+                                    color: '#333',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    },
+                                    padding: {
+                                        top: 10,
+                                        bottom: 30
                                     }
                                 },
                                 legend: {
-                                    display: true,
-                                    position: 'top'
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 20,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                    titleColor: '#333',
+                                    titleFont: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    },
+                                    bodyColor: '#666',
+                                    bodyFont: {
+                                        size: 13
+                                    },
+                                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                                    borderWidth: 1,
+                                    padding: 12,
+                                    displayColors: true,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.dataset.label;
+                                            const value = context.raw.toLocaleString('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            });
+                                            return `${label}: ${value}`;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -439,12 +488,12 @@
                 }
             });
 
-            function printInvoice(url) {
-                const printWindow = window.open(url, '_blank');
-                printWindow.onload = function () {
-                    printWindow.print();
-                };
-            }
-        </script>
-    }
-</div>
+                function printInvoice(url) {
+                    const printWindow = window.open(url, '_blank');
+                    printWindow.onload = function () {
+                        printWindow.print();
+                    };
+                }
+            </script>
+        }
+    </div>

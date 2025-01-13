@@ -239,18 +239,32 @@ namespace e_commerce.Controllers
                     .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
                     .ToList();
 
-                // Group orders by month
-                var monthlyData = filteredOrders
-                    .GroupBy(o => new DateTime(o.OrderDate.Year, o.OrderDate.Month, 1))
-                    .OrderBy(g => g.Key)
-                    .Select(g => new SalesViewModel.MonthlyData
+                // Create a list of all months between start and end date
+                var allMonths = new List<DateTime>();
+                var currentDate = new DateTime(startDate.Year, startDate.Month, 1);
+                var endMonth = new DateTime(endDate.Year, endDate.Month, 1);
+
+                while (currentDate <= endMonth)
+                {
+                    allMonths.Add(currentDate);
+                    currentDate = currentDate.AddMonths(1);
+                }
+
+                // Group orders by month and include all months in the range
+                var monthlyData = allMonths.Select(month => {
+                    var monthOrders = filteredOrders.Where(o => 
+                        o.OrderDate.Year == month.Year && 
+                        o.OrderDate.Month == month.Month).ToList();
+
+                    return new SalesViewModel.MonthlyData
                     {
-                        Month = g.Key,
-                        Revenue = g.Sum(o => o.TotalAmount),
-                        Cost = g.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)), // 70% cost assumption
-                        Profit = g.Sum(o => o.TotalAmount) - g.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M))
-                    })
-                    .ToList();
+                        Month = month,
+                        Revenue = monthOrders.Sum(o => o.TotalAmount),
+                        Cost = monthOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M)),
+                        Profit = monthOrders.Sum(o => o.TotalAmount) - 
+                                monthOrders.Sum(o => o.Items.Sum(i => i.Quantity * i.UnitPrice * 0.7M))
+                    };
+                }).ToList();
 
                 var products = await _productRepository.GetAllAsync();
                 var viewModel = new SalesViewModel
