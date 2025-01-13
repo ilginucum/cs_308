@@ -693,6 +693,16 @@ namespace e_commerce.Controllers
             }
         }
 
+        public async Task UpdateStockAsync(string productId, int quantity)
+        {
+            var product = await _productRepository.FindByIdAsync(productId);
+            if (product != null)
+            {
+                product.QuantityInStock += quantity; // İptal edilen sipariş miktarını stoka geri ekle
+                await _productRepository.ReplaceOneAsync(product);
+            }
+        }
+
 
 
     }

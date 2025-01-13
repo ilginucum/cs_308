@@ -10,13 +10,16 @@ namespace e_commerce.Controllers
     public class OrdersController : Controller
     {
         private readonly IMongoDBRepository<Order> _orderRepository;
+        private readonly IMongoDBRepository<Product> _productRepository; // Ekle
         private readonly ILogger<OrdersController> _logger;
 
         public OrdersController(
             IMongoDBRepository<Order> orderRepository,
+            IMongoDBRepository<Product> productRepository, // Ekle
             ILogger<OrdersController> logger)
         {
             _orderRepository = orderRepository;
+            _productRepository = productRepository; // Ekle
             _logger = logger;
         }
 
@@ -124,6 +127,55 @@ namespace e_commerce.Controllers
                 _logger.LogError(ex, "Error requesting refund for order: {orderId}, products: {selectedProducts}", 
                     orderId, selectedProducts);
                 TempData["ErrorMessage"] = "An error occurred while requesting the refund.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(string orderId)
+        {
+            if (string.IsNullOrEmpty(orderId))
+            {
+                return NotFound();
+            }
+
+            var order = await _orderRepository.FindByIdAsync(orderId);
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            // Sadece Pending durumundaki siparişler iptal edilebilir
+            if (order.OrderStatus != "Pending")
+            {
+                TempData["ErrorMessage"] = "Only pending orders can be cancelled.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try 
+            {
+                // Her bir ürün için stok güncellenmeli
+                foreach (var item in order.Items)
+                {
+                    var product = await _productRepository.FindByIdAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        product.QuantityInStock += item.Quantity;
+                        await _productRepository.ReplaceOneAsync(product);
+                    }
+                }
+
+                // Siparişi sil
+                await _orderRepository.DeleteOneAsync(orderId);
+                
+                TempData["SuccessMessage"] = "Order has been successfully cancelled.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling order: {orderId}", orderId);
+                TempData["ErrorMessage"] = "An error occurred while cancelling the order.";
                 return RedirectToAction(nameof(Index));
             }
         }
