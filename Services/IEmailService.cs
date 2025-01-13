@@ -9,5 +9,6 @@ namespace e_commerce.Services
     {
         Task SendOrderConfirmationAsync(Order order, string userEmail, Address shippingAddress);
         Task SendRefundStatusEmailAsync(Order order, OrderItem item, string userEmail, string status);
+        Task SendDiscountNotificationAsync(string userEmail, string productName, decimal originalPrice, decimal discountedPrice, int discountPercentage);
     }
 }

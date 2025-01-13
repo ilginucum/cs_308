@@ -165,6 +165,7 @@ namespace e_commerce.Controllers
             {
                 return NotFound();
             }
+
             if (product.DiscountedPrice.HasValue && product.DiscountedPrice.Value < product.OriginalPrice)
             {
                 TempData["ErrorMessage"] = $"A discount of {Math.Round((1 - (product.DiscountedPrice.Value / product.OriginalPrice)) * 100)}% is already applied.";
@@ -173,28 +174,42 @@ namespace e_commerce.Controllers
 
             try
             {
-               
                 if (discount < 0 || discount > 100)
                 {
                     ModelState.AddModelError("", "Discount must be between 0 and 100.");
                     return RedirectToAction(nameof(ProductsWithPrice));
                 }
 
-                
                 if (product.OriginalPrice == 0)
                 {
                     product.OriginalPrice = product.Price;
                 }
 
-                
-                product.DiscountedPrice = Math.Round(product.OriginalPrice* (1 - (discount / 100.0M)), 2);
-
-                
+                product.DiscountedPrice = Math.Round(product.OriginalPrice * (1 - (discount / 100.0M)), 2);
                 product.Price = product.DiscountedPrice ?? product.Price;
+
+                // Find all users who have this product in their wishlist
+                var wishlistItems = await _wishlistRepository.FilterByAsync(w => w.ProductId == id);
+                
+                // For each wishlist item, get the user and send notification email
+                foreach (var wishlistItem in wishlistItems)
+                {
+                    var user = await _userRepository.FindByIdAsync(wishlistItem.UserId);
+                    if (user != null)
+                    {
+                        await _emailService.SendDiscountNotificationAsync(
+                            user.Email,
+                            product.Name,
+                            product.OriginalPrice,
+                            product.DiscountedPrice.Value,
+                            discount
+                        );
+                    }
+                }
 
                 await _productRepository.ReplaceOneAsync(product);
 
-                _logger.LogInformation($"Discount of {discount}% applied to product: {id}");
+                _logger.LogInformation($"Discount of {discount}% applied to product: {id} and notifications sent to {wishlistItems.Count()} users");
                 TempData["SuccessMessage"] = $"Discount of {discount}% applied to '{product.Name}'. New price: {product.DiscountedPrice:C}";
 
                 return RedirectToAction(nameof(ProductsWithPrice));

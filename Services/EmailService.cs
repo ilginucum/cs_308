@@ -207,6 +207,76 @@ namespace e_commerce.Services
             body.AppendLine("</body></html>");
             return body.ToString();
         }
+        public async Task SendDiscountNotificationAsync(string userEmail, string productName, decimal originalPrice, decimal discountedPrice, int discountPercentage)
+{
+    var smtp = new SmtpClient
+    {
+        Host = "smtp.gmail.com",
+        Port = 587,
+        EnableSsl = true,
+        DeliveryMethod = SmtpDeliveryMethod.Network,
+        UseDefaultCredentials = false,
+        Credentials = new NetworkCredential(StoreEmail, StoreEmailPassword)
+    };
+
+    using var message = new MailMessage
+    {
+        From = new MailAddress(StoreEmail, "Book Store"),
+        Subject = $"Special Discount Alert for {productName}!",
+        IsBodyHtml = true,
+        Body = GenerateDiscountEmailBody(productName, originalPrice, discountedPrice, discountPercentage)
+    };
+
+    message.To.Add(userEmail);
+
+    try
+    {
+        await smtp.SendMailAsync(message);
+        _logger.LogInformation($"Discount notification email sent successfully to {userEmail}");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Failed to send discount notification email to {userEmail}");
+        throw;
+    }
+}
+
+        private string GenerateDiscountEmailBody(string productName, decimal originalPrice, decimal discountedPrice, int discountPercentage)
+        {
+            var body = new StringBuilder();
+            body.AppendLine("<html><body style='font-family: Arial, sans-serif;'>");
+            
+            // Header
+            body.AppendLine("<div style='background-color: #f8f9fa; padding: 20px; margin-bottom: 20px;'>");
+            body.AppendLine($"<h2 style='color: #333; margin: 0;'>Special Discount Alert!</h2>");
+            body.AppendLine("</div>");
+
+            // Discount Information
+            body.AppendLine("<div style='margin-bottom: 20px;'>");
+            body.AppendLine($"<p>Great news! An item from your wishlist is now on sale:</p>");
+            body.AppendLine($"<h3 style='color: #333;'>{productName}</h3>");
+            body.AppendLine("</div>");
+            
+            // Price Details
+            body.AppendLine("<div style='background-color: #fff; padding: 15px; border: 1px solid #dee2e6; margin-bottom: 20px;'>");
+            body.AppendLine($"<p><strong>Original Price:</strong> {originalPrice:C}</p>");
+            body.AppendLine($"<p><strong>Discounted Price:</strong> {discountedPrice:C}</p>");
+            body.AppendLine($"<p><strong>You Save:</strong> {discountPercentage}% ({(originalPrice - discountedPrice):C})</p>");
+            body.AppendLine("</div>");
+            
+            // Call to Action
+            body.AppendLine("<div style='margin-top: 20px; text-align: center;'>");
+            body.AppendLine("<p>Don't miss out on this special offer! Visit our store to make your purchase.</p>");
+            body.AppendLine("</div>");
+
+            // Footer
+            body.AppendLine("<div style='margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;'>");
+            body.AppendLine("<p style='color: #666; font-size: 12px;'>This is an automated notification for an item in your wishlist.</p>");
+            body.AppendLine("</div>");
+
+            body.AppendLine("</body></html>");
+            return body.ToString();
+        }
 
     }
 }
