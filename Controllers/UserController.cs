@@ -192,6 +192,7 @@ namespace e_commerce.Controllers
 
         var model = new UserProfileViewModel
         {
+            Id = user.Id,  // Include the MongoDB ObjectId
             FullName = user.FullName,
             Email = user.Email,
             Username = user.Username,

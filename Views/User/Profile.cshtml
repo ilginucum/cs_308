@@ -73,13 +73,13 @@
                 <div class="card-body">
                     <form asp-action="UpdateProfile" method="post">
                         <div class="row g-3">
+                            <!-- Read-only User ID field -->
                             <div class="col-md-6">
-                                <label asp-for="FullName" class="form-label">Full Name</label>
+                                <label asp-for="Id" class="form-label">User ID</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input asp-for="FullName" class="form-control" />
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input asp-for="Id" class="form-control" readonly />
                                 </div>
-                                <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Username" class="form-label">Username</label>
@@ -87,6 +87,14 @@
                                     <span class="input-group-text"><i class="fas fa-at"></i></span>
                                     <input asp-for="Username" class="form-control" readonly />
                                 </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label">Full Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="FullName" class="form-control" />
+                                </div>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Email" class="form-label">Email</label>
@@ -244,7 +252,7 @@
             });
         }
 
-       function editAddress(id) {
+        function editAddress(id) {
             clearValidationErrors();
             fetch(`/User/GetAddress/${id}`)
                 .then(response => {
@@ -289,7 +297,7 @@
             }
         }
 
-            function saveAddress() {
+        function saveAddress() {
             clearValidationErrors();
             
             const addressData = {
@@ -329,12 +337,6 @@
                     alert(error.message || 'Error saving address');
                 }
             });
-        }
-
-        // Add this helper function if not already present
-        function clearValidationErrors() {
-            $('.is-invalid').removeClass('is-invalid');
-            $('.invalid-feedback').empty();
         }
 
         $('#addAddressModal').on('show.bs.modal', function() {
